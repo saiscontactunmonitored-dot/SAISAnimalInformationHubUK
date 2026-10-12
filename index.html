@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f2a45a"><meta name="description" content="Clear, practical animal information, care guidance and resources. Powered by Somerset Animal Information Services.">
-<link rel="manifest" href="./manifest.json"><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./icon.svg">
+<link rel="manifest" href="/SAISAnimalInformationHubUK/manifest.json"><link rel="icon" href="/SAISAnimalInformationHubUK/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/SAISAnimalInformationHubUK/icon.svg">
 <title>Animal Information Hub UK — Powered by SAIS</title>
 <style>
 :root{--orange:#f2a45a;--orange-dark:#b85e20;--orange-pale:#fff0df;--ink:#22201d;--muted:#68645f;--line:#e9e3dc;--paper:#fffdfa;--soft:#f6f3ef;--night:#242320;--max:1280px}
@@ -48,7 +48,7 @@ updateClock();setInterval(updateClock,30000);$('year').textContent=new Date().ge
 const searchForm=$('siteSearch'),searchInput=$('searchInput');
 function searchPage(){const q=searchInput.value.trim().toLowerCase();let visibleAnimals=0;document.querySelectorAll('.searchable').forEach(el=>{const match=!q||(el.innerText+' '+(el.dataset.search||'')).toLowerCase().includes(q);el.style.display=match?'':'none';if(el.classList.contains('animal-card')&&match)visibleAnimals++;});$('noAnimals').style.display=q&&visibleAnimals===0?'block':'none';if(q){const first=document.querySelector('.searchable:not([style*="display: none"])');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});}}
 searchForm.addEventListener('submit',e=>{e.preventDefault();searchPage();});searchInput.addEventListener('input',()=>{if(!searchInput.value.trim()){document.querySelectorAll('.searchable').forEach(el=>el.style.display='');$('noAnimals').style.display='none';}});
-if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register("/SAISAnimalInformationHubUK/sw.js",{scope:"/SAISAnimalInformationHubUK/"}).catch(()=>{}));}
 let installPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;});window.addEventListener('appinstalled',()=>{installPrompt=null;});
 window.addEventListener('online',()=>{$('offlinePill').style.display='none';});window.addEventListener('offline',()=>{$('offlinePill').style.display='inline-block';});
 if(!navigator.onLine)$('offlinePill').style.display='inline-block';
