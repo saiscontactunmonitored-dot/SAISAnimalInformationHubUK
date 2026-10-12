@@ -170,3 +170,22 @@ hr,.divider{border:0;border-top:1px solid var(--line)}
  .info{padding:18px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Final responsive and offline-first refinements */
+html{width:100%;overflow-x:clip}
+body{width:100%;min-width:0;overflow-x:clip}
+.wrap{width:min(var(--content),calc(100% - 48px))}
+main,header,footer,section,nav,article,aside,.hero,.hero-panel,.panel,.section,.main{min-width:0;max-width:100%}
+h1,h2,h3,h4,p,li,a,button,summary,label{overflow-wrap:anywhere}
+input,textarea,select{max-width:100%;min-width:0}
+button,.button,.hero-cta,.hero-secondary{min-height:44px}
+.nav-inner,.nav,.nav-dropdown,.utility-row,.search-form,.datetime,.section-head,.animal-grid,.topic-grid,.guide-grid,.feature-row,.below,.footinner,.footrow{min-width:0;max-width:100%}
+.nav{overscroll-behavior-x:contain}
+.nav-dropdown-menu{overscroll-behavior:contain}
+.animal-card,.topic,.guide-card,.info{overflow-wrap:anywhere}
+img{height:auto}
+@media(min-width:1500px){:root{--content:1320px}.animal-grid{gap:18px}.animal-card .image-placeholder{height:170px;min-height:170px}}
+@media(max-width:1100px){.utility-row{grid-template-columns:minmax(0,1fr)}.datetime{border-left:0;padding-left:0}.nav-inner{align-items:flex-start}.nav{flex-wrap:wrap}.animal-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.panel{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.wrap{width:calc(100% - 32px)}.nav-inner{display:block}.nav{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity}.nav>a,.nav-dropdown>summary{scroll-snap-align:start}.panel{grid-template-columns:1fr}.visual{min-height:190px}.below{grid-template-columns:1fr}.topic-grid,.guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.wrap{width:calc(100% - 24px)}.animal-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.animal-card .image-placeholder{height:100px;min-height:100px}.animal-info{padding:11px}.animal-info h3{font-size:13px}.animal-info p{font-size:11px}.topic-grid,.guide-grid{grid-template-columns:1fr}.more-animal-links{grid-template-columns:repeat(2,minmax(0,1fr))}.section-head h2{font-size:25px}.copy h1{font-size:clamp(34px,10vw,48px)}.brandrow .brand>span:last-child,.brand-text{font-size:14px}.search-form{padding-inline:11px}.coming-soon-banner{align-items:flex-start}.nav-dropdown-menu{grid-template-columns:repeat(2,minmax(0,1fr));left:10px;right:10px}.footinner,.footrow{flex-direction:column}}
+@media(hover:none){.animal-card:hover,.topic:hover,.guide-card:hover{transform:none;box-shadow:var(--shadow-sm)}}
