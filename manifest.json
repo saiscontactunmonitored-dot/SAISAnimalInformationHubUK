@@ -2,16 +2,16 @@
   "name": "Animal Information Hub UK",
   "short_name": "Animal Hub",
   "description": "Animal care, welfare, training and resources. Powered by Somerset Animal Information Services.",
-  "id": "./",
-  "start_url": "./",
-  "scope": "./",
+  "id": "/SAISAnimalInformationHubUK/",
+  "start_url": "/SAISAnimalInformationHubUK/",
+  "scope": "/SAISAnimalInformationHubUK/",
   "display": "standalone",
-  "background_color": "#f8f7f5",
-  "theme_color": "#f5ad68",
+  "background_color": "#fffdfa",
+  "theme_color": "#f2a45a",
   "orientation": "any",
   "icons": [
     {
-      "src": "./icon.svg",
+      "src": "/SAISAnimalInformationHubUK/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
