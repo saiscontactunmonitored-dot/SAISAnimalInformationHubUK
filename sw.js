@@ -1,11 +1,13 @@
-const CACHE_NAME = 'sais-animal-hub-v13';
+const CACHE_NAME = 'sais-animal-hub-v14';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
   BASE, BASE + 'index.html', BASE + 'assets/css/site.css', BASE + 'manifest.json', BASE + 'icon.svg', BASE + 'offline.html',
   BASE + 'contact/', BASE + 'bird-information/', BASE + 'animal-care-training/', BASE + 'animal-care-training/training-tips-advice/',
   BASE + 'animal-care-training/health-safety-for-pets/', BASE + 'animal-care-training/fun-enrichment/',
   BASE + 'animal-care-training/recommended-animal-books/', BASE + 'animal-care-training/rescue-tips/', BASE + 'animal-help-resources/', BASE + 'animal-help-resources/lost-found-animals/',
-  BASE + 'animal-articles/', BASE + 'dog-information/', BASE + 'cat-information/',
+  BASE + 'animal-articles/', BASE + 'animal-articles/dogs-wildlife-law/', BASE + 'animal-articles/boarding-home-boarding-laws/',
+  BASE + 'animal-articles/benefits-of-hydrotherapy/', BASE + 'animal-articles/keeping-animals-cool-summer/',
+  BASE + 'animal-articles/benefits-of-socialisation/', BASE + 'animal-articles/training-for-fun/', BASE + 'dog-information/', BASE + 'cat-information/',
   BASE + 'chicken-information/', BASE + 'rabbit-information/', BASE + 'rodent-information/',
   BASE + 'reptileexotic-information/', BASE + 'horse-information/', BASE + 'wildlife-information/'
 ];
