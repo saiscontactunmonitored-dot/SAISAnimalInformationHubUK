@@ -1,10 +1,10 @@
-const CACHE_NAME = 'sais-animal-hub-v12';
+const CACHE_NAME = 'sais-animal-hub-v13';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
   BASE, BASE + 'index.html', BASE + 'assets/css/site.css', BASE + 'manifest.json', BASE + 'icon.svg', BASE + 'offline.html',
   BASE + 'contact/', BASE + 'bird-information/', BASE + 'animal-care-training/', BASE + 'animal-care-training/training-tips-advice/',
   BASE + 'animal-care-training/health-safety-for-pets/', BASE + 'animal-care-training/fun-enrichment/',
-  BASE + 'animal-care-training/recommended-animal-books/', BASE + 'animal-help-resources/',
+  BASE + 'animal-care-training/recommended-animal-books/', BASE + 'animal-care-training/rescue-tips/', BASE + 'animal-help-resources/', BASE + 'animal-help-resources/lost-found-animals/',
   BASE + 'animal-articles/', BASE + 'dog-information/', BASE + 'cat-information/',
   BASE + 'chicken-information/', BASE + 'rabbit-information/', BASE + 'rodent-information/',
   BASE + 'reptileexotic-information/', BASE + 'horse-information/', BASE + 'wildlife-information/'
