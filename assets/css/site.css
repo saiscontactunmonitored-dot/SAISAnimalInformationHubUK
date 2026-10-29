@@ -339,3 +339,7 @@ a{text-underline-offset:4px}
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
+
+/* Accessibility: keep links legible when high-contrast mode is enabled. */
+body.a11y-contrast .hub-footer a{color:#ffdf00!important;text-decoration:underline}
+body.a11y-contrast .hub-footer p,body.a11y-contrast .hub-footer h2{color:#fff!important}
