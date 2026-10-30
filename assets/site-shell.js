@@ -47,7 +47,7 @@ function buildNav(){
  ];
  sections.forEach(function(section){var d=el("details","sais-section-menu");d.appendChild(el("summary","",section.label));var p=el("div","sais-section-menu-panel");section.items.forEach(function(item){var a=el("a","",item[0]);a.href=route(item[1]);if(active(a.href))a.setAttribute("aria-current","page");p.appendChild(a);});d.appendChild(p);inner.appendChild(d);});
  shell.appendChild(inner);
- var old=Array.from(document.querySelectorAll(".nav-wrap, body > nav, body > .nav, .nav-container, .nav"));
+ var old=Array.from(document.querySelectorAll(".nav-wrap, .unified-nav, .main-navigation, .primary-nav, body > nav, body > .nav, .nav-container, .nav"));
  old=old.filter(function(node){return !old.some(function(other){return other!==node&&other.contains(node);});});
  var target=old[0];
  if(target){target.replaceWith(shell);old.slice(1).forEach(function(node){if(node.isConnected)node.remove();});}
