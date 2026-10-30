@@ -343,3 +343,6 @@ a{text-underline-offset:4px}
 /* Accessibility: keep links legible when high-contrast mode is enabled. */
 body.a11y-contrast .hub-footer a{color:#ffdf00!important;text-decoration:underline}
 body.a11y-contrast .hub-footer p,body.a11y-contrast .hub-footer h2{color:#fff!important}
+
+/* Keyboard skip link added during repository accessibility audit */
+.skip-link{position:absolute;top:8px;left:8px;z-index:10000;transform:translateY(-160%);background:#242320;color:#fff!important;border:3px solid #f2a45a;border-radius:6px;padding:12px 16px;font-weight:800;text-decoration:underline;box-shadow:0 3px 12px #0004}.skip-link:focus{transform:translateY(0);outline:3px solid #fff;outline-offset:2px}
