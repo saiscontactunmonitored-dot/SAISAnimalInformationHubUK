@@ -27,7 +27,7 @@ function buildNav(){
  var panel=el("div","sais-animal-menu-panel");
  animals.forEach(function(animal){var a=el("a","",animal[0]);a.href=route(animal[1]);if(active(route(animal[1])))a.setAttribute("aria-current","page");panel.appendChild(a);});
  details.appendChild(panel);inner.appendChild(details);shell.appendChild(inner);
- var old=Array.from(document.querySelectorAll(".nav-wrap, body > nav, body > .nav, .nav-container"));
+ var old=Array.from(document.querySelectorAll(".nav-wrap, body > nav, body > .nav, .nav-container, .nav"));
  old=old.filter(function(node){return !old.some(function(other){return other!==node&&other.contains(node);});});
  var target=old[0];
  if(target){target.replaceWith(shell);old.slice(1).forEach(function(node){if(node.isConnected)node.remove();});}
