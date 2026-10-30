@@ -26,7 +26,27 @@ function buildNav(){
  var details=el("details","sais-animal-menu");var summary=el("summary","", "Choose an animal");summary.setAttribute("aria-label","Choose an animal information page");details.appendChild(summary);
  var panel=el("div","sais-animal-menu-panel");
  animals.forEach(function(animal){var a=el("a","",animal[0]);a.href=route(animal[1]);if(active(route(animal[1])))a.setAttribute("aria-current","page");panel.appendChild(a);});
- details.appendChild(panel);inner.appendChild(details);shell.appendChild(inner);
+ details.appendChild(panel);inner.appendChild(details);
+ var sections=[
+  {label:"Care topics",items:[
+   ["Health & Safety for Pets","animal-care-training/health-safety-for-pets/"],
+   ["Training Tips & Advice","animal-care-training/training-tips-advice/"],
+   ["Fun Enrichment","animal-care-training/fun-enrichment/"],
+   ["Rescue & Settling-In Tips","animal-care-training/rescue-tips/"],
+   ["Recommended Animal Books","animal-care-training/recommended-animal-books/"]
+  ]},
+  {label:"More resources",items:[["Lost & Found Animals","animal-help-resources/lost-found-animals/"]]},
+  {label:"Articles",items:[
+   ["Dogs, Wildlife & the Law","animal-articles/dogs-wildlife-law/"],
+   ["Boarding & Home Boarding Laws","animal-articles/boarding-home-boarding-laws/"],
+   ["Benefits of Hydrotherapy","animal-articles/benefits-of-hydrotherapy/"],
+   ["Keeping Animals Cool in Summer","animal-articles/keeping-animals-cool-summer/"],
+   ["Benefits of Socialisation","animal-articles/benefits-of-socialisation/"],
+   ["Training for Fun","animal-articles/training-for-fun/"]
+  ]}
+ ];
+ sections.forEach(function(section){var d=el("details","sais-section-menu");d.appendChild(el("summary","",section.label));var p=el("div","sais-section-menu-panel");section.items.forEach(function(item){var a=el("a","",item[0]);a.href=route(item[1]);if(active(a.href))a.setAttribute("aria-current","page");p.appendChild(a);});d.appendChild(p);inner.appendChild(d);});
+ shell.appendChild(inner);
  var old=Array.from(document.querySelectorAll(".nav-wrap, body > nav, body > .nav, .nav-container, .nav"));
  old=old.filter(function(node){return !old.some(function(other){return other!==node&&other.contains(node);});});
  var target=old[0];
