@@ -17,7 +17,7 @@ var animals=[
  ["Birds","bird-information/","bird-information"]
 ];
 function el(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n;}
-function active(href){var clean=href.replace(/\/$/,"");return path.replace(/\/$/,"")===clean || (clean!==base && path.indexOf(clean+"/")===0);}
+function active(href){var clean=href.replace(/\/$/,"");var current=path.replace(/\/$/,"");if(clean===""||clean===base)return current===""||current===base;return current===clean || (clean!==base && path.indexOf(clean+"/")===0);}
 function buildNav(){
  var shell=el("div","sais-site-nav");shell.setAttribute("role","navigation");shell.setAttribute("aria-label","Main navigation");
  var inner=el("div","sais-site-nav-inner");
@@ -47,7 +47,7 @@ function buildFooter(){
  var old=Array.from(document.querySelectorAll("footer, .foot"));old=old.filter(function(node){return !old.some(function(other){return other!==node&&other.contains(node);});});
  if(old.length){old[0].replaceWith(footer);old.slice(1).forEach(function(n){if(n.isConnected)n.remove();});}else{document.body.appendChild(footer);}
 }
-function addSkipLink(){if(document.querySelector(".sais-skip-link"))return;var a=el("a","sais-skip-link","Skip to main content");a.href="#main-content";document.body.insertBefore(a,document.body.firstChild);var main=document.querySelector("main, .main, #main, article");if(main&&!main.id)main.id="main-content";}
+function addSkipLink(){var a=document.querySelector(".sais-skip-link");var main=document.getElementById("main-content")||document.querySelector("main, .main, #main, article");if(!a){a=el("a","sais-skip-link","Skip to main content");document.body.insertBefore(a,document.body.firstChild);}if(main){if(!main.id)main.id="main-content";a.href="#"+main.id;}else{a.href="#";}}
 function loadStyles(){if(document.querySelector('link[data-sais-shell-css]'))return;var l=document.createElement("link");l.rel="stylesheet";l.href="https://saiscontactunmonitored-dot.github.io/SAISAnimalInformationHubUK/assets/site-shell.css";l.setAttribute("data-sais-shell-css","");document.head.appendChild(l);}
 function init(){loadStyles();addSkipLink();buildNav();buildFooter();document.addEventListener("click",function(e){var link=e.target.closest(".sais-animal-menu-panel a");if(link){var d=link.closest("details");if(d)d.open=false;}});}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
