@@ -1,1 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#f5ad68"/><circle cx="256" cy="256" r="184" fill="#202020"/><circle cx="256" cy="256" r="164" fill="#f5ad68"/><g fill="#202020"><ellipse cx="180" cy="208" rx="36" ry="48"/><ellipse cx="332" cy="208" rx="36" ry="48"/><ellipse cx="256" cy="285" rx="82" ry="68"/><ellipse cx="228" cy="270" rx="9" ry="13" fill="#f5ad68"/><ellipse cx="284" cy="270" rx="9" ry="13" fill="#f5ad68"/><path d="M231 303Q256 282 281 303Q278 329 256 329Q234 329 231 303Z" fill="#f5ad68"/></g><text x="256" y="403" text-anchor="middle" font-family="Arial,sans-serif" font-size="39" font-weight="900" fill="#202020">SAIS</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+<title id="title">Animal Information Hub</title>
+<defs><radialGradient id="orange" cx="45%" cy="35%" r="75%"><stop offset="0" stop-color="#ff7900"/><stop offset="1" stop-color="#ef5600"/></radialGradient><linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1684df"/><stop offset="1" stop-color="#0054b5"/></linearGradient><path id="topArc" d="M 75,245 A 181,181 0 0,1 437,245"/></defs>
+<circle cx="256" cy="256" r="250" fill="url(#orange)"/>
+<circle cx="256" cy="256" r="245" fill="none" stroke="#d94b00" stroke-width="3"/>
+<text fill="#fff8dc" font-family="Arial,Helvetica,sans-serif" font-size="47" font-weight="900" letter-spacing="1.5"><textPath href="#topArc" startOffset="50%" text-anchor="middle">INFORMATION</textPath></text>
+<g fill="url(#blue)" stroke="#0756ac" stroke-width="5">
+<ellipse cx="147" cy="219" rx="38" ry="56" transform="rotate(-12 147 219)"/>
+<ellipse cx="217" cy="145" rx="39" ry="53" transform="rotate(-5 217 145)"/>
+<ellipse cx="300" cy="145" rx="39" ry="53" transform="rotate(5 300 145)"/>
+<ellipse cx="369" cy="219" rx="38" ry="56" transform="rotate(12 369 219)"/>
+<path d="M256 220 C229 220 214 241 199 258 C181 277 159 287 155 311 C150 338 169 363 196 365 C219 367 236 349 256 349 C276 349 293 367 316 365 C343 363 362 338 357 311 C353 287 331 277 313 258 C298 241 283 220 256 220Z"/>
+</g>
+<g fill="#60b4f2" opacity=".75">
+<ellipse cx="147" cy="219" rx="26" ry="42" transform="rotate(-12 147 219)"/>
+<ellipse cx="217" cy="145" rx="27" ry="39" transform="rotate(-5 217 145)"/>
+<ellipse cx="300" cy="145" rx="27" ry="39" transform="rotate(5 300 145)"/>
+<ellipse cx="369" cy="219" rx="26" ry="42" transform="rotate(12 369 219)"/>
+<path d="M256 239 C234 239 221 258 207 273 C190 290 174 299 173 317 C171 336 185 348 202 348 C222 348 239 333 256 333 C273 333 290 348 310 348 C327 348 341 336 339 317 C338 299 322 290 305 273 C291 258 278 239 256 239Z"/>
+</g>
+<text x="256" y="450" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="75" font-weight="900" letter-spacing="2" fill="#fff8dc">HUB</text>
+</svg>
