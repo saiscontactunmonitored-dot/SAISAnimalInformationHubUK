@@ -51,7 +51,7 @@ function buildNav(){
  old=old.filter(function(node){return !old.some(function(other){return other!==node&&other.contains(node);});});
  var target=old[0];
  if(target){target.replaceWith(shell);old.slice(1).forEach(function(node){if(node.isConnected)node.remove();});}
- else {var mast=document.querySelector(".masthead, .brandrow, .brand-row, .brandrow");if(mast){var anchor=mast.closest(".masthead")||mast.closest("header")||mast;shell.insertAdjacentElement("afterend",anchor);anchor.insertAdjacentElement("afterend",shell);}else{var announcement=document.querySelector(".announcement");if(announcement)announcement.insertAdjacentElement("afterend",shell);else document.body.insertBefore(shell,document.body.firstChild);}}
+ else {var mast=document.querySelector(".masthead, .brandrow, .brand-row, header");if(mast){mast.insertAdjacentElement("afterend",shell);}else{var announcement=document.querySelector(".announcement");if(announcement)announcement.insertAdjacentElement("afterend",shell);else document.body.insertBefore(shell,document.body.firstChild);}}
 }
 function buildFooter(){
  var footer=el("footer","sais-site-footer");var inner=el("div","sais-footer-inner");var grid=el("div","sais-footer-grid");
@@ -68,7 +68,16 @@ function buildFooter(){
  if(old.length){old[0].replaceWith(footer);old.slice(1).forEach(function(n){if(n.isConnected)n.remove();});}else{document.body.appendChild(footer);}
 }
 function addSkipLink(){var a=document.querySelector(".sais-skip-link");var main=document.getElementById("main-content")||document.querySelector("main, .main, #main, article");if(!a){a=el("a","sais-skip-link","Skip to main content");document.body.insertBefore(a,document.body.firstChild);}if(main){if(!main.id)main.id="main-content";a.href="#"+main.id;}else{a.href="#";}}
-function loadStyles(){if(document.querySelector('link[data-sais-shell-css]'))return;var l=document.createElement("link");l.rel="stylesheet";l.href="https://saiscontactunmonitored-dot.github.io/SAISAnimalInformationHubUK/assets/site-shell.css";l.setAttribute("data-sais-shell-css","");document.head.appendChild(l);}
-function init(){loadStyles();addSkipLink();buildNav();buildFooter();document.addEventListener("click",function(e){var link=e.target.closest(".sais-animal-menu-panel a");if(link){var d=link.closest("details");if(d)d.open=false;}});}
+function loadStyles(){
+ var baseUrl="https://saiscontactunmonitored-dot.github.io/SAISAnimalInformationHubUK/";
+ if(!document.querySelector('link[data-sais-global-css]')){var global=document.createElement("link");global.rel="stylesheet";global.href=baseUrl+"assets/css/site.css";global.setAttribute("data-sais-global-css","");document.head.appendChild(global);}
+ if(!document.querySelector('link[data-sais-shell-css]')){var shellCss=document.createElement("link");shellCss.rel="stylesheet";shellCss.href=baseUrl+"assets/site-shell.css";shellCss.setAttribute("data-sais-shell-css","");document.head.appendChild(shellCss);}
+}
+function init(){loadStyles();addSkipLink();buildNav();buildFooter();document.addEventListener("click",function(e){
+ var link=e.target.closest(".sais-animal-menu-panel a,.sais-section-menu-panel a");
+ if(link){var d=link.closest("details");if(d)d.open=false;return;}
+ if(!e.target.closest(".sais-animal-menu,.sais-section-menu"))document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){d.open=false;});
+ });
+ document.addEventListener("keydown",function(e){if(e.key==="Escape"){document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){d.open=false;});}});}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
