@@ -1,5 +1,5 @@
 /* SAIS Animal Information Hub — shared navigation and footer */
-.brand-mark{background-image:url("/SAISAnimalInformationHubUK/icon.svg");background-position:center;background-size:cover;font-size:0!important}
+.brand-mark{background-image:url("/SAISAnimalInformationHubUK/info-logo.png");background-position:center;background-size:cover;font-size:0!important}
 .sais-skip-link{position:absolute;left:12px;top:-100px;z-index:10000;background:#242320;color:#fff;padding:12px 16px;border-radius:6px;font-weight:700}
 .sais-skip-link:focus{top:12px}
 .sais-site-nav{position:relative;z-index:1000;background:#fffdfa;border-top:1px solid #e9e3dc;border-bottom:1px solid #e9e3dc;color:#242320}
@@ -31,3 +31,14 @@
 .sais-back-top:hover{background:#393631}
 @media(max-width:760px){.sais-site-nav-inner,.sais-footer-inner{width:calc(100% - 28px)}.sais-site-nav-inner{gap:5px;padding:10px 0}.sais-nav-link,.sais-animal-menu summary{font-size:12px;min-height:40px;padding:9px 10px}.sais-nav-spacer{display:none}.sais-animal-menu-panel{position:fixed;left:14px;right:14px;top:auto;width:auto;max-height:65vh}.sais-footer-grid{grid-template-columns:1fr;gap:25px}.sais-footer-inner{padding-top:30px}.sais-footer-bottom{align-items:flex-start;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sais-site-nav *{transition:none!important}}
+
+.sais-section-menu{position:relative;flex:none}
+.sais-section-menu>summary{list-style:none;cursor:pointer;padding:10px 12px;border-radius:6px;font-size:13px;font-weight:700;color:var(--sais-nav-text,#403a34);white-space:nowrap}
+.sais-section-menu>summary::-webkit-details-marker{display:none}
+.sais-section-menu>summary:after{content:" ▾";font-size:11px}
+.sais-section-menu[open]>summary,.sais-section-menu>summary:hover{background:#fff0df;color:#854414}
+.sais-section-menu-panel{position:absolute;z-index:1000;top:calc(100% + 4px);left:0;min-width:230px;max-width:min(320px,85vw);padding:7px;background:#fffdfa;border:1px solid #e9e3dc;border-radius:8px;box-shadow:0 12px 30px #20181020;display:grid;gap:2px}
+.sais-section-menu-panel a{display:block;padding:9px 11px;border-radius:5px;text-decoration:none;color:#403a34;font-size:13px;line-height:1.35}
+.sais-section-menu-panel a:hover,.sais-section-menu-panel a[aria-current=page]{background:#fff0df;color:#854414}
+.sais-section-menu-panel a:focus-visible,.sais-section-menu>summary:focus-visible{outline:3px solid #b85e20;outline-offset:2px}
+@media(max-width:700px){.sais-section-menu{position:static}.sais-section-menu-panel{position:absolute;left:14px;right:14px;max-width:none;max-height:65vh;overflow:auto}.sais-site-nav-inner{flex-wrap:wrap}}
