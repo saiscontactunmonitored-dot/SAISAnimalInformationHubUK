@@ -1,83 +1,83 @@
 (function(){
 "use strict";
-var path=window.location.pathname;
-var base=path.indexOf("/SAISAnimalInformationHubUK/")===0?"/SAISAnimalInformationHubUK":"";
-var route=function(p){return base+"/"+p.replace(/^\//,"");};
-var items=[
- {label:"Home",href:route(""),key:"home"},
- {label:"Animal Care & Training",href:route("animal-care-training/"),key:"care"},
- {label:"Animal Help & Resources",href:route("animal-help-resources/"),key:"resources"},
- {label:"Animal Articles",href:route("animal-articles/"),key:"articles"}
-];
-var animals=[
- ["Dogs","dog-information/","dog-information"],["Cats","cat-information/","cat-information"],
- ["Horses","horse-information/","horse-information"],["Wildlife","wildlife-information/","wildlife-information"],
- ["Chickens","chicken-information/","chicken-information"],["Rabbits","rabbit-information/","rabbit-information"],
- ["Rodents","rodent-information/","rodent-information"],["Reptiles & Exotics","reptileexotic-information/","reptileexotic-information"],
- ["Birds","bird-information/","bird-information"]
-];
-function el(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n;}
-function active(href){var clean=href.replace(/\/$/,"");var current=path.replace(/\/$/,"");if(clean===""||clean===base)return current===""||current===base;return current===clean || (clean!==base && path.indexOf(clean+"/")===0);}
+var ROOT="/SAISAnimalInformationHubUK",path=window.location.pathname;
+var base=path.indexOf(ROOT+"/")===0||path===ROOT?ROOT:"";
+var route=function(p){return (base||"")+"/"+String(p||"").replace(/^\//,"");};
+var el=function(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n;};
+var links={
+ animals:[["Dogs","dog-information/"],["Cats","cat-information/"],["Horses","horse-information/"],["Wildlife","wildlife-information/"],["Chickens","chicken-information/"],["Birds","bird-information/"],["Rabbits","rabbit-information/"],["Rodents & small pets","rodent-information/"],["Reptiles & exotics","reptileexotic-information/"]],
+ care:[["Animal Care & Training","animal-care-training/"],["Health & Safety for Pets","animal-care-training/health-safety-for-pets/"],["Training Tips & Advice","animal-care-training/training-tips-advice/"],["Fun Enrichment","animal-care-training/fun-enrichment/"],["Rescue & Settling-In Tips","animal-care-training/rescue-tips/"],["Recommended Animal Books","animal-care-training/recommended-animal-books/"]],
+ resources:[["Animal Help & Resources","animal-help-resources/"],["Lost & Found Animals","animal-help-resources/lost-found-animals/"],["Contact SAIS","contact/"],["Sources & Editorial Standards","sources-and-editorial-standards/"],["Accessibility","accessibility/"],["Privacy Notice","privacy/"],["Terms & Disclaimer","terms-and-disclaimer/"]],
+ articles:[["All Animal Articles","animal-articles/"],["Dogs, Wildlife & the Law","animal-articles/dogs-wildlife-law/"],["Boarding & Home Boarding Laws","animal-articles/boarding-home-boarding-laws/"],["Benefits of Hydrotherapy","animal-articles/benefits-of-hydrotherapy/"],["Keeping Animals Cool in Summer","animal-articles/keeping-animals-cool-summer/"],["Benefits of Socialisation","animal-articles/benefits-of-socialisation/"],["Training for Fun","animal-articles/training-for-fun/"]]
+};
+var index=[];
+Object.keys(links).forEach(function(k){links[k].forEach(function(x){index.push({title:x[0],url:route(x[1]),terms:x[0].toLowerCase()});});});
+index.push({title:"Find an animal service",url:"https://directory.somersetanimalinformationservices.com/",terms:"directory groomer trainer vet boarding sitter business service"});
+function active(href){var clean=href.replace(/\/$/,""),cur=path.replace(/\/$/,"");return cur===clean||(clean!==base&&path.indexOf(clean+"/")===0);}
+function addLink(parent,label,p,cls){var a=el("a",cls||"",label);a.href=route(p);if(active(a.href))a.setAttribute("aria-current","page");parent.appendChild(a);return a;}
+function makeDropdown(parent,label,items,cls){var d=el("details",cls||"sais-section-menu");var s=el("summary","",label);d.appendChild(s);var panel=el("div","sais-section-menu-panel");items.forEach(function(x){addLink(panel,x[0],x[1]);});d.appendChild(panel);parent.appendChild(d);return d;}
+function makeUtility(){
+ var row=el("div","sais-utility-row");
+ var form=el("form","sais-search-form");form.id="siteSearch";form.setAttribute("role","search");
+ var input=el("input","");input.id="searchInput";input.type="search";input.placeholder="Search animals, care topics, advice and resources…";input.setAttribute("aria-label","Search the Animal Information Hub");input.autocomplete="off";
+ var button=el("button","sais-search-button","Search");button.type="submit";
+ form.appendChild(el("span","sais-search-icon","⌕"));form.appendChild(input);form.appendChild(button);row.appendChild(form);
+ var results=el("div","sais-search-results");results.id="searchResults";results.hidden=true;results.setAttribute("role","region");results.setAttribute("aria-label","Search results");row.appendChild(results);
+ var clock=el("div","sais-datetime");clock.appendChild(el("span","sais-date-icon","▦"));var text=el("div","");text.appendChild(el("small","","Today"));var date=el("strong","");date.id="dateTime";text.appendChild(date);clock.appendChild(text);row.appendChild(clock);
+ return row;
+}
 function buildNav(){
- var shell=el("div","sais-site-nav");shell.setAttribute("role","navigation");shell.setAttribute("aria-label","Main navigation");
+ var shell=el("div","sais-site-shell");
+ var nav=el("nav","sais-site-nav");nav.setAttribute("aria-label","Main navigation");
  var inner=el("div","sais-site-nav-inner");
- items.forEach(function(item){var a=el("a","sais-nav-link"+(item.key==="home"?" sais-nav-home":""));a.href=item.href;a.textContent=item.label;if(active(item.href))a.setAttribute("aria-current","page");inner.appendChild(a);});
+ addLink(inner,"Home","");
+ addLink(inner,"Animal Care & Training","animal-care-training/");
+ addLink(inner,"Animal Help & Resources","animal-help-resources/");
+ addLink(inner,"Animal Articles","animal-articles/");
  var spacer=el("span","sais-nav-spacer");spacer.setAttribute("aria-hidden","true");inner.appendChild(spacer);
- var details=el("details","sais-animal-menu");var summary=el("summary","", "Choose an animal");summary.setAttribute("aria-label","Choose an animal information page");details.appendChild(summary);
- var panel=el("div","sais-animal-menu-panel");
- animals.forEach(function(animal){var a=el("a","",animal[0]);a.href=route(animal[1]);if(active(route(animal[1])))a.setAttribute("aria-current","page");panel.appendChild(a);});
- details.appendChild(panel);inner.appendChild(details);
- var sections=[
-  {label:"Care topics",items:[
-   ["Health & Safety for Pets","animal-care-training/health-safety-for-pets/"],
-   ["Training Tips & Advice","animal-care-training/training-tips-advice/"],
-   ["Fun Enrichment","animal-care-training/fun-enrichment/"],
-   ["Rescue & Settling-In Tips","animal-care-training/rescue-tips/"],
-   ["Recommended Animal Books","animal-care-training/recommended-animal-books/"]
-  ]},
-  {label:"More resources",items:[["Lost & Found Animals","animal-help-resources/lost-found-animals/"]]},
-  {label:"Articles",items:[
-   ["Dogs, Wildlife & the Law","animal-articles/dogs-wildlife-law/"],
-   ["Boarding & Home Boarding Laws","animal-articles/boarding-home-boarding-laws/"],
-   ["Benefits of Hydrotherapy","animal-articles/benefits-of-hydrotherapy/"],
-   ["Keeping Animals Cool in Summer","animal-articles/keeping-animals-cool-summer/"],
-   ["Benefits of Socialisation","animal-articles/benefits-of-socialisation/"],
-   ["Training for Fun","animal-articles/training-for-fun/"]
-  ]}
- ];
- sections.forEach(function(section){var d=el("details","sais-section-menu");d.appendChild(el("summary","",section.label));var p=el("div","sais-section-menu-panel");section.items.forEach(function(item){var a=el("a","",item[0]);a.href=route(item[1]);if(active(a.href))a.setAttribute("aria-current","page");p.appendChild(a);});d.appendChild(p);inner.appendChild(d);});
- shell.appendChild(inner);
- var old=Array.from(document.querySelectorAll(".nav-wrap, .unified-nav, .main-navigation, .primary-nav, body > nav, body > .nav, .nav-container, .nav"));
- old=old.filter(function(node){return !old.some(function(other){return other!==node&&other.contains(node);});});
- var target=old[0];
- if(target){target.replaceWith(shell);old.slice(1).forEach(function(node){if(node.isConnected)node.remove();});}
- else {var mast=document.querySelector(".masthead, .brandrow, .brand-row, header");if(mast){mast.insertAdjacentElement("afterend",shell);}else{var announcement=document.querySelector(".announcement");if(announcement)announcement.insertAdjacentElement("afterend",shell);else document.body.insertBefore(shell,document.body.firstChild);}}
+ makeDropdown(inner,"Choose an animal",links.animals,"sais-animal-menu");
+ makeDropdown(inner,"Care topics",links.care);
+ makeDropdown(inner,"More resources",links.resources);
+ makeDropdown(inner,"Articles",links.articles);
+ nav.appendChild(inner);shell.appendChild(nav);shell.appendChild(makeUtility());
+ var oldNav=Array.from(document.querySelectorAll(".nav-wrap,.unified-nav,.main-navigation,.primary-nav,body>nav,body>.nav,.nav-container,.nav"));
+ oldNav=oldNav.filter(function(n){return !oldNav.some(function(o){return o!==n&&o.contains(n);});});
+ var utility=document.querySelector(".utility-row");if(utility)utility.remove();
+ if(oldNav.length){oldNav[0].replaceWith(shell);oldNav.slice(1).forEach(function(n){if(n.isConnected)n.remove();});}
+ else{var mast=document.querySelector(".masthead,.brandrow,.brand-row,header");if(mast)mast.insertAdjacentElement("afterend",shell);else document.body.insertBefore(shell,document.body.firstChild);}
 }
+function search(){
+ var form=document.getElementById("siteSearch"),input=document.getElementById("searchInput"),results=document.getElementById("searchResults");if(!form||!input||!results)return;
+ if(form.dataset.bound==="yes")return;form.dataset.bound="yes";
+ function run(){var q=input.value.trim().toLowerCase();if(!q){results.hidden=true;results.innerHTML="";return;}var words=q.split(/\s+/);var found=index.map(function(x){var hay=(x.title+" "+x.terms).toLowerCase(),score=words.reduce(function(n,w){return n+(hay.indexOf(w)>=0?1:0);},0);return {x:x,score:score};}).filter(function(x){return x.score>0;}).sort(function(a,b){return b.score-a.score;}).slice(0,10);
+ results.innerHTML="";var head=el("div","sais-search-heading",'Results for "'+q+'"');results.appendChild(head);
+ if(!found.length)results.appendChild(el("p","sais-search-empty","No matching pages found. Try an animal name or a topic such as training, health, lost or boarding."));
+ found.forEach(function(hit){var a=el("a","",hit.x.title);a.href=hit.x.url;results.appendChild(a);});results.hidden=false;
+ }
+ form.addEventListener("submit",function(e){e.preventDefault();run();});input.addEventListener("input",run);input.addEventListener("keydown",function(e){if(e.key==="Escape"){results.hidden=true;input.blur();}});
+}
+function clock(){var node=document.getElementById("dateTime");if(!node)return;var now=new Date();node.textContent=new Intl.DateTimeFormat("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Europe/London"}).format(now).replace(","," ·");}
 function buildFooter(){
- var footer=el("footer","sais-site-footer");var inner=el("div","sais-footer-inner");var grid=el("div","sais-footer-grid");
- var brand=el("section","");var title=el("h2","sais-footer-brand","Animal Information Hub UK");brand.appendChild(title);
- brand.appendChild(el("p","sais-footer-description","Clear, practical animal information and resources to help people make informed decisions about animal care and welfare. Powered by Somerset Animal Information Services (SAIS)."));
- var quick=el("section","");quick.appendChild(el("h2","sais-footer-heading","Explore the Hub"));var q=el("div","sais-footer-links");
- [["Home",route("")],["Animal Care & Training",route("animal-care-training/")],["Animal Help & Resources",route("animal-help-resources/")],["Animal Articles",route("animal-articles/")]].forEach(function(x){var a=el("a","",x[0]);a.href=x[1];q.appendChild(a);});quick.appendChild(q);
- var trust=el("section","");trust.appendChild(el("h2","sais-footer-heading","Information & policies"));var t=el("div","sais-footer-links");
- [["Sources & Editorial Standards",route("sources-and-editorial-standards/")],["Accessibility",route("accessibility/")],["Privacy",route("privacy/")],["Terms & Disclaimer",route("terms-and-disclaimer/")]].forEach(function(x){var a=el("a","",x[0]);a.href=x[1];t.appendChild(a);});trust.appendChild(t);
- grid.appendChild(brand);grid.appendChild(quick);grid.appendChild(trust);inner.appendChild(grid);
- var bottom=el("div","sais-footer-bottom");bottom.appendChild(el("span","","© "+new Date().getFullYear()+" Somerset Animal Information Services. Information is provided for general guidance and does not replace advice from a qualified veterinary or other relevant professional."));
- var top=el("a","sais-back-top","↑ Back to top");top.href="#top";top.addEventListener("click",function(e){e.preventDefault();window.scrollTo({top:0,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});history.replaceState(null,"",location.pathname+location.search+"#top");});bottom.appendChild(top);inner.appendChild(bottom);footer.appendChild(inner);
- var old=Array.from(document.querySelectorAll("footer, .foot"));old=old.filter(function(node){return !old.some(function(other){return other!==node&&other.contains(node);});});
- if(old.length){old[0].replaceWith(footer);old.slice(1).forEach(function(n){if(n.isConnected)n.remove();});}else{document.body.appendChild(footer);}
+ var footer=el("footer","sais-site-footer"),inner=el("div","sais-footer-inner"),grid=el("div","sais-footer-grid");
+ var sections=[
+ ["Animal Information Hub UK","Clear, practical animal information and resources to help people make informed decisions about animal care and welfare. Powered by Somerset Animal Information Services."],
+ ["Explore",null, [["Home",""],["Animal Care & Training","animal-care-training/"],["Animal Help & Resources","animal-help-resources/"],["Animal Articles","animal-articles/"],["Contact SAIS","contact/"]]],
+ ["Animal information",null,links.animals],
+ ["Trust & policies",null,[["Sources & Editorial Standards","sources-and-editorial-standards/"],["Accessibility","accessibility/"],["Privacy Notice","privacy/"],["Terms & Disclaimer","terms-and-disclaimer/"]]]
+ ];
+ sections.forEach(function(s,i){var col=el("section","");col.appendChild(el(i?"h2":"h2",i?"sais-footer-heading":"sais-footer-brand",s[0]));if(s[1])col.appendChild(el("p","sais-footer-description",s[1]));if(s[2]){var list=el("div","sais-footer-links");s[2].forEach(function(x){addLink(list,x[0],x[1]);});col.appendChild(list);}grid.appendChild(col);});
+ inner.appendChild(grid);var bottom=el("div","sais-footer-bottom");bottom.appendChild(el("span","","© "+new Date().getFullYear()+" Somerset Animal Information Services · General information only; not a substitute for professional advice."));footer.appendChild(inner);inner.appendChild(bottom);
+ var old=Array.from(document.querySelectorAll("footer,.foot,.hub-footer"));old=old.filter(function(n){return !old.some(function(o){return o!==n&&o.contains(n);});});
+ if(old.length){old[0].replaceWith(footer);old.slice(1).forEach(function(n){if(n.isConnected)n.remove();});}else document.body.appendChild(footer);
 }
-function addSkipLink(){var a=document.querySelector(".sais-skip-link");var main=document.getElementById("main-content")||document.querySelector("main, .main, #main, article");if(!a){a=el("a","sais-skip-link","Skip to main content");document.body.insertBefore(a,document.body.firstChild);}if(main){if(!main.id)main.id="main-content";a.href="#"+main.id;}else{a.href="#";}}
-function loadStyles(){
- var baseUrl="https://saiscontactunmonitored-dot.github.io/SAISAnimalInformationHubUK/";
- if(!document.querySelector('link[data-sais-global-css]')){var global=document.createElement("link");global.rel="stylesheet";global.href=baseUrl+"assets/css/site.css";global.setAttribute("data-sais-global-css","");document.head.appendChild(global);}
- if(!document.querySelector('link[data-sais-shell-css]')){var shellCss=document.createElement("link");shellCss.rel="stylesheet";shellCss.href=baseUrl+"assets/site-shell.css";shellCss.setAttribute("data-sais-shell-css","");document.head.appendChild(shellCss);}
+function menus(){
+ document.addEventListener("click",function(e){var summary=e.target.closest(".sais-animal-menu>summary,.sais-section-menu>summary");if(summary){var current=summary.parentElement;document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){if(d!==current)d.open=false;});}},true);
+ document.addEventListener("click",function(e){if(!e.target.closest(".sais-animal-menu,.sais-section-menu"))document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){d.open=false;});});
+ document.addEventListener("keydown",function(e){if(e.key==="Escape")document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){d.open=false;});});
 }
-function init(){loadStyles();addSkipLink();buildNav();buildFooter();document.addEventListener("click",function(e){var summary=e.target.closest(".sais-animal-menu>summary,.sais-section-menu>summary");if(summary){var current=summary.parentElement;document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){if(d!==current)d.open=false;});}},true);document.addEventListener("click",function(e){
- var link=e.target.closest(".sais-animal-menu-panel a,.sais-section-menu-panel a");
- if(link){var d=link.closest("details");if(d)d.open=false;return;}
- if(!e.target.closest(".sais-animal-menu,.sais-section-menu"))document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){d.open=false;});
- });
- document.addEventListener("keydown",function(e){if(e.key==="Escape"){document.querySelectorAll(".sais-animal-menu[open],.sais-section-menu[open]").forEach(function(d){d.open=false;});}});}
+function init(){
+ var existingSkip=document.querySelector(".sais-skip-link");if(!existingSkip){var skip=el("a","sais-skip-link","Skip to main content");var main=document.querySelector("main,.main,#main-content,article");if(main){if(!main.id)main.id="main-content";skip.href="#"+main.id;}document.body.insertBefore(skip,document.body.firstChild);}
+ buildNav();buildFooter();search();clock();setInterval(clock,30000);menus();
+}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
