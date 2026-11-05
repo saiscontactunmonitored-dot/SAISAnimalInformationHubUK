@@ -23,7 +23,7 @@ function makeUtility(){
  var button=el("button","sais-search-button","Search");button.type="submit";
  form.appendChild(el("span","sais-search-icon","⌕"));form.appendChild(input);form.appendChild(button);row.appendChild(form);
  var results=el("div","sais-search-results");results.id="searchResults";results.hidden=true;results.setAttribute("role","region");results.setAttribute("aria-label","Search results");row.appendChild(results);
- var clock=el("div","sais-datetime");clock.appendChild(el("span","sais-date-icon","▦"));var text=el("div","");text.appendChild(el("small","","Today"));var date=el("strong","");date.id="dateTime";text.appendChild(date);clock.appendChild(text);row.appendChild(clock);
+ var clock=el("div","sais-datetime");clock.appendChild(el("span","sais-date-icon","▦"));var text=el("div","");var weekday=el("small","");weekday.id="weekday";text.appendChild(weekday);var date=el("strong","");date.id="dateTime";text.appendChild(date);clock.appendChild(text);row.appendChild(clock);
  return row;
 }
 function buildNav(){
@@ -56,7 +56,7 @@ function search(){
  }
  form.addEventListener("submit",function(e){e.preventDefault();run();});input.addEventListener("input",run);input.addEventListener("keydown",function(e){if(e.key==="Escape"){results.hidden=true;input.blur();}});
 }
-function clock(){var node=document.getElementById("dateTime");if(!node)return;var now=new Date();node.textContent=new Intl.DateTimeFormat("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Europe/London"}).format(now).replace(","," ·");}
+function clock(){var node=document.getElementById("dateTime"),day=document.getElementById("weekday");if(!node)return;var now=new Date();if(day)day.textContent=new Intl.DateTimeFormat("en-GB",{weekday:"long",timeZone:"Europe/London"}).format(now);node.textContent=new Intl.DateTimeFormat("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Europe/London"}).format(now).replace(","," ·");}
 function buildFooter(){
  var footer=el("footer","sais-site-footer"),inner=el("div","sais-footer-inner"),grid=el("div","sais-footer-grid");
  var sections=[
