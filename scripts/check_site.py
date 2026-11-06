@@ -12,7 +12,7 @@ warnings = []
 # These are unfinished editorial labels, not ordinary input placeholders or CSS class names.
 UNFINISHED_MARKERS = re.compile(
     r"photo to be added|reserved space for|coming soon|under construction|"
-    r"lorem ipsum|TODO|FIXME|insert (?:an? )?(?:image|photo|text|content) here",
+    r"lorem ipsum|TODO|FIXME|PHOTO SPACE|photo space|reserved image space|insert (?:an? )?(?:image|photo|text|content) here",
     re.IGNORECASE,
 )
 
@@ -94,6 +94,8 @@ for page in html_files:
             errors.append(f"{rel}: expected exactly one {name}, found {count}")
     if parser.logo_refs == 0:
         errors.append(f"{rel}: no info-logo.png reference found")
+    if parser.main_count != 1 and page.name != "offline.html":
+        errors.append(f"{rel}: expected exactly one main landmark, found {parser.main_count}")
     if parser.main_count == 0 and page.name != "offline.html":
         warnings.append(f"{rel}: no main landmark found")
     if parser.images_without_alt:
