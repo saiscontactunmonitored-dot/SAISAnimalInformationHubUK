@@ -39,7 +39,7 @@ function buildShell(){
  nav.appendChild(inner);
  var menuButton=make("button","sais-mobile-menu-button","☰  Menu");menuButton.type="button";menuButton.setAttribute("aria-controls","sais-mobile-drawer");menuButton.setAttribute("aria-expanded","false");menuButton.setAttribute("aria-label","Open site menu");nav.insertBefore(menuButton,inner);
  var backdrop=make("div","sais-drawer-backdrop");backdrop.id="sais-drawer-backdrop";backdrop.hidden=true;
- var drawer=make("aside","sais-mobile-drawer");drawer.id="sais-mobile-drawer";drawer.setAttribute("aria-label","Site menu");drawer.setAttribute("aria-hidden","true");
+ var drawer=make("aside","sais-mobile-drawer");drawer.id="sais-mobile-drawer";drawer.setAttribute("aria-label","Site menu");drawer.setAttribute("aria-hidden","true");drawer.inert=true;
  var drawerHead=make("div","sais-drawer-head");drawerHead.appendChild(make("strong","","Explore the Hub"));
  var close=make("button","sais-drawer-close","×");close.type="button";close.setAttribute("aria-label","Close site menu");drawerHead.appendChild(close);drawer.appendChild(drawerHead);
  var drawerBody=make("div","sais-drawer-body");
@@ -49,12 +49,12 @@ function buildShell(){
  link(drawerBody,"Animal Articles","animal-articles/");
  [["Choose an animal",groups.animals],["Care topics",groups.care],["More resources",groups.resources],["Articles",groups.articles]].forEach(function(group){var d=make("details","sais-drawer-group");var summary=make("summary","",group[0]);d.appendChild(summary);var list=make("div","sais-drawer-links");group[1].forEach(function(item){link(list,item[0],item[1]);});d.appendChild(list);drawerBody.appendChild(d);});
  drawer.appendChild(drawerBody);shell.appendChild(nav);shell.appendChild(backdrop);shell.appendChild(drawer);
- function setDrawer(open){drawer.classList.toggle("is-open",open);backdrop.hidden=!open;drawer.setAttribute("aria-hidden",String(!open));menuButton.setAttribute("aria-expanded",String(open));menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");document.body.classList.toggle("sais-drawer-open",open);if(open)close.focus();else menuButton.focus();}
+ function setDrawer(open){drawer.classList.toggle("is-open",open);backdrop.hidden=!open;drawer.setAttribute("aria-hidden",String(!open));drawer.inert=!open;menuButton.setAttribute("aria-expanded",String(open));menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");document.body.classList.toggle("sais-drawer-open",open);if(open)close.focus();else menuButton.focus();}
  menuButton.addEventListener("click",function(){setDrawer(!drawer.classList.contains("is-open"));});
  close.addEventListener("click",function(){setDrawer(false);});
  backdrop.addEventListener("click",function(){setDrawer(false);});
  drawer.addEventListener("click",function(e){if(e.target.closest("a"))setDrawer(false);});
- document.addEventListener("keydown",function(e){if(e.key==="Escape"&&drawer.classList.contains("is-open"))setDrawer(false);});
+ document.addEventListener("keydown",function(e){if(!drawer.classList.contains("is-open"))return;if(e.key==="Escape"){e.preventDefault();setDrawer(false);return;}if(e.key==="Tab"){var focusables=Array.from(drawer.querySelectorAll("a[href],button:not([disabled]),summary,[tabindex]:not([tabindex=\"-1\"])")).filter(function(n){return !n.closest("[hidden]")&&n.offsetParent!==null;});if(!focusables.length)return;var first=focusables[0],last=focusables[focusables.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});window.addEventListener("resize",function(){if(window.innerWidth>1050&&drawer.classList.contains("is-open"))setDrawer(false);});
  var tools=make("div","sais-tools");
  var form=make("form","sais-search");form.setAttribute("role","search");form.id="siteSearch";
  var input=make("input");input.type="search";input.id="searchInput";input.placeholder="Search animals, care topics, advice and resources";input.setAttribute("aria-label","Search the Animal Information Hub");input.autocomplete="off";
