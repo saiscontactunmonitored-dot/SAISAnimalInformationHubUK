@@ -39,8 +39,8 @@ function buildShell(){
  nav.appendChild(inner);
  var menuButton=make("button","sais-mobile-menu-button","☰  Menu");menuButton.type="button";menuButton.setAttribute("aria-controls","sais-mobile-drawer");menuButton.setAttribute("aria-expanded","false");menuButton.setAttribute("aria-label","Open site menu");nav.insertBefore(menuButton,inner);
  var backdrop=make("div","sais-drawer-backdrop");backdrop.id="sais-drawer-backdrop";backdrop.hidden=true;
- var drawer=make("aside","sais-mobile-drawer");drawer.id="sais-mobile-drawer";drawer.setAttribute("aria-label","Site menu");drawer.setAttribute("aria-hidden","true");drawer.inert=true;
- var drawerHead=make("div","sais-drawer-head");drawerHead.appendChild(make("strong","","Explore the Hub"));
+ var drawer=make("aside","sais-mobile-drawer");drawer.id="sais-mobile-drawer";drawer.setAttribute("role","dialog");drawer.setAttribute("aria-modal","true");drawer.setAttribute("aria-label","Site menu");drawer.setAttribute("aria-hidden","true");drawer.inert=true;
+ var drawerHead=make("div","sais-drawer-head");var drawerTitle=make("strong","","Explore the Hub");drawerTitle.id="sais-drawer-title";drawer.setAttribute("aria-labelledby","sais-drawer-title");drawerHead.appendChild(drawerTitle);
  var close=make("button","sais-drawer-close","×");close.type="button";close.setAttribute("aria-label","Close site menu");drawerHead.appendChild(close);drawer.appendChild(drawerHead);
  var drawerBody=make("div","sais-drawer-body");
  link(drawerBody,"Home","");
@@ -49,7 +49,7 @@ function buildShell(){
  link(drawerBody,"Animal Articles","animal-articles/");
  [["Choose an animal",groups.animals],["Care topics",groups.care],["More resources",groups.resources],["Articles",groups.articles]].forEach(function(group){var d=make("details","sais-drawer-group");var summary=make("summary","",group[0]);d.appendChild(summary);var list=make("div","sais-drawer-links");group[1].forEach(function(item){link(list,item[0],item[1]);});d.appendChild(list);drawerBody.appendChild(d);});
  drawer.appendChild(drawerBody);shell.appendChild(nav);shell.appendChild(backdrop);shell.appendChild(drawer);
- function setDrawer(open){drawer.classList.toggle("is-open",open);backdrop.hidden=!open;drawer.setAttribute("aria-hidden",String(!open));drawer.inert=!open;menuButton.setAttribute("aria-expanded",String(open));menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");document.body.classList.toggle("sais-drawer-open",open);if(open)close.focus();else menuButton.focus();}
+ function setDrawer(open,restoreFocus){drawer.classList.toggle("is-open",open);backdrop.hidden=!open;drawer.setAttribute("aria-hidden",String(!open));drawer.inert=!open;menuButton.setAttribute("aria-expanded",String(open));menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");document.body.classList.toggle("sais-drawer-open",open);if(open)close.focus();else if(restoreFocus!==false)menuButton.focus();}
  menuButton.addEventListener("click",function(){setDrawer(!drawer.classList.contains("is-open"));});
  close.addEventListener("click",function(){setDrawer(false);});
  backdrop.addEventListener("click",function(){setDrawer(false);});
