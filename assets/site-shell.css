@@ -206,3 +206,76 @@ body.sais-drawer-open{overflow:hidden}
 .sais-drawer-body>a,.sais-drawer-group>summary{box-sizing:border-box!important;width:100%!important}
 .sais-drawer-links a{min-height:42px!important;box-sizing:border-box!important}
 @media(prefers-reduced-motion:reduce){.sais-mobile-drawer{transition:none!important}}
+
+
+/* 6 November 2026 — final mobile and tablet navigation/accessibility pass */
+.sais-drawer-group{display:block!important;margin:6px 0!important;border:1px solid #dce5e3!important;border-radius:11px!important;background:#fff!important;overflow:hidden!important}
+.sais-drawer-group-toggle{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;width:100%!important;min-height:52px!important;padding:13px 15px!important;border:0!important;background:#fff!important;color:#173746!important;text-align:left!important;font:800 14px/1.4 system-ui,sans-serif!important;cursor:pointer!important}
+.sais-drawer-group-toggle:after{content:"+";flex:0 0 auto;color:#a45b25;font-size:22px;font-weight:500}
+.sais-drawer-group.is-expanded .sais-drawer-group-toggle:after{content:"−"}
+.sais-drawer-group-toggle:hover,.sais-drawer-group-toggle[aria-expanded=true]{background:#fff3e7!important}
+.sais-drawer-group-toggle:focus-visible{outline:3px solid #e99a4b!important;outline-offset:-3px!important}
+.sais-drawer-links[hidden]{display:none!important}
+.sais-drawer-links{display:grid!important;gap:2px!important;padding:4px 10px 11px!important;background:#f5f8f7!important}
+.sais-drawer-links a{display:flex!important;align-items:center!important;min-height:44px!important;padding:10px 12px!important;border-radius:7px!important;color:#263e48!important;font-size:14px!important;line-height:1.45!important;text-decoration:none!important}
+.sais-drawer-links a:hover,.sais-drawer-links a[aria-current=page]{background:#e6efec!important;color:#124e48!important}
+.sais-mobile-drawer{width:min(420px,92vw)!important;max-width:100vw!important;box-sizing:border-box!important}
+.sais-drawer-body{padding:14px 14px max(28px,env(safe-area-inset-bottom))!important}
+.sais-drawer-body>a{min-height:48px!important;box-sizing:border-box!important}
+.sais-drawer-head{padding-top:max(16px,env(safe-area-inset-top))!important}
+.sais-mobile-menu-button{touch-action:manipulation!important}
+.sais-accessibility-widget{position:fixed!important;left:16px!important;bottom:max(18px,env(safe-area-inset-bottom))!important;z-index:2600!important}
+.sais-accessibility-toggle,.sais-back-to-top{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;min-width:48px!important;min-height:48px!important;padding:11px 15px!important;border:2px solid #fff!important;border-radius:999px!important;background:#172b35!important;color:#fff!important;box-shadow:0 4px 18px rgba(0,0,0,.28)!important;font:800 14px/1.2 system-ui,sans-serif!important;cursor:pointer!important;text-decoration:none!important;touch-action:manipulation!important}
+.sais-accessibility-toggle svg,.sais-back-to-top svg{display:block!important;width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;flex:none!important}
+.sais-back-to-top{position:fixed!important;right:16px!important;left:auto!important;bottom:max(18px,env(safe-area-inset-bottom))!important;z-index:2600!important}
+.sais-accessibility-toggle:hover,.sais-back-to-top:hover,.sais-accessibility-toggle:focus-visible,.sais-back-to-top:focus-visible{background:#b85e20!important;color:#fff!important;outline:3px solid #172b35!important;outline-offset:3px!important}
+.sais-accessibility-panel{position:absolute!important;left:0!important;bottom:calc(100% + 12px)!important;width:min(320px,calc(100vw - 32px))!important;padding:17px!important;border:1px solid #cbd8d5!important;border-radius:14px!important;background:#fff!important;color:#172b35!important;box-shadow:0 16px 44px rgba(0,0,0,.25)!important}
+.sais-accessibility-panel[hidden]{display:none!important}
+.sais-accessibility-panel-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;font-size:16px!important}
+.sais-accessibility-close{width:36px!important;height:36px!important;border:0!important;border-radius:8px!important;background:#edf2f0!important;color:#172b35!important;font-size:24px!important;cursor:pointer!important}
+.sais-accessibility-panel p{margin:8px 0 13px!important;color:#465a62!important;font-size:13px!important}
+.sais-accessibility-controls{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+.sais-accessibility-controls button,.sais-accessibility-reset{min-height:44px!important;padding:9px!important;border:1px solid #cbd8d5!important;border-radius:8px!important;background:#f5f8f7!important;color:#172b35!important;font-size:13px!important;font-weight:750!important;cursor:pointer!important}
+.sais-accessibility-controls button[aria-pressed=true]{background:#173746!important;color:#fff!important}
+.sais-accessibility-reset{width:100%!important;margin-top:9px!important;background:#fff!important}
+body.sais-a11y-bold,body.sais-a11y-bold p,body.sais-a11y-bold li,body.sais-a11y-bold a,body.sais-a11y-bold button{font-weight:750!important}
+body.sais-a11y-contrast{background:#fff!important;color:#000!important}
+body.sais-a11y-contrast p,body.sais-a11y-contrast li,body.sais-a11y-contrast h1,body.sais-a11y-contrast h2,body.sais-a11y-contrast h3{color:#000!important}
+body.sais-a11y-contrast a{color:#003d99!important;text-decoration:underline!important}
+body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{background:#000!important;color:#fff!important}
+@media(max-width:1050px){
+ .sais-navigation{min-height:64px!important;justify-content:flex-start!important;padding:0!important}
+ .sais-mobile-menu-button{display:inline-flex!important;align-items:center!important;justify-content:center!important;margin:9px 14px!important;min-height:46px!important;min-width:112px!important}
+ .sais-navigation-inner{display:none!important}
+ .sais-tools{width:calc(100% - 36px)!important;grid-template-columns:minmax(0,1fr) auto!important;gap:12px!important}
+ .sais-search{min-width:0!important}
+ .sais-clock{min-width:0!important}
+}
+@media(max-width:760px){
+ html,body{max-width:100%!important;overflow-x:hidden!important}
+ .sais-navigation{min-height:58px!important}
+ .sais-mobile-menu-button{margin:7px 12px!important;min-height:44px!important}
+ .sais-tools{width:calc(100% - 28px)!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important;padding:12px 0!important}
+ .sais-search{width:100%!important;min-width:0!important;min-height:48px!important}
+ .sais-search input{min-width:0!important;font-size:16px!important}
+ .sais-clock{width:100%!important}
+ .sais-footer-inner{width:calc(100% - 32px)!important}
+ .sais-footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:22px 16px!important}
+ .sais-footer-grid section{min-width:0!important}
+ .sais-footer-grid section:first-child{grid-column:1/-1!important}
+ .sais-footer-grid a{max-width:100%!important;overflow-wrap:anywhere!important}
+ .sais-back-to-top,.sais-accessibility-toggle{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;padding:0!important}
+ .sais-floating-label{display:none!important}
+ .sais-accessibility-widget{left:12px!important;bottom:max(14px,env(safe-area-inset-bottom))!important}
+ .sais-back-to-top{right:12px!important;bottom:max(14px,env(safe-area-inset-bottom))!important}
+ .sais-accessibility-panel{width:min(300px,calc(100vw - 24px))!important}
+ .sais-mobile-drawer{width:min(420px,94vw)!important}
+}
+@media(max-width:420px){
+ .sais-tools{width:calc(100% - 24px)!important}
+ .sais-footer-grid{grid-template-columns:1fr!important}
+ .sais-footer-grid section:first-child{grid-column:auto!important}
+ .sais-accessibility-widget{left:10px!important}
+ .sais-back-to-top{right:10px!important}
+}
+@media(prefers-reduced-motion:reduce){.sais-mobile-drawer,.sais-back-to-top,.sais-accessibility-toggle{transition:none!important;scroll-behavior:auto!important}}
