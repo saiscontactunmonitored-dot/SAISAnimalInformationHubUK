@@ -87,6 +87,13 @@ for page in html_files:
         continue
 
     rel = page.relative_to(ROOT)
+    if not re.search(r"<html\b[^>]*\blang=[\"']", source, re.IGNORECASE):
+        errors.append(f"{rel}: missing document language")
+    if not re.search(r"<title\b[^>]*>\s*[^<]+\s*</title>", source, re.IGNORECASE):
+        errors.append(f"{rel}: missing or empty page title")
+    h1_count = len(re.findall(r"<h1\b", source, re.IGNORECASE))
+    if h1_count != 1:
+        errors.append(f"{rel}: expected exactly one h1 heading, found {h1_count}")
     for name, count in (("shared navigation script", parser.shell_scripts),
                         ("favicon", parser.icons),
                         ("social sharing image", parser.og_images)):
@@ -96,8 +103,6 @@ for page in html_files:
         errors.append(f"{rel}: no info-logo.png reference found")
     if parser.main_count != 1 and page.name != "offline.html":
         errors.append(f"{rel}: expected exactly one main landmark, found {parser.main_count}")
-    if parser.main_count == 0 and page.name != "offline.html":
-        warnings.append(f"{rel}: no main landmark found")
     if parser.images_without_alt:
         warnings.append(f"{rel}: {parser.images_without_alt} image(s) missing an alt attribute")
 
