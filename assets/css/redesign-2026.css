@@ -79,3 +79,13 @@ body.sais-drawer-open{overflow:hidden}
 
 /* Accessibility correction: maintain strong contrast for the tablet/mobile menu bar. */
 @media(max-width:1050px){.sais-navigation{background:var(--hub-navy)!important;border-bottom:1px solid rgba(255,255,255,.16)!important}.sais-mobile-menu-button{color:#fff!important;background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.38)!important}}
+
+
+/* Readability: animal guide and source panels use high-contrast dark text on white. */
+.source-notice,.editorial-notice,.editorial-sources,.deep-guide,.editorial-grid .info{background:#fff!important;color:#111!important}
+.source-notice *, .editorial-notice *, .editorial-sources *, .deep-guide *, .editorial-grid .info *{color:#111!important;opacity:1!important;text-shadow:none!important}
+.source-notice a,.editorial-notice a,.editorial-sources a,.deep-guide a,.editorial-grid .info a{color:#174f78!important;text-decoration:underline!important;text-underline-offset:3px;font-weight:750!important}
+.deep-guide{border:1px solid #d8d8d8!important;border-left:4px solid #d98235!important}
+.deep-guide h2,.deep-guide h3{color:#111!important}
+.deep-guide p,.deep-guide li{color:#111!important;line-height:1.8!important}
+.guide-credit{font-size:1.05em}.guide-note{margin-top:24px;padding:16px 18px;background:#f5f5f5;border-left:3px solid #174f78;border-radius:5px}
