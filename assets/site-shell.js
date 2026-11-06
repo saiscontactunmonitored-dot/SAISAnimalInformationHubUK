@@ -37,7 +37,7 @@ function buildShell(){
  dropdown(inner,"More resources",groups.resources);
  dropdown(inner,"Articles",groups.articles);
  nav.appendChild(inner);
- var menuButton=make("button","sais-mobile-menu-button","☰  Menu");menuButton.type="button";menuButton.setAttribute("aria-controls","sais-mobile-drawer");menuButton.setAttribute("aria-expanded","false");menuButton.setAttribute("aria-label","Open site menu");nav.insertBefore(menuButton,inner);
+ var menuButton=make("button","sais-mobile-menu-button");menuButton.innerHTML='<span class="sais-hamburger-icon" aria-hidden="true"><span></span></span><span class="sais-menu-button-label">Menu</span>';menuButton.type="button";menuButton.setAttribute("aria-controls","sais-mobile-drawer");menuButton.setAttribute("aria-expanded","false");menuButton.setAttribute("aria-label","Open site menu");nav.insertBefore(menuButton,inner);
  var backdrop=make("div","sais-drawer-backdrop");backdrop.id="sais-drawer-backdrop";backdrop.hidden=true;
  var drawer=make("aside","sais-mobile-drawer");drawer.id="sais-mobile-drawer";drawer.setAttribute("role","dialog");drawer.setAttribute("aria-modal","true");drawer.setAttribute("aria-label","Site menu");drawer.setAttribute("aria-hidden","true");drawer.inert=true;
  var drawerHead=make("div","sais-drawer-head");var drawerTitle=make("strong","","Explore the Hub");drawerTitle.id="sais-drawer-title";drawer.setAttribute("aria-labelledby","sais-drawer-title");drawerHead.appendChild(drawerTitle);
