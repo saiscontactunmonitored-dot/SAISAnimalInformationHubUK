@@ -76,3 +76,6 @@ body.sais-drawer-open{overflow:hidden}
 }
 @media(min-width:1051px){.sais-mobile-menu-button,.sais-drawer-backdrop,.sais-mobile-drawer{display:none!important}}
 @media(prefers-reduced-motion:reduce){.sais-mobile-drawer{transition:none}}
+
+/* Accessibility correction: maintain strong contrast for the tablet/mobile menu bar. */
+@media(max-width:1050px){.sais-navigation{background:var(--hub-navy)!important;border-bottom:1px solid rgba(255,255,255,.16)!important}.sais-mobile-menu-button{color:#fff!important;background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.38)!important}}
