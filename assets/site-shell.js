@@ -19,7 +19,7 @@ function link(parent,label,target){var a=make("a","",label);a.href=/^https?:/.te
 function dropdown(parent,label,items){var d=make("details","sais-menu"),s=make("summary","",label);d.appendChild(s);var panel=make("div","sais-menu-panel");items.forEach(function(item){link(panel,item[0],item[1]);});d.appendChild(panel);parent.appendChild(d);}
 function loadStyles(){if(!document.querySelector('link[data-sais-shell-css]')){var l=make("link");l.rel="stylesheet";l.href=route("assets/site-shell.css");l.setAttribute("data-sais-shell-css","");document.head.appendChild(l);}if(!document.querySelector('link[data-sais-redesign-css]')){var r=make("link");r.rel="stylesheet";r.href=route("assets/css/redesign-2026.css");r.setAttribute("data-sais-redesign-css","");document.head.appendChild(r);}}
 function removeLegacy(){
- Array.from(document.querySelectorAll(".nav-wrap,.nav-inner,.unified-nav,.main-navigation,.primary-nav,.nav-container,.utility-row,.search-form,.search-results")).forEach(function(n){if(n.isConnected)n.remove();});
+ Array.from(document.querySelectorAll(".nav-wrap,.nav-inner,.unified-nav,.main-navigation,.primary-nav,.nav-container,.utility-row,.search-form,.search-results,.accessibility-widget,.back-to-top")).forEach(function(n){if(n.isConnected)n.remove();});
  Array.from(document.querySelectorAll("nav")).forEach(function(n){if(n.isConnected)n.remove();});
 }
 function buildShell(){
