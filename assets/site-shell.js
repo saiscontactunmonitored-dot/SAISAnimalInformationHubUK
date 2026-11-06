@@ -94,14 +94,14 @@ function improveReadabilityAndTopButton(){
   var controls=make("div","sais-accessibility-controls");var smaller=make("button","","A− Smaller text");var larger=make("button","","A+ Larger text");var bold=make("button","","Bold text");var contrast=make("button","","High contrast");
   [smaller,larger,bold,contrast].forEach(function(b){b.type="button";controls.appendChild(b);});bold.setAttribute("aria-pressed","false");contrast.setAttribute("aria-pressed","false");panel.appendChild(controls);
   var reset=make("button","sais-accessibility-reset","Reset settings");reset.type="button";panel.appendChild(reset);widget.appendChild(panel);widget.appendChild(toggle);document.body.appendChild(widget);
-  var scale=1;function applyScale(){document.body.style.fontSize=scale===1?"":"calc(16px * "+scale+")";}
+  var scale=1;function applyScale(){document.body.style.zoom=scale===1?"":String(scale);}
   toggle.addEventListener("click",function(){var open=panel.hidden;panel.hidden=!open;toggle.setAttribute("aria-expanded",String(open));if(open)close.focus();});
   close.addEventListener("click",function(){panel.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.focus();});
   smaller.addEventListener("click",function(){scale=Math.max(.85,Math.round((scale-.1)*10)/10);applyScale();});
   larger.addEventListener("click",function(){scale=Math.min(1.5,Math.round((scale+.1)*10)/10);applyScale();});
   bold.addEventListener("click",function(){var active=document.body.classList.toggle("sais-a11y-bold");bold.setAttribute("aria-pressed",String(active));});
   contrast.addEventListener("click",function(){var active=document.body.classList.toggle("sais-a11y-contrast");contrast.setAttribute("aria-pressed",String(active));});
-  reset.addEventListener("click",function(){scale=1;document.body.style.fontSize="";document.body.classList.remove("sais-a11y-bold","sais-a11y-contrast");bold.setAttribute("aria-pressed","false");contrast.setAttribute("aria-pressed","false");});
+  reset.addEventListener("click",function(){scale=1;document.body.style.zoom="";document.body.classList.remove("sais-a11y-bold","sais-a11y-contrast");bold.setAttribute("aria-pressed","false");contrast.setAttribute("aria-pressed","false");});
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!panel.hidden){panel.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.focus();}});
  }
 }
