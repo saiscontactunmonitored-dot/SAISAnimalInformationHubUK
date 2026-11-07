@@ -1,15 +1,45 @@
-const CACHE_NAME = 'sais-animal-hub-v25';
+const CACHE_NAME = 'sais-animal-hub-v26';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
-  BASE, BASE + 'index.html', BASE + 'assets/css/site.css', BASE + 'assets/site-shell.css', BASE + 'assets/css/redesign-2026.css', BASE + 'assets/site-shell.js', BASE + 'info-logo.png', BASE + 'manifest.json', BASE + 'icon.svg', BASE + 'offline.html',
-  BASE + 'contact/', BASE + 'privacy/', BASE + 'sources-and-editorial-standards/', BASE + 'accessibility/', BASE + 'terms-and-disclaimer/', BASE + 'bird-information/', BASE + 'animal-care-training/', BASE + 'animal-care-training/training-tips-advice/',
-  BASE + 'animal-care-training/health-safety-for-pets/', BASE + 'animal-care-training/fun-enrichment/',
-  BASE + 'animal-care-training/recommended-animal-books/', BASE + 'animal-care-training/rescue-tips/', BASE + 'animal-help-resources/', BASE + 'animal-help-resources/lost-found-animals/',
-  BASE + 'animal-articles/', BASE + 'animal-articles/dogs-wildlife-law/', BASE + 'animal-articles/boarding-home-boarding-laws/',
-  BASE + 'animal-articles/benefits-of-hydrotherapy/', BASE + 'animal-articles/keeping-animals-cool-summer/',
-  BASE + 'animal-articles/benefits-of-socialisation/', BASE + 'animal-articles/training-for-fun/', BASE + 'dog-information/', BASE + 'cat-information/',
-  BASE + 'chicken-information/', BASE + 'rabbit-information/', BASE + 'rodent-information/',
-  BASE + 'reptileexotic-information/', BASE + 'horse-information/', BASE + 'wildlife-information/'
+  BASE + '404.html',
+  BASE + 'accessibility/',
+  BASE + 'animal-articles/benefits-of-hydrotherapy/',
+  BASE + 'animal-articles/benefits-of-socialisation/',
+  BASE + 'animal-articles/boarding-home-boarding-laws/',
+  BASE + 'animal-articles/dogs-wildlife-law/',
+  BASE + 'animal-articles/',
+  BASE + 'animal-articles/keeping-animals-cool-summer/',
+  BASE + 'animal-articles/training-for-fun/',
+  BASE + 'animal-care-training/fun-enrichment/',
+  BASE + 'animal-care-training/health-safety-for-pets/',
+  BASE + 'animal-care-training/',
+  BASE + 'animal-care-training/recommended-animal-books/',
+  BASE + 'animal-care-training/rescue-tips/',
+  BASE + 'animal-care-training/training-tips-advice/',
+  BASE + 'animal-help-resources/',
+  BASE + 'animal-help-resources/lost-found-animals/',
+  BASE + 'bird-information/',
+  BASE + 'cat-information/',
+  BASE + 'chicken-information/',
+  BASE + 'contact/',
+  BASE + 'dog-information/',
+  BASE + 'horse-information/',
+  BASE,
+  BASE + 'offline.html',
+  BASE + 'privacy/',
+  BASE + 'rabbit-information/',
+  BASE + 'reptileexotic-information/',
+  BASE + 'rodent-information/',
+  BASE + 'sources-and-editorial-standards/',
+  BASE + 'terms-and-disclaimer/',
+  BASE + 'wildlife-information/',
+  BASE + 'assets/css/redesign-2026.css',
+  BASE + 'assets/css/site.css',
+  BASE + 'assets/site-shell.css',
+  BASE + 'assets/site-shell.js',
+  BASE + 'icon.svg',
+  BASE + 'info-logo.png',
+  BASE + 'manifest.json'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME)
@@ -27,30 +57,36 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin || !url.pathname.startsWith(BASE)) return;
   if (request.mode === 'navigate') {
-    event.respondWith(fetch(request).then(response => {
-      if (response && response.ok) {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+        if (response && response.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(request, response.clone());
+        }
+        return response;
+      } catch (error) {
+        const cache = await caches.open(CACHE_NAME);
+        const cached = await cache.match(request, {ignoreSearch: true});
+        if (cached) return cached;
+        const path = url.pathname.endsWith('/') ? url.pathname : url.pathname + '/';
+        const directoryPage = await cache.match(path) || await cache.match(path + 'index.html');
+        return directoryPage || await cache.match(BASE + 'offline.html') || await cache.match(BASE);
       }
-      return response;
-    }).catch(async () => {
-      const cached = await caches.match(request, {ignoreSearch: true});
-      if (cached) return cached;
-      const cleanPath = url.pathname.endsWith('/') ? url.pathname : url.pathname + '/';
-      const directoryPage = await caches.match(cleanPath);
-      if (directoryPage) return directoryPage;
-      return (await caches.match(BASE + 'offline.html')) || (await caches.match(BASE + 'index.html'));
-    }));
+    })());
     return;
   }
-  event.respondWith(caches.match(request).then(cached => {
-    if (cached) return cached;
-    return fetch(request).then(response => {
-      if (response && response.ok) {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-      }
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(request);
+    const refresh = fetch(request).then(response => {
+      if (response && response.ok) cache.put(request, response.clone());
       return response;
-    });
-  }));
+    }).catch(() => null);
+    if (cached) {
+      event.waitUntil(refresh.then(() => undefined));
+      return cached;
+    }
+    return await refresh || await cache.match(BASE + 'offline.html');
+  })());
 });
