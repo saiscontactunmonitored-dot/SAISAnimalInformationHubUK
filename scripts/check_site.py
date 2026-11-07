@@ -15,6 +15,10 @@ UNFINISHED_MARKERS = re.compile(
     r"lorem ipsum|TODO|FIXME|PHOTO SPACE|photo space|reserved image space|insert (?:an? )?(?:image|photo|text|content) here",
     re.IGNORECASE,
 )
+OLD_CONTRIBUTOR_NAME = re.compile(
+    r"small\\s*(?:&|and|&amp;)\\s*mighty(?:\\s+pet)?(?:\\s+training)?",
+    re.IGNORECASE,
+)
 
 class AuditParser(HTMLParser):
     def __init__(self):
@@ -110,6 +114,10 @@ for page in html_files:
         resolve_local(page, href, rel, "link")
     for src in parser.resources:
         resolve_local(page, src, rel, "asset")
+
+    old_contributor = OLD_CONTRIBUTOR_NAME.search(source)
+    if old_contributor:
+        errors.append(f"{rel}: outdated contributor name remains: {old_contributor.group(0)}")
 
     marker = UNFINISHED_MARKERS.search(source)
     if marker:
