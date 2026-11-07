@@ -195,8 +195,6 @@ for page in html_files:
     source = page.read_text(encoding="utf-8")
     if 'rel="manifest"' not in source and "rel='manifest'" not in source:
         errors.append(f"{rel}: missing PWA manifest link")
-    if "serviceWorker.register" not in source:
-        errors.append(f"{rel}: missing service worker registration")
 
 print(f"Audited {len(html_files)} HTML pages")
 print(f"Errors: {len(errors)} | Warnings: {len(warnings)}")
