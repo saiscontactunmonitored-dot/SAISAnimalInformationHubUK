@@ -109,6 +109,71 @@ for (const url of mobilePages) {
   if (overflow) errors.push("Horizontal overflow at 390px mobile viewport: " + url);
 }
 
+// Tablet layout checks on representative routes.
+for (const url of mobilePages) {
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 2);
+  if (overflow) errors.push("Horizontal overflow at 768px tablet viewport: " + url);
+}
+
+// Exercise the responsive drawer, its group controls, Escape handling and focus trap.
+await page.setViewportSize({ width: 390, height: 844 });
+await page.goto(BASE, { waitUntil: "domcontentloaded" });
+const menuButton = page.locator(".sais-mobile-menu-button");
+if (await menuButton.count() !== 1 || !(await menuButton.isVisible())) {
+  errors.push("Mobile menu button is missing or not visible.");
+} else {
+  await menuButton.click();
+  const drawer = page.locator("#sais-mobile-drawer");
+  if (await menuButton.getAttribute("aria-expanded") !== "true" || await drawer.getAttribute("aria-hidden") !== "false") {
+    errors.push("Mobile menu did not open with correct accessibility state.");
+  }
+  const groupToggle = page.locator(".sais-drawer-group-toggle").first();
+  if (await groupToggle.count()) {
+    await groupToggle.click();
+    if (await groupToggle.getAttribute("aria-expanded") !== "true") errors.push("Mobile menu group did not expand.");
+    const panelId = await groupToggle.getAttribute("aria-controls");
+    if (panelId && await page.locator("#" + panelId).isHidden()) errors.push("Expanded mobile menu group remains hidden.");
+  }
+  await page.keyboard.press("Shift+Tab");
+  const focusStayedInDrawer = await page.evaluate(() => document.querySelector("#sais-mobile-drawer")?.contains(document.activeElement) || false);
+  if (!focusStayedInDrawer) errors.push("Keyboard focus escaped the open mobile navigation drawer.");
+  await page.keyboard.press("Escape");
+  if (await menuButton.getAttribute("aria-expanded") !== "false") errors.push("Escape did not close the mobile navigation drawer.");
+  const focusReturned = await page.evaluate(() => document.activeElement?.classList.contains("sais-mobile-menu-button"));
+  if (!focusReturned) warnings.push("Mobile menu did not restore focus to its trigger after closing.");
+}
+
+// Exercise desktop dropdown keyboard dismissal.
+await page.setViewportSize({ width: 1365, height: 900 });
+await page.goto(BASE, { waitUntil: "domcontentloaded" });
+const dropdownSummary = page.locator(".sais-menu summary").first();
+if (await dropdownSummary.count()) {
+  await dropdownSummary.click();
+  const dropdownOpen = await dropdownSummary.locator("..").evaluate(node => node.open);
+  if (!dropdownOpen) errors.push("Desktop navigation dropdown did not open.");
+  await page.keyboard.press("Escape");
+  const dropdownClosed = await dropdownSummary.locator("..").evaluate(node => !node.open);
+  if (!dropdownClosed) errors.push("Escape did not close the desktop navigation dropdown.");
+}
+
+// Exercise the accessibility panel and Escape-to-close behaviour.
+const accessibilityToggle = page.locator(".sais-accessibility-toggle");
+if (await accessibilityToggle.count()) {
+  await accessibilityToggle.click();
+  const accessibilityPanel = page.locator("#sais-accessibility-panel");
+  if (await accessibilityToggle.getAttribute("aria-expanded") !== "true" || !(await accessibilityPanel.isVisible())) {
+    errors.push("Accessibility settings panel did not open correctly.");
+  }
+  await page.keyboard.press("Escape");
+  if (await accessibilityToggle.getAttribute("aria-expanded") !== "false" || !(await accessibilityPanel.isHidden())) {
+    errors.push("Escape did not close the accessibility settings panel.");
+  }
+} else {
+  errors.push("Accessibility settings control is missing.");
+}
+
 await page.setViewportSize({ width: 1365, height: 900 });
 await page.goto(BASE, { waitUntil: "domcontentloaded" });
 await page.keyboard.press("Tab");
