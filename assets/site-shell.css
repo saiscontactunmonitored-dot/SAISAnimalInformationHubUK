@@ -408,3 +408,57 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
  .sais-standalone .sais-navigation{min-height:58px!important}
  .sais-standalone .sais-mobile-menu-button{min-height:44px!important;margin:7px 12px!important}
 }
+
+
+/* Mobile/tablet drawer: keep the heading fixed and make the menu itself scroll */
+@media(max-width:1050px){
+ .sais-mobile-drawer{
+  display:flex!important;
+  flex-direction:column!important;
+  height:100vh!important;
+  height:100dvh!important;
+  max-height:100vh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  overscroll-behavior:contain!important;
+  box-sizing:border-box!important;
+ }
+ .sais-drawer-head{
+  position:relative!important;
+  top:auto!important;
+  flex:0 0 auto!important;
+  min-height:68px!important;
+  box-sizing:border-box!important;
+ }
+ .sais-drawer-body{
+  display:block!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#c5d0cc transparent!important;
+  padding:12px 15px max(30px,env(safe-area-inset-bottom))!important;
+  box-sizing:border-box!important;
+ }
+ .sais-drawer-body>a{margin:3px 0!important}
+ .sais-drawer-group{flex:none!important;scroll-margin-block:12px!important}
+ .sais-drawer-group-toggle{min-height:52px!important}
+ .sais-drawer-links{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+ .sais-drawer-links[hidden]{display:none!important}
+ .sais-drawer-links a{min-height:46px!important;overflow-wrap:anywhere!important}
+ .sais-drawer-body:focus-visible{outline:2px solid #f2a45a!important;outline-offset:-3px!important}
+}
+@media(max-width:600px){
+ .sais-drawer-head{min-height:62px!important;padding:14px 16px!important}
+ .sais-drawer-head strong{font-size:17px!important}
+ .sais-drawer-body{padding:10px 12px max(28px,env(safe-area-inset-bottom))!important}
+ .sais-drawer-group{margin:6px 0!important}
+ .sais-drawer-group-toggle{min-height:50px!important;padding:12px 13px!important}
+ .sais-drawer-links a{min-height:44px!important;padding:10px 9px!important}
+}
