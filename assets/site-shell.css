@@ -341,3 +341,24 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
 @media(max-width:420px){
  .sais-footer-bottom{padding-left:64px!important;padding-right:64px!important}
 }
+
+
+/* Add-to-home-screen prompt: compact, accessible and consistent with the Hub */
+.sais-install-prompt{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:12000;width:min(480px,calc(100vw - 32px));box-sizing:border-box;padding:20px 21px 17px;background:#fff;border:1px solid #dce5e3;border-top:5px solid #e99a4b;border-radius:16px;box-shadow:0 18px 60px rgba(10,31,40,.28);color:#172b35}
+.sais-install-head{display:flex;align-items:flex-start;gap:14px}
+.sais-install-copy{min-width:0;flex:1}
+.sais-install-eyebrow{display:block;margin-bottom:7px;color:#8b4d20;font-size:10px;font-weight:850;letter-spacing:1.1px}
+.sais-install-copy h2{margin:0 0 7px;color:#173746;font-size:19px;line-height:1.25;letter-spacing:-.3px}
+.sais-install-copy p,.sais-install-instructions p{margin:0;color:#4c5960;font-size:13px;line-height:1.6}
+.sais-install-close{flex:none;width:34px;height:34px;border:1px solid #dce5e3;border-radius:50%;background:#f5f7f6;color:#173746;font-size:22px;line-height:1;cursor:pointer}
+.sais-install-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.sais-install-actions button{min-height:43px;padding:10px 15px;border-radius:8px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.sais-install-primary{border:1px solid #173746;background:#173746;color:#fff}
+.sais-install-primary:hover{background:#244e60}
+.sais-install-secondary{border:1px solid #cbd6d7;background:#fff;color:#34464d}
+.sais-install-instructions{margin-top:13px;padding:12px 14px;border-radius:10px;background:#f3f6f5}
+.sais-install-instructions ol{margin:8px 0 0;padding-left:21px;color:#34464d;font-size:13px;line-height:1.65}
+.sais-install-footer-trigger{display:block;margin-top:14px;padding:9px 12px;border:1px solid #ffffff55;border-radius:8px;background:#ffffff12;color:#f5c28e;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.sais-install-footer-trigger:hover,.sais-install-footer-trigger:focus-visible{background:#ffffff22;color:#fff;outline:2px solid #f4b16d;outline-offset:2px}
+@media(max-width:600px){.sais-install-prompt{bottom:calc(76px + env(safe-area-inset-bottom));padding:17px 16px 15px;border-radius:14px}.sais-install-copy h2{font-size:17px}.sais-install-actions button{flex:1}}
+@media(prefers-reduced-motion:reduce){.sais-install-prompt *{scroll-behavior:auto!important;transition:none!important}}
