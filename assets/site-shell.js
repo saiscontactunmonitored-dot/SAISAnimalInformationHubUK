@@ -33,9 +33,9 @@ function buildShell(){
  link(inner,"Animal Articles","animal-articles/");
  var spacer=make("span","sais-spacer");spacer.setAttribute("aria-hidden","true");inner.appendChild(spacer);
  dropdown(inner,"Choose an animal",groups.animals);
- dropdown(inner,"Care topics",groups.care);
- dropdown(inner,"More resources",groups.resources);
- dropdown(inner,"Articles",groups.articles);
+ dropdown(inner,"Care topics",groups.care.slice(1));
+ dropdown(inner,"More resources",groups.resources.slice(1));
+ dropdown(inner,"Articles",groups.articles.slice(1));
  nav.appendChild(inner);
  var menuButton=make("button","sais-mobile-menu-button");menuButton.innerHTML='<span class="sais-hamburger-icon" aria-hidden="true"><span></span></span><span class="sais-menu-button-label">Menu</span>';menuButton.type="button";menuButton.setAttribute("aria-controls","sais-mobile-drawer");menuButton.setAttribute("aria-expanded","false");menuButton.setAttribute("aria-label","Open site menu");nav.insertBefore(menuButton,inner);
  var backdrop=make("div","sais-drawer-backdrop");backdrop.id="sais-drawer-backdrop";backdrop.hidden=true;
@@ -47,7 +47,7 @@ function buildShell(){
  link(drawerBody,"Animal Care & Training","animal-care-training/");
  link(drawerBody,"Animal Help & Resources","animal-help-resources/");
  link(drawerBody,"Animal Articles","animal-articles/");
- [["Choose an animal",groups.animals],["Care topics",groups.care],["More resources",groups.resources],["Articles",groups.articles]].forEach(function(group,i){var section=make("section","sais-drawer-group");var toggle=make("button","sais-drawer-group-toggle",group[0]);toggle.type="button";toggle.id="sais-drawer-group-toggle-"+i;toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-controls","sais-drawer-group-panel-"+i);var list=make("div","sais-drawer-links");list.id="sais-drawer-group-panel-"+i;list.hidden=true;list.setAttribute("aria-labelledby",toggle.id);group[1].forEach(function(item){link(list,item[0],item[1]);});toggle.addEventListener("click",function(){var open=toggle.getAttribute("aria-expanded")==="true";toggle.setAttribute("aria-expanded",String(!open));list.hidden=open;section.classList.toggle("is-expanded",!open);});section.appendChild(toggle);section.appendChild(list);drawerBody.appendChild(section);});
+ [["Choose an animal",groups.animals],["Care topics",groups.care.slice(1)],["More resources",groups.resources.slice(1)],["Articles",groups.articles.slice(1)]].forEach(function(group,i){var section=make("section","sais-drawer-group");var toggle=make("button","sais-drawer-group-toggle",group[0]);toggle.type="button";toggle.id="sais-drawer-group-toggle-"+i;toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-controls","sais-drawer-group-panel-"+i);var list=make("div","sais-drawer-links");list.id="sais-drawer-group-panel-"+i;list.hidden=true;list.setAttribute("aria-labelledby",toggle.id);group[1].forEach(function(item){link(list,item[0],item[1]);});toggle.addEventListener("click",function(){var open=toggle.getAttribute("aria-expanded")==="true";toggle.setAttribute("aria-expanded",String(!open));list.hidden=open;section.classList.toggle("is-expanded",!open);});section.appendChild(toggle);section.appendChild(list);drawerBody.appendChild(section);});
  drawer.appendChild(drawerBody);shell.appendChild(nav);shell.appendChild(backdrop);shell.appendChild(drawer);
  function setDrawer(open,restoreFocus){drawer.classList.toggle("is-open",open);backdrop.hidden=!open;drawer.setAttribute("aria-hidden",String(!open));drawer.inert=!open;menuButton.setAttribute("aria-expanded",String(open));menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");document.body.classList.toggle("sais-drawer-open",open);if(open)close.focus();else if(restoreFocus!==false)menuButton.focus();}
  menuButton.addEventListener("click",function(){setDrawer(!drawer.classList.contains("is-open"));});
@@ -68,13 +68,20 @@ function buildShell(){
 }
 function buildFooter(){
  Array.from(document.querySelectorAll("footer,.hub-footer,.foot")).forEach(function(n){if(n.isConnected)n.remove();});
- var f=make("footer","sais-footer"),wrap=make("div","sais-footer-inner"),grid=make("div","sais-footer-grid");
- var brand=make("section","");brand.appendChild(make("h2","","Animal Information Hub UK"));brand.appendChild(make("p","","Clear, practical animal information and resources to help people make informed decisions about animal care and welfare. Powered by Somerset Animal Information Services."));
- var explore=make("section","");explore.appendChild(make("h2","","Explore"));[["Home",""],["Animal Care & Training","animal-care-training/"],["Animal Help & Resources","animal-help-resources/"],["Animal Articles","animal-articles/"],["Contact SAIS","contact/"]].forEach(function(x){link(explore,x[0],x[1]);});
- var animal=make("section","");animal.appendChild(make("h2","","Animal information"));groups.animals.forEach(function(x){link(animal,x[0],x[1]);});
- var policy=make("section","");policy.appendChild(make("h2","","Trust & policies"));[["Sources & Editorial Standards","sources-and-editorial-standards/"],["Accessibility","accessibility/"],["Privacy Notice","privacy/"],["Terms & Disclaimer","terms-and-disclaimer/"]].forEach(function(x){link(policy,x[0],x[1]);});
- [brand,explore,animal,policy].forEach(function(x){grid.appendChild(x);});wrap.appendChild(grid);
- var bottom=make("div","sais-footer-bottom","© "+new Date().getFullYear()+" Somerset Animal Information Services · General information only; not a substitute for professional advice.");wrap.appendChild(bottom);f.appendChild(wrap);document.body.appendChild(f);
+ var f=make("footer","sais-footer"),wrap=make("div","sais-footer-inner"),top=make("div","sais-footer-top");
+ var brand=make("section","sais-footer-brand"),mark=make("span","sais-footer-mark","✦");mark.setAttribute("aria-hidden","true");
+ brand.appendChild(mark);brand.appendChild(make("h2","","Animal Information Hub UK"));
+ brand.appendChild(make("p","","Practical animal information, clear guidance and trusted starting points for better animal care."));
+ brand.appendChild(make("span","sais-footer-powered","Powered by Somerset Animal Information Services"));
+ var columns=make("div","sais-footer-columns");
+ function column(title,items){var section=make("section","sais-footer-column");section.appendChild(make("h3","",title));items.forEach(function(x){link(section,x[0],x[1]);});columns.appendChild(section);}
+ column("Explore the Hub",[["Home",""],["Animal Care & Training","animal-care-training/"],["Animal Help & Resources","animal-help-resources/"],["Animal Articles","animal-articles/"],["Contact","contact/"]]);
+ column("Animal guides",groups.animals);
+ column("Information & support",[["Sources & Editorial Standards","sources-and-editorial-standards/"],["Accessibility","accessibility/"],["Privacy Notice","privacy/"],["Terms & Disclaimer","terms-and-disclaimer/"],["Somerset Animal Information Services","https://www.somersetanimalinformationservices.com/"]]);
+ top.appendChild(brand);top.appendChild(columns);wrap.appendChild(top);
+ var bottom=make("div","sais-footer-bottom");bottom.appendChild(make("span","","© "+new Date().getFullYear()+" Somerset Animal Information Services"));
+ bottom.appendChild(make("span","","General information only — not a substitute for veterinary or other professional advice."));
+ f.appendChild(wrap);f.appendChild(bottom);document.body.appendChild(f);
 }
 function bindSearch(){var form=document.getElementById("siteSearch"),input=document.getElementById("searchInput"),out=document.getElementById("searchResults");if(!form||!input||!out)return;
  function run(){var q=input.value.trim().toLowerCase();out.replaceChildren();if(!q){out.hidden=true;return;}var words=q.split(/\s+/);var hits=index.map(function(x){var hay=(x.name+" "+x.terms).toLowerCase();return {x:x,score:words.filter(function(w){return hay.indexOf(w)>=0;}).length};}).filter(function(x){return x.score>0;}).sort(function(a,b){return b.score-a.score;}).slice(0,10);if(!hits.length)out.appendChild(make("p","","No matching pages found. Try an animal name or a topic such as training, health or lost animals."));hits.forEach(function(hit){var a=make("a","",hit.x.name);a.href=hit.x.href;out.appendChild(a);});out.hidden=false;}
@@ -89,7 +96,7 @@ function improveReadabilityAndTopButton(){
  if(!document.getElementById("sais-accessibility-widget")){
   var widget=make("div","sais-accessibility-widget");widget.id="sais-accessibility-widget";
   var toggle=make("button","sais-accessibility-toggle");toggle.type="button";toggle.setAttribute("aria-label","Open accessibility settings");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-controls","sais-accessibility-panel");toggle.title="Accessibility settings";toggle.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="5" r="2"/><path d="M4 9h16M12 7v13M8 21l4-7 4 7"/></svg><span class="sais-floating-label">Accessibility</span>';
-  var panel=make("section","sais-accessibility-panel");panel.id="sais-accessibility-panel";panel.hidden=true;panel.setAttribute("aria-label","Accessibility settings");
+  var panel=make("section","sais-accessibility-panel");panel.id="sais-accessibility-panel";panel.hidden=true;panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","false");panel.setAttribute("aria-label","Accessibility settings");
   var head=make("div","sais-accessibility-panel-head");head.appendChild(make("strong","","Accessibility settings"));var close=make("button","sais-accessibility-close","×");close.type="button";close.setAttribute("aria-label","Close accessibility settings");head.appendChild(close);panel.appendChild(head);panel.appendChild(make("p","","Adjust text size, emphasis and contrast for easier reading."));
   var controls=make("div","sais-accessibility-controls");var smaller=make("button","","A− Smaller text");var larger=make("button","","A+ Larger text");var bold=make("button","","Bold text");var contrast=make("button","","High contrast");
   [smaller,larger,bold,contrast].forEach(function(b){b.type="button";controls.appendChild(b);});bold.setAttribute("aria-pressed","false");contrast.setAttribute("aria-pressed","false");panel.appendChild(controls);
