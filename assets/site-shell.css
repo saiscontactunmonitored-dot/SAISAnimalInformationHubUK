@@ -331,3 +331,13 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
 .sais-back-to-top{z-index:10050!important}
 @media(max-width:760px){.sais-accessibility-widget{left:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;width:52px!important;height:52px!important}.sais-accessibility-toggle{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important}.sais-accessibility-panel{left:12px!important;right:12px!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:70dvh!important}}
 @media(max-width:420px){.sais-accessibility-widget{left:10px!important}.sais-accessibility-panel{left:10px!important;right:10px!important}}
+
+
+/* Keep both floating controls clear of footer legal text and copyright */
+.sais-footer-bottom{padding-left:78px!important;padding-right:190px!important;box-sizing:border-box!important}
+@media(max-width:760px){
+ .sais-footer-bottom{padding-left:68px!important;padding-right:68px!important}
+}
+@media(max-width:420px){
+ .sais-footer-bottom{padding-left:64px!important;padding-right:64px!important}
+}
