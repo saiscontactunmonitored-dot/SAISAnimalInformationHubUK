@@ -319,3 +319,15 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
  .sais-accessibility-panel{left:12px!important;right:12px!important;bottom:calc(72px + env(safe-area-inset-bottom))!important;width:auto!important;max-width:420px!important;max-height:70dvh!important;padding:16px!important}
  .sais-accessibility-controls{grid-template-columns:1fr 1fr!important}
 }
+
+
+/* Final floating accessibility control repair: fixed-size icon, no wrapping */
+.sais-accessibility-widget{position:fixed!important;display:block!important;box-sizing:border-box!important;left:18px!important;right:auto!important;bottom:18px!important;width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;padding:0!important;margin:0!important;overflow:visible!important;writing-mode:horizontal-tb!important;z-index:10050!important}
+.sais-accessibility-toggle{display:grid!important;place-items:center!important;box-sizing:border-box!important;width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important;padding:0!important;margin:0!important;overflow:hidden!important;white-space:nowrap!important;word-break:normal!important;writing-mode:horizontal-tb!important;line-height:1!important;flex:none!important;border:2px solid #fff!important;border-radius:50%!important;background:#173746!important;color:#fff!important;box-shadow:0 4px 16px #0004!important}
+.sais-accessibility-toggle svg{display:block!important;width:25px!important;height:25px!important;max-width:25px!important;max-height:25px!important;flex:none!important}
+.sais-accessibility-toggle .sais-floating-label{display:none!important}
+.sais-accessibility-panel{position:fixed!important;left:18px!important;right:auto!important;bottom:calc(82px + env(safe-area-inset-bottom))!important;width:min(340px,calc(100vw - 36px))!important;max-width:calc(100vw - 36px)!important;max-height:min(72dvh,560px)!important;overflow:auto!important;box-sizing:border-box!important;z-index:10060!important}
+.sais-accessibility-widget,.sais-accessibility-widget *{writing-mode:horizontal-tb!important}
+.sais-back-to-top{z-index:10050!important}
+@media(max-width:760px){.sais-accessibility-widget{left:12px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;width:52px!important;height:52px!important}.sais-accessibility-toggle{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important}.sais-accessibility-panel{left:12px!important;right:12px!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:70dvh!important}}
+@media(max-width:420px){.sais-accessibility-widget{left:10px!important}.sais-accessibility-panel{left:10px!important;right:10px!important}}
