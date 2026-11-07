@@ -5,6 +5,7 @@ const errors = [];
 const warnings = [];
 const sameOriginFailures = [];
 const internalLinks = new Set();
+const externalLinks = new Set();
 
 async function waitForPublishedRelease() {
   const deadline = Date.now() + 180000;
@@ -45,7 +46,7 @@ page.on("requestfailed", request => {
   if (request.url().startsWith(BASE)) sameOriginFailures.push("Request failed: " + request.url());
 });
 page.on("response", response => {
-  if (response.url().startsWith(BASE) && response.status() >= 400) {
+  if (response.url().startsWith(BASE) && response.status() >= 400 && !response.url().includes("this-page-should-not-exist-404-check")) {
     sameOriginFailures.push("HTTP " + response.status() + ": " + response.url());
   }
 });
@@ -91,6 +92,9 @@ for (const url of urls) {
       if (parsed.origin === new URL(BASE).origin && parsed.pathname.startsWith("/SAISAnimalInformationHubUK/")) {
         parsed.hash = "";
         internalLinks.add(parsed.href);
+      } else if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        parsed.hash = "";
+        externalLinks.add(parsed.href);
       }
     } catch {}
   }
@@ -157,10 +161,28 @@ for (let i = 0; i < urlsToCheck.length; i += 12) {
   }
 }
 
+for (const item of sameOriginFailures) errors.push(item);
+const externalToCheck = [...externalLinks];
+for (let i = 0; i < externalToCheck.length; i += 10) {
+  const batch = externalToCheck.slice(i, i + 10);
+  const results = await Promise.all(batch.map(async url => {
+    try {
+      const response = await context.request.get(url, { timeout: 8000 });
+      return { url, status: response.status() };
+    } catch (error) {
+      return { url, error: error.message };
+    }
+  }));
+  for (const result of results) {
+    if (result.status === 404 || result.status === 410) errors.push("Broken external link: " + result.url + " (HTTP " + result.status + ")");
+    else if (result.error || (result.status && result.status >= 400)) warnings.push("External link could not be fully verified: " + result.url + (result.status ? " (HTTP " + result.status + ")" : ""));
+  }
+}
+
 await browser.close();
 const averageLoad = durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0;
 console.log("Audited " + urls.length + " sitemap pages.");
-console.log("Checked " + urlsToCheck.length + " unique internal links.");
+console.log("Checked " + urlsToCheck.length + " unique internal links and " + externalToCheck.length + " external links.");
 console.log("Average page load event: " + averageLoad + " ms.");
 console.log("Warnings: " + warnings.length);
 for (const warning of warnings) console.warn("WARNING:", warning);
