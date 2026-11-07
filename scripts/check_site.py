@@ -196,6 +196,107 @@ for page in html_files:
     if 'rel="manifest"' not in source and "rel='manifest'" not in source:
         errors.append(f"{rel}: missing PWA manifest link")
 
+
+
+# SEO, canonical, social metadata, sitemap and crawler directives.
+from html import unescape
+import xml.etree.ElementTree as ET
+
+SITE_BASE = "https://saiscontactunmonitored-dot.github.io/SAISAnimalInformationHubUK/"
+def tag_attr(tag, name):
+    match = re.search(r"\b" + re.escape(name) + r"\s*=\s*([\"'])(.*?)\1", tag, re.IGNORECASE | re.DOTALL)
+    return unescape(match.group(2).strip()) if match else ""
+
+def find_meta(source, key_name, key_value):
+    for tag in re.findall(r"<meta\b[^>]*>", source, re.IGNORECASE):
+        if tag_attr(tag, key_name).lower() == key_value.lower():
+            return tag
+    return ""
+
+seo_titles = {}
+seo_descriptions = {}
+expected_sitemap_urls = set()
+
+for page in html_files:
+    rel = page.relative_to(ROOT).as_posix()
+    source = page.read_text(encoding="utf-8")
+    title_match = re.search(r"<title\b[^>]*>(.*?)</title>", source, re.IGNORECASE | re.DOTALL)
+    title = re.sub(r"\s+", " ", unescape(title_match.group(1))).strip() if title_match else ""
+    description_tag = find_meta(source, "name", "description")
+    description = tag_attr(description_tag, "content")
+    og_title = tag_attr(find_meta(source, "property", "og:title"), "content")
+    og_description = tag_attr(find_meta(source, "property", "og:description"), "content")
+    og_url = tag_attr(find_meta(source, "property", "og:url"), "content")
+
+    if not title:
+        errors.append(f"{rel}: missing SEO title")
+    if not description:
+        errors.append(f"{rel}: missing SEO meta description")
+    if not og_title or not og_description or not og_url:
+        errors.append(f"{rel}: incomplete Open Graph metadata")
+    elif description and og_description != description:
+        errors.append(f"{rel}: Open Graph description does not match SEO description")
+
+    is_nonindexable = rel in ("404.html", "offline.html")
+    if is_nonindexable:
+        if not re.search(r'<meta\b[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*noindex', source, re.IGNORECASE):
+            errors.append(f"{rel}: must be marked noindex")
+        if re.search(r'<link\b[^>]*rel=["\']canonical["\']', source, re.IGNORECASE):
+            errors.append(f"{rel}: non-indexable utility page should not declare a canonical URL")
+        expected_url = SITE_BASE + rel
+    else:
+        if rel == "index.html":
+            expected_url = SITE_BASE
+        else:
+            expected_url = SITE_BASE + rel.rsplit("/", 1)[0] + "/"
+        canonical_tag = next((tag for tag in re.findall(r"<link\b[^>]*>", source, re.IGNORECASE)
+                              if tag_attr(tag, "rel").lower() == "canonical"), "")
+        if tag_attr(canonical_tag, "href") != expected_url:
+            errors.append(f"{rel}: canonical URL missing or incorrect")
+        expected_sitemap_urls.add(expected_url)
+        if title:
+            seo_titles.setdefault(title.casefold(), []).append(rel)
+        if description:
+            seo_descriptions.setdefault(description.casefold(), []).append(rel)
+
+    if og_url != expected_url:
+        errors.append(f"{rel}: Open Graph URL missing or incorrect")
+
+for title, pages in seo_titles.items():
+    if len(pages) > 1:
+        errors.append("Duplicate SEO title across pages: " + ", ".join(pages))
+for description, pages in seo_descriptions.items():
+    if len(pages) > 1:
+        errors.append("Duplicate SEO description across pages: " + ", ".join(pages))
+
+sitemap_path = ROOT / "sitemap.xml"
+robots_path = ROOT / "robots.txt"
+if not sitemap_path.exists():
+    errors.append("sitemap.xml is missing")
+else:
+    try:
+        sitemap_root = ET.parse(sitemap_path).getroot()
+        sitemap_urls = {node.text.strip() for node in sitemap_root.iter()
+                        if node.tag.endswith("}loc") and node.text}
+        if sitemap_urls != expected_sitemap_urls:
+            missing = sorted(expected_sitemap_urls - sitemap_urls)
+            extra_urls = sorted(sitemap_urls - expected_sitemap_urls)
+            if missing:
+                errors.append("Sitemap is missing pages: " + ", ".join(missing))
+            if extra_urls:
+                errors.append("Sitemap contains unexpected URLs: " + ", ".join(extra_urls))
+    except Exception as exc:
+        errors.append(f"sitemap.xml could not be parsed: {exc}")
+
+if not robots_path.exists():
+    errors.append("robots.txt is missing")
+else:
+    robots = robots_path.read_text(encoding="utf-8")
+    if "User-agent: *" not in robots or "Allow: /" not in robots:
+        errors.append("robots.txt must allow public crawling")
+    if "Sitemap: " + SITE_BASE + "sitemap.xml" not in robots:
+        errors.append("robots.txt sitemap directive is missing or incorrect")
+
 print(f"Audited {len(html_files)} HTML pages")
 print(f"Errors: {len(errors)} | Warnings: {len(warnings)}")
 for item in errors:
