@@ -22,3 +22,21 @@ jobs:
           python-version: "3.x"
       - name: Audit HTML pages, shared navigation, branding and local links
         run: python scripts/check_site.py
+
+  browser-smoke:
+    needs: static-site-audit
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright
+        run: npm install --no-save --package-lock=false playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test live pages, links, responsiveness, service worker and offline mode
+        run: node scripts/browser_audit.mjs
