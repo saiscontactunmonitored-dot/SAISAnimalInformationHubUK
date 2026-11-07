@@ -35,8 +35,9 @@ const page = await context.newPage();
 page.on("pageerror", error => errors.push("JavaScript page error: " + error.message));
 page.on("console", message => {
   if (message.type() === "error") {
+    if (page.url().includes("this-page-should-not-exist-404-check") && message.text().includes("404")) return;
     const location = message.location()?.url || "";
-    if (!location || location.startsWith(BASE)) errors.push("Browser console error: " + message.text());
+    if (!location || location.startsWith(BASE)) errors.push("Browser console error on " + page.url() + " at " + location + ": " + message.text());
     else warnings.push("Third-party console error: " + message.text());
   } else if (message.type() === "warning") {
     warnings.push("Browser console warning: " + message.text());
