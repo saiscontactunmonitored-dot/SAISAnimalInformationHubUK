@@ -84,6 +84,6 @@ self.addEventListener('fetch', event => {
     event.waitUntil(refresh.then(() => undefined));
     const cached = await cache.match(request);
     if (cached) return cached;
-    return await refresh || await cache.match(BASE + 'offline.html');
+    return await refresh || Response.error();
   })());
 });
