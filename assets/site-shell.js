@@ -44,10 +44,34 @@ function buildShell(){
  var close=make("button","sais-drawer-close","×");close.type="button";close.setAttribute("aria-label","Close site menu");drawerHead.appendChild(close);drawer.appendChild(drawerHead);
  var drawerBody=make("div","sais-drawer-body");
  link(drawerBody,"Home","");
- link(drawerBody,"Animal Care & Training","animal-care-training/");
- link(drawerBody,"Animal Help & Resources","animal-help-resources/");
- link(drawerBody,"Animal Articles","animal-articles/");
- [["Choose an animal",groups.animals],["Care topics",groups.care.slice(1)],["More resources",groups.resources.slice(1)],["Articles",groups.articles.slice(1)]].forEach(function(group,i){var section=make("section","sais-drawer-group");var toggle=make("button","sais-drawer-group-toggle",group[0]);toggle.type="button";toggle.id="sais-drawer-group-toggle-"+i;toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-controls","sais-drawer-group-panel-"+i);var list=make("div","sais-drawer-links");list.id="sais-drawer-group-panel-"+i;list.hidden=true;list.setAttribute("aria-labelledby",toggle.id);group[1].forEach(function(item){link(list,item[0],item[1]);});toggle.addEventListener("click",function(){var open=toggle.getAttribute("aria-expanded")==="true";toggle.setAttribute("aria-expanded",String(!open));list.hidden=open;section.classList.toggle("is-expanded",!open);});section.appendChild(toggle);section.appendChild(list);drawerBody.appendChild(section);});
+ var mobileGroups=[
+  ["Animals & animal guides",groups.animals],
+  ["Animal care & training",groups.care],
+  ["Help & resources",groups.resources],
+  ["Animal articles",groups.articles]
+ ];
+ var mobileGroupToggles=[];
+ mobileGroups.forEach(function(group,i){
+  var section=make("section","sais-drawer-group");
+  var toggle=make("button","sais-drawer-group-toggle",group[0]);
+  toggle.type="button";toggle.id="sais-drawer-group-toggle-"+i;
+  toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-controls","sais-drawer-group-panel-"+i);
+  var chevron=make("span","sais-drawer-chevron","⌄");chevron.setAttribute("aria-hidden","true");toggle.appendChild(chevron);
+  var list=make("div","sais-drawer-links");list.id="sais-drawer-group-panel-"+i;list.hidden=true;
+  list.setAttribute("aria-labelledby",toggle.id);
+  group[1].forEach(function(item){link(list,item[0],item[1]);});
+  mobileGroupToggles.push({toggle:toggle,list:list,section:section});
+  toggle.addEventListener("click",function(){
+   var opening=toggle.getAttribute("aria-expanded")!=="true";
+   mobileGroupToggles.forEach(function(other){
+    var active=other.toggle===toggle&&opening;
+    other.toggle.setAttribute("aria-expanded",String(active));
+    other.list.hidden=!active;
+    other.section.classList.toggle("is-expanded",active);
+   });
+  });
+  section.appendChild(toggle);section.appendChild(list);drawerBody.appendChild(section);
+ });
  drawer.appendChild(drawerBody);shell.appendChild(nav);shell.appendChild(backdrop);shell.appendChild(drawer);
  function setDrawer(open,restoreFocus){drawer.classList.toggle("is-open",open);backdrop.hidden=!open;drawer.setAttribute("aria-hidden",String(!open));drawer.inert=!open;menuButton.setAttribute("aria-expanded",String(open));menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");document.body.classList.toggle("sais-drawer-open",open);if(open)close.focus();else if(restoreFocus!==false)menuButton.focus();}
  menuButton.addEventListener("click",function(){setDrawer(!drawer.classList.contains("is-open"));});
