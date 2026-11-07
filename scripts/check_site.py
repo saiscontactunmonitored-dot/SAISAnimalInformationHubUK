@@ -16,7 +16,7 @@ UNFINISHED_MARKERS = re.compile(
     re.IGNORECASE,
 )
 OLD_CONTRIBUTOR_NAME = re.compile(
-    r"small\\s*(?:&|and|&amp;)\\s*mighty(?:\\s+pet)?(?:\\s+training)?",
+    r"small\s*(?:&|and|&amp;)\s*mighty(?:\s+pet)?(?:\s+training)?",
     re.IGNORECASE,
 )
 
