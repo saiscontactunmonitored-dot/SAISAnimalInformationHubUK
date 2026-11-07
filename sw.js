@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sais-animal-hub-v26';
+const CACHE_NAME = 'sais-animal-hub-v27';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
   BASE + 'accessibility/',
