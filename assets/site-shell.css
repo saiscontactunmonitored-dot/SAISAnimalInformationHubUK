@@ -462,3 +462,187 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
  .sais-drawer-group-toggle{min-height:50px!important;padding:12px 13px!important}
  .sais-drawer-links a{min-height:44px!important;padding:10px 9px!important}
 }
+
+
+/* Refined mobile/tablet navigation — premium hierarchy, clearer category panels */
+@media(max-width:1050px){
+ .sais-mobile-drawer{
+  width:min(440px,94vw)!important;
+  background:#f4f7f6!important;
+  border-right:1px solid #d8e2df!important;
+  box-shadow:22px 0 64px rgba(8,28,37,.28)!important;
+ }
+ .sais-drawer-head{
+  min-height:82px!important;
+  padding:17px 20px!important;
+  background:linear-gradient(120deg,#102d3a 0%,#1b4655 100%)!important;
+  border-bottom:4px solid #efa451!important;
+ }
+ .sais-drawer-head:before{
+  content:"ANIMAL INFORMATION HUB UK";
+  display:block;
+  margin-right:auto;
+  color:#f4bd83;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:1.25px;
+  line-height:1.3;
+ }
+ .sais-drawer-head strong{
+  display:block!important;
+  margin-left:0!important;
+  color:#fff!important;
+  font-size:17px!important;
+  line-height:1.25!important;
+  letter-spacing:-.2px!important;
+ }
+ .sais-drawer-head{flex-wrap:wrap!important;column-gap:12px!important;row-gap:3px!important}
+ .sais-drawer-close{
+  align-self:center!important;
+  width:40px!important;height:40px!important;flex-basis:40px!important;
+  border:1px solid #ffffff55!important;
+  background:#ffffff14!important;
+  font-size:25px!important;
+ }
+ .sais-drawer-body{
+  padding:16px 16px max(34px,env(safe-area-inset-bottom))!important;
+  background:#f4f7f6!important;
+  gap:7px!important;
+ }
+ .sais-drawer-body>a{
+  position:relative!important;
+  min-height:50px!important;
+  margin:0!important;
+  padding:13px 15px 13px 17px!important;
+  border:1px solid #dce5e2!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#173746!important;
+  font-size:14px!important;
+  font-weight:780!important;
+  letter-spacing:.05px!important;
+  box-shadow:0 2px 5px rgba(17,49,59,.035)!important;
+  transition:background .16s ease,border-color .16s ease,transform .16s ease!important;
+ }
+ .sais-drawer-body>a:first-child{
+  border-color:#eaa052!important;
+  background:#fff2e3!important;
+  color:#713e17!important;
+ }
+ .sais-drawer-body>a:hover,.sais-drawer-body>a[aria-current=page]{
+  border-color:#e9a052!important;
+  background:#fff7ed!important;
+  color:#713e17!important;
+ }
+ .sais-drawer-group{
+  position:relative!important;
+  margin:0!important;
+  border:1px solid #d8e2df!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:0 2px 7px rgba(17,49,59,.045)!important;
+  overflow:hidden!important;
+  transition:border-color .16s ease,box-shadow .16s ease!important;
+ }
+ .sais-drawer-group.is-expanded{
+  border-color:#e6a052!important;
+  box-shadow:0 5px 16px rgba(26,55,63,.09)!important;
+ }
+ .sais-drawer-group-toggle{
+  position:relative!important;
+  min-height:58px!important;
+  padding:12px 14px 12px 17px!important;
+  background:#fff!important;
+  color:#173746!important;
+  font-size:14px!important;
+  font-weight:820!important;
+  letter-spacing:.05px!important;
+ }
+ .sais-drawer-group-toggle:before{
+  content:"";
+  position:absolute;
+  left:0;top:12px;bottom:12px;
+  width:3px;
+  border-radius:0 4px 4px 0;
+  background:#dce6e2;
+ }
+ .sais-drawer-group.is-expanded .sais-drawer-group-toggle{
+  background:linear-gradient(90deg,#fff5e9 0%,#fff 72%)!important;
+  color:#75451f!important;
+ }
+ .sais-drawer-group.is-expanded .sais-drawer-group-toggle:before{background:#e99a4b}
+ .sais-drawer-chevron{
+  width:29px!important;height:29px!important;
+  border:1px solid #e0e8e5!important;
+  background:#f2f6f4!important;
+  color:#244653!important;
+  font-size:18px!important;
+ }
+ .sais-drawer-group.is-expanded .sais-drawer-chevron{
+  border-color:#e99a4b!important;
+  background:#e99a4b!important;
+  color:#173746!important;
+ }
+ .sais-drawer-links{
+  padding:7px 11px 11px 16px!important;
+  gap:4px!important;
+  border-top:1px solid #e8eeeb!important;
+  background:#f7f9f8!important;
+ }
+ .sais-drawer-links a{
+  position:relative!important;
+  min-height:45px!important;
+  padding:10px 12px 10px 17px!important;
+  border:1px solid transparent!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#344e58!important;
+  font-size:13px!important;
+  font-weight:630!important;
+  line-height:1.4!important;
+  box-shadow:0 1px 2px rgba(17,49,59,.025)!important;
+ }
+ .sais-drawer-links a:before{
+  content:"";
+  position:absolute;
+  left:8px;top:50%;
+  width:4px;height:4px;
+  border-radius:50%;
+  background:#e99a4b;
+  transform:translateY(-50%);
+ }
+ .sais-drawer-links a:hover,.sais-drawer-links a[aria-current=page]{
+  border-color:#f0d4b5!important;
+  background:#fff4e8!important;
+  color:#713e17!important;
+ }
+ .sais-drawer-links a[aria-current=page]:after{
+  content:"Current";
+  padding-left:8px;
+  color:#8b4d20;
+  font-size:10px;
+  font-weight:850;
+  white-space:nowrap;
+ }
+}
+@media(max-width:600px){
+ .sais-mobile-drawer{width:min(420px,96vw)!important}
+ .sais-drawer-head{min-height:76px!important;padding:14px 15px!important}
+ .sais-drawer-head:before{font-size:8px!important}
+ .sais-drawer-head strong{font-size:16px!important}
+ .sais-drawer-close{width:38px!important;height:38px!important;flex-basis:38px!important}
+ .sais-drawer-body{padding:12px 12px max(30px,env(safe-area-inset-bottom))!important;gap:6px!important}
+ .sais-drawer-body>a{min-height:48px!important;padding:12px 13px!important;font-size:13px!important}
+ .sais-drawer-group-toggle{min-height:54px!important;padding:11px 12px 11px 15px!important;font-size:13px!important}
+ .sais-drawer-links{padding:6px 8px 9px 12px!important}
+ .sais-drawer-links a{min-height:44px!important;padding:9px 9px 9px 16px!important;font-size:12.5px!important}
+}
+@media(min-width:761px) and (max-width:1050px){
+ .sais-mobile-drawer{width:min(460px,78vw)!important}
+ .sais-drawer-body{padding:18px 19px max(34px,env(safe-area-inset-bottom))!important}
+ .sais-drawer-group-toggle{min-height:60px!important;font-size:15px!important}
+ .sais-drawer-links a{min-height:48px!important;font-size:14px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .sais-drawer-group,.sais-drawer-body>a,.sais-drawer-chevron{transition:none!important}
+}
