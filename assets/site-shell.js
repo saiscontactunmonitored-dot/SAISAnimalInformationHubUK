@@ -44,11 +44,14 @@ function buildShell(){
  var close=make("button","sais-drawer-close","×");close.type="button";close.setAttribute("aria-label","Close site menu");drawerHead.appendChild(close);drawer.appendChild(drawerHead);
  var drawerBody=make("div","sais-drawer-body");
  link(drawerBody,"Home","");
+ link(drawerBody,"Animal Care & Training","animal-care-training/");
+ link(drawerBody,"Animal Help & Resources","animal-help-resources/");
+ link(drawerBody,"Animal Articles","animal-articles/");
  var mobileGroups=[
-  ["Animals & animal guides",groups.animals],
-  ["Animal care & training",groups.care],
-  ["Help & resources",groups.resources],
-  ["Animal articles",groups.articles]
+  ["Choose an animal",groups.animals],
+  ["Care topics",groups.care.slice(1)],
+  ["More resources",groups.resources.slice(1)],
+  ["Articles",groups.articles.slice(1)]
  ];
  var mobileGroupToggles=[];
  mobileGroups.forEach(function(group,i){
@@ -145,7 +148,7 @@ function registerOfflineSupport(){
 function setupInstallExperience(){
  var deferredPrompt=null,shown=false,dialog=null;
  var isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
- if(isStandalone)return;
+ if(isStandalone){document.documentElement.classList.add("sais-standalone");return;}
  var ua=navigator.userAgent||"";
  var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
  var key="sais-hub-install-dismissed-v1";
