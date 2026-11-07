@@ -127,7 +127,7 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v29")) errors.push("Expected v29 offline cache was not created.");
+if (!workerState.caches.some(name => name === "sais-animal-hub-v30")) errors.push("Expected v29 offline cache was not created.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
 const offlinePage = BASE + "dog-information/";
