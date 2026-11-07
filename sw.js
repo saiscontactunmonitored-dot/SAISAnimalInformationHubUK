@@ -1,7 +1,6 @@
 const CACHE_NAME = 'sais-animal-hub-v26';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
-  BASE + '404.html',
   BASE + 'accessibility/',
   BASE + 'animal-articles/benefits-of-hydrotherapy/',
   BASE + 'animal-articles/benefits-of-socialisation/',
@@ -78,15 +77,13 @@ self.addEventListener('fetch', event => {
   }
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
-    const cached = await cache.match(request);
     const refresh = fetch(request).then(response => {
       if (response && response.ok) cache.put(request, response.clone());
       return response;
     }).catch(() => null);
-    if (cached) {
-      event.waitUntil(refresh.then(() => undefined));
-      return cached;
-    }
+    event.waitUntil(refresh.then(() => undefined));
+    const cached = await cache.match(request);
+    if (cached) return cached;
     return await refresh || await cache.match(BASE + 'offline.html');
   })());
 });
