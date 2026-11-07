@@ -14,6 +14,10 @@ Check the live Hub as a visitor would use it. Record the page URL, device/browse
 - [ ] Shared header, navigation and footer appear once on every page.
 - [ ] The same info-logo.png is used in the header and browser favicon.
 - [ ] Navigation dropdowns open by mouse, touch and keyboard.
+- [ ] Mobile navigation shows each parent section once and all expected child links.
+- [ ] The accessibility control is a single, non-wrapping icon button at the bottom-left; opening it exposes usable text-size, bold and contrast controls.
+- [ ] Accessibility settings can be closed by the close button, outside tap and Escape; keyboard focus remains usable.
+- [ ] The back-to-top control is a separate icon button at the bottom-right and does not overlap content or the footer.
 - [ ] Escape closes an open dropdown; clicking elsewhere closes it.
 - [ ] Every navigation link opens the correct page.
 - [ ] Search returns relevant results for dog, cat, horse, books, training, health, wildlife, lost and found, boarding and hydrotherapy.
@@ -21,6 +25,8 @@ Check the live Hub as a visitor would use it. Record the page URL, device/browse
 - [ ] Search result links open the correct pages.
 - [ ] No-result searches show a helpful message.
 - [ ] All animal pages load and display their content.
+- [ ] No page contains the former Small & Mighty Pets contributor name; relevant training pages use the exact credit wording “Credit goes to Sam”.
+- [ ] Repeated “About these guides” notices are reduced to a short source and general-information note, while safety warnings and source links remain intact.
 - [ ] All care, training, books, help, resources and article pages load.
 - [ ] Contact links and forms behave as described on the page.
 - [ ] Privacy, terms, editorial standards and accessibility pages load.
