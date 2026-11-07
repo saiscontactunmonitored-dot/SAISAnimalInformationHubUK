@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sais-animal-hub-v27';
+const CACHE_NAME = 'sais-animal-hub-v28';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
   BASE + 'accessibility/',
@@ -54,7 +54,27 @@ self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin || !url.pathname.startsWith(BASE)) return;
+  // Cache third-party images after they are viewed so previously visited pages
+  // retain their imagery offline. Opaque no-CORS image responses are supported.
+  if (url.origin !== self.location.origin) {
+    if (request.destination !== 'image') return;
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cached = await cache.match(request);
+      if (cached) return cached;
+      try {
+        const response = await fetch(request);
+        if (response && (response.ok || response.type === 'opaque')) {
+          await cache.put(request, response.clone());
+        }
+        return response;
+      } catch (error) {
+        return await cache.match(request) || Response.error();
+      }
+    })());
+    return;
+  }
+  if (!url.pathname.startsWith(BASE)) return;
   if (request.mode === 'navigate') {
     event.respondWith((async () => {
       try {
