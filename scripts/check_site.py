@@ -1,4 +1,5 @@
 from html.parser import HTMLParser
+import json
 from pathlib import Path
 from urllib.parse import urlparse, unquote
 import re
@@ -122,6 +123,80 @@ for page in html_files:
     marker = UNFINISHED_MARKERS.search(source)
     if marker:
         errors.append(f"{rel}: unfinished page marker found: {marker.group(0)}")
+
+
+# Progressive Web App and offline-copy checks.
+manifest_path = ROOT / "manifest.json"
+worker_path = ROOT / "sw.js"
+shell_script_path = ROOT / "assets" / "site-shell.js"
+if not manifest_path.exists():
+    errors.append("PWA manifest.json is missing")
+else:
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for key in ("name", "short_name", "start_url", "scope", "display", "icons"):
+            if not manifest.get(key):
+                errors.append(f"PWA manifest is missing required field: {key}")
+        if not str(manifest.get("start_url", "")).startswith(PREFIX) or not str(manifest.get("scope", "")).startswith(PREFIX):
+            errors.append("PWA start_url and scope must stay inside the GitHub Pages project path")
+        for icon in manifest.get("icons", []):
+            icon_path = str(icon.get("src", "")).replace(PREFIX, "", 1).lstrip("/")
+            if not icon_path or not (ROOT / icon_path).exists():
+                errors.append(f"PWA manifest icon is missing: {icon.get('src', '')}")
+    except Exception as exc:
+        errors.append(f"PWA manifest JSON could not be read: {exc}")
+
+if not worker_path.exists():
+    errors.append("PWA service worker sw.js is missing")
+else:
+    worker = worker_path.read_text(encoding="utf-8")
+    if "cache.addAll(APP_SHELL)" not in worker:
+        errors.append("Service worker does not precache the app shell")
+    if "BASE + 'offline.html'" not in worker:
+        errors.append("Service worker has no offline-page fallback")
+    if "sais-animal-hub-v" not in worker:
+        errors.append("Service worker cache version is missing")
+
+    # Every published page except the custom 404 response should be available in the offline shell.
+    for page in html_files:
+        rel = page.relative_to(ROOT).as_posix()
+        if rel == "404.html":
+            continue
+        if rel == "index.html":
+            expected = "BASE"
+        elif rel == "offline.html":
+            expected = "BASE + 'offline.html'"
+        else:
+            expected = "BASE + '" + rel.rsplit("/", 1)[0] + "/'"
+        if expected not in worker:
+            errors.append(f"Offline app shell does not precache page: {rel}")
+
+    for asset in ("assets/css/site.css", "assets/css/redesign-2026.css",
+                  "assets/site-shell.css", "assets/site-shell.js",
+                  "info-logo.png", "icon.svg", "manifest.json"):
+        if not (ROOT / asset).exists():
+            errors.append(f"Offline app-shell asset is missing: {asset}")
+        if "BASE + '" + asset + "'" not in worker:
+            errors.append(f"Offline app shell does not precache asset: {asset}")
+
+if not shell_script_path.exists():
+    errors.append("Shared site shell script is missing")
+else:
+    shell_script = shell_script_path.read_text(encoding="utf-8")
+    for feature in ("beforeinstallprompt", "sais-install-prompt",
+                    "sais-install-footer-trigger", "serviceWorker.register"):
+        if feature not in shell_script:
+            errors.append(f"Shared site shell is missing PWA feature: {feature}")
+
+for page in html_files:
+    rel = page.relative_to(ROOT).as_posix()
+    if rel in ("404.html", "offline.html"):
+        continue
+    source = page.read_text(encoding="utf-8")
+    if not re.search(r'<link[^>]+rel=["\\']manifest["\\']', source, re.IGNORECASE):
+        errors.append(f"{rel}: missing PWA manifest link")
+    if "serviceWorker.register" not in source:
+        errors.append(f"{rel}: missing service worker registration")
 
 print(f"Audited {len(html_files)} HTML pages")
 print(f"Errors: {len(errors)} | Warnings: {len(warnings)}")
