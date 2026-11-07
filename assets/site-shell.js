@@ -73,6 +73,7 @@ function buildFooter(){
  brand.appendChild(mark);brand.appendChild(make("h2","","Animal Information Hub UK"));
  brand.appendChild(make("p","","Practical animal information, clear guidance and trusted starting points for better animal care."));
  brand.appendChild(make("span","sais-footer-powered","Powered by Somerset Animal Information Services"));
+ var installLink=make("button","sais-install-footer-trigger","＋ Add to Home Screen");installLink.type="button";installLink.addEventListener("click",function(){if(window.saisShowInstallPrompt)window.saisShowInstallPrompt(true);});brand.appendChild(installLink);
  var columns=make("div","sais-footer-columns");
  function column(title,items){var section=make("section","sais-footer-column");section.appendChild(make("h3","",title));items.forEach(function(x){link(section,x[0],x[1]);});columns.appendChild(section);}
  column("Explore the Hub",[["Home",""],["Animal Care & Training","animal-care-training/"],["Animal Help & Resources","animal-help-resources/"],["Animal Articles","animal-articles/"],["Contact","contact/"]]);
@@ -112,6 +113,63 @@ function improveReadabilityAndTopButton(){
   document.addEventListener("keydown",function(e){if(panel.hidden)return;if(e.key==="Escape"){panel.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.focus();return;}if(e.key==="Tab"){var focusables=Array.from(panel.querySelectorAll("button:not([disabled]),a[href]"));if(!focusables.length)return;var first=focusables[0],last=focusables[focusables.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});document.addEventListener("pointerdown",function(e){if(!panel.hidden&&!widget.contains(e.target)){panel.hidden=true;toggle.setAttribute("aria-expanded","false");}});
  }
 }
-function init(){loadStyles();var skip=document.querySelector(".skip-link,.sais-skip-link");if(skip)skip.href="#main-content";else{skip=make("a","sais-skip-link","Skip to main content");skip.href="#main-content";document.body.insertBefore(skip,document.body.firstChild);}var main=document.querySelector("main");if(main&&!main.id)main.id="main-content";buildShell();buildFooter();improveReadabilityAndTopButton();bindSearch();bindMenus();updateClock();setInterval(updateClock,30000);}
+
+function registerOfflineSupport(){
+ if(!("serviceWorker" in navigator)||!/^https?:$/.test(location.protocol))return;
+ window.addEventListener("load",function(){navigator.serviceWorker.register(route("sw.js"),{scope:route("")}).catch(function(){});},{once:true});
+}
+function setupInstallExperience(){
+ var deferredPrompt=null,shown=false,dialog=null;
+ var isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+ if(isStandalone)return;
+ var ua=navigator.userAgent||"";
+ var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+ var key="sais-hub-install-dismissed-v1";
+ function dismissed(){try{return localStorage.getItem(key)==="1";}catch(e){return false;}}
+ function rememberDismissal(){try{localStorage.setItem(key,"1");}catch(e){}}
+ function closeDialog(save){if(dialog&&dialog.isConnected)dialog.remove();dialog=null;if(save)rememberDismissal();}
+ function show(force){
+  if(dialog||isStandalone||(!force&&dismissed()))return;
+  if(!force&&!deferredPrompt&&!isIOS)return;
+  shown=true;
+  dialog=make("section","sais-install-prompt");
+  dialog.setAttribute("role","dialog");dialog.setAttribute("aria-modal","false");dialog.setAttribute("aria-labelledby","sais-install-title");
+  var head=make("div","sais-install-head");
+  var copy=make("div","sais-install-copy");
+  copy.appendChild(make("span","sais-install-eyebrow","ANIMAL INFORMATION HUB UK"));
+  copy.appendChild(make("h2","","Keep the Animal Hub close at hand"));
+  copy.appendChild(make("p","","Add the free Hub to your home screen for quicker access to animal information and guidance."));
+  head.appendChild(copy);
+  var x=make("button","sais-install-close","×");x.type="button";x.setAttribute("aria-label","Close install message");head.appendChild(x);dialog.appendChild(head);
+  var actions=make("div","sais-install-actions");
+  var primary=make("button","sais-install-primary",deferredPrompt?"Add to Home Screen":(isIOS?"Show me how":"How to add"));
+  primary.type="button";
+  var secondary=make("button","sais-install-secondary","Not now");secondary.type="button";
+  actions.appendChild(primary);actions.appendChild(secondary);dialog.appendChild(actions);
+  var instructions=make("div","sais-install-instructions");instructions.hidden=true;
+  if(isIOS){
+   instructions.appendChild(make("p","","On your iPhone or iPad:"));
+   var list=make("ol","");
+   ["Open this page in Safari.","Tap the Share button (the square with the upward arrow).","Choose Add to Home Screen, then tap Add."].forEach(function(t){list.appendChild(make("li","",t));});
+   instructions.appendChild(list);
+  }else{
+   instructions.appendChild(make("p","","In your browser, open the page menu or address-bar install icon and choose Install app or Add to Home Screen, if offered."));
+  }
+  dialog.appendChild(instructions);document.body.appendChild(dialog);
+  function revealInstructions(){instructions.hidden=false;primary.hidden=true;secondary.textContent="Close";instructions.scrollIntoView({block:"nearest"});}
+  primary.addEventListener("click",function(){
+   if(deferredPrompt){var promptEvent=deferredPrompt;deferredPrompt=null;promptEvent.prompt();promptEvent.userChoice.then(function(choice){if(choice&&choice.outcome==="accepted")closeDialog(true);else{primary.textContent="Try again";secondary.textContent="Not now";}}).catch(revealInstructions);}
+   else revealInstructions();
+  });
+  secondary.addEventListener("click",function(){closeDialog(true);});
+  x.addEventListener("click",function(){closeDialog(true);});
+  dialog.addEventListener("keydown",function(e){if(e.key==="Escape"){closeDialog(false);}});
+ }
+ window.saisShowInstallPrompt=show;
+ window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;if(!shown&&!dismissed())show(false);});
+ window.addEventListener("appinstalled",function(){deferredPrompt=null;closeDialog(true);});
+ window.setTimeout(function(){if(!shown&&(isIOS||deferredPrompt)&&!dismissed())show(false);},10000);
+}
+function init(){loadStyles();registerOfflineSupport();setupInstallExperience();var skip=document.querySelector(".skip-link,.sais-skip-link");if(skip)skip.href="#main-content";else{skip=make("a","sais-skip-link","Skip to main content");skip.href="#main-content";document.body.insertBefore(skip,document.body.firstChild);}var main=document.querySelector("main");if(main&&!main.id)main.id="main-content";buildShell();buildFooter();improveReadabilityAndTopButton();bindSearch();bindMenus();updateClock();setInterval(updateClock,30000);}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
