@@ -395,3 +395,16 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
  .sais-drawer-links a{min-height:46px!important;padding:10px 8px!important}
 }
 @media(prefers-reduced-motion:reduce){.sais-drawer-chevron{transition:none!important}}
+
+/* PWA standalone navigation safety: always provide the same accessible menu in installed mode */
+.sais-standalone .sais-navigation{display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:64px!important;padding:0!important}
+.sais-standalone .sais-mobile-menu-button{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;min-width:112px!important;min-height:46px!important;margin:9px 14px!important}
+.sais-standalone .sais-navigation-inner{display:none!important}
+.sais-standalone .sais-mobile-drawer{display:flex!important;flex-direction:column!important}
+.sais-standalone .sais-drawer-body{display:grid!important}
+.sais-standalone .sais-drawer-group-toggle{display:flex!important}
+.sais-standalone .sais-drawer-links[hidden]{display:none!important}
+@media(max-width:600px){
+ .sais-standalone .sais-navigation{min-height:58px!important}
+ .sais-standalone .sais-mobile-menu-button{min-height:44px!important;margin:7px 12px!important}
+}
