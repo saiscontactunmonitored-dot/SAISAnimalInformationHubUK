@@ -193,7 +193,7 @@ for page in html_files:
     if rel in ("404.html", "offline.html"):
         continue
     source = page.read_text(encoding="utf-8")
-    if not re.search(r'<link[^>]+rel=["\\']manifest["\\']', source, re.IGNORECASE):
+    if 'rel="manifest"' not in source and "rel='manifest'" not in source:
         errors.append(f"{rel}: missing PWA manifest link")
     if "serviceWorker.register" not in source:
         errors.append(f"{rel}: missing service worker registration")
