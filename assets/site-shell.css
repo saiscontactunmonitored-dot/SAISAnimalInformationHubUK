@@ -362,3 +362,36 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
 .sais-install-footer-trigger:hover,.sais-install-footer-trigger:focus-visible{background:#ffffff22;color:#fff;outline:2px solid #f4b16d;outline-offset:2px}
 @media(max-width:600px){.sais-install-prompt{bottom:calc(76px + env(safe-area-inset-bottom));padding:17px 16px 15px;border-radius:14px}.sais-install-copy h2{font-size:17px}.sais-install-actions button{flex:1}}
 @media(prefers-reduced-motion:reduce){.sais-install-prompt *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Mobile and tablet navigation overhaul — one complete, non-duplicated accordion */
+.sais-mobile-drawer{display:flex!important;flex-direction:column!important}
+.sais-drawer-body{padding:12px 16px 28px!important}
+.sais-drawer-body>a{display:flex!important;align-items:center!important;min-height:48px!important;margin:3px 0!important;padding:12px 13px!important;border:1px solid #e0e8e5!important;border-radius:9px!important;background:#fff!important;color:#173746!important;font-size:14px!important;font-weight:800!important;text-decoration:none!important}
+.sais-drawer-group{margin:8px 0!important;border:1px solid #dce5e2!important;border-radius:11px!important;background:#fff!important;overflow:hidden!important}
+.sais-drawer-group-toggle{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;width:100%!important;min-height:54px!important;padding:14px 15px!important;border:0!important;background:#fff!important;color:#173746!important;text-align:left!important;font:inherit!important;font-size:14px!important;font-weight:850!important;cursor:pointer!important;touch-action:manipulation!important}
+.sais-drawer-group-toggle:hover,.sais-drawer-group-toggle:focus-visible{background:#fff4e7!important;outline:3px solid #b85e20!important;outline-offset:-3px!important}
+.sais-drawer-chevron{display:grid!important;place-items:center!important;flex:none!important;width:27px!important;height:27px!important;border-radius:50%!important;background:#edf2f0!important;color:#173746!important;font-size:19px!important;line-height:1!important;transition:transform .18s ease!important}
+.sais-drawer-group.is-expanded .sais-drawer-group-toggle{background:#f5f8f6!important;color:#8b4d20!important}
+.sais-drawer-group.is-expanded .sais-drawer-chevron{transform:rotate(180deg)!important;background:#f2a45a!important}
+.sais-drawer-links{display:grid!important;grid-template-columns:1fr!important;gap:0!important;padding:4px 12px 12px!important;border-top:1px solid #e7ece9!important;background:#f8faf9!important}
+.sais-drawer-links[hidden]{display:none!important}
+.sais-drawer-links a{display:flex!important;align-items:center!important;min-height:45px!important;padding:10px 9px!important;border-bottom:1px solid #e6ece9!important;color:#244655!important;font-size:13px!important;font-weight:650!important;line-height:1.4!important;text-decoration:none!important;overflow-wrap:anywhere!important}
+.sais-drawer-links a:last-child{border-bottom:0!important}
+.sais-drawer-links a:hover,.sais-drawer-links a[aria-current=page]{background:#fff0df!important;color:#713a13!important;border-radius:6px!important}
+.sais-drawer-links a[aria-current=page]:after{content:"Current page";margin-left:auto;padding-left:10px;color:#8b4d20;font-size:10px;font-weight:800;white-space:nowrap}
+@media(max-width:1050px){
+ .sais-mobile-drawer{width:min(460px,94vw)!important;max-width:100vw!important}
+ .sais-drawer-body{padding:12px 17px 32px!important}
+ .sais-drawer-group-toggle{min-height:56px!important;font-size:15px!important}
+ .sais-drawer-links a{min-height:47px!important;font-size:14px!important}
+}
+@media(max-width:600px){
+ .sais-mobile-drawer{width:min(420px,96vw)!important}
+ .sais-drawer-head{padding:17px 18px!important}
+ .sais-drawer-body{padding:10px 13px 28px!important}
+ .sais-drawer-group{margin:7px 0!important}
+ .sais-drawer-group-toggle{min-height:53px!important;padding:13px!important}
+ .sais-drawer-links{padding:3px 9px 9px!important}
+ .sais-drawer-links a{min-height:46px!important;padding:10px 8px!important}
+}
+@media(prefers-reduced-motion:reduce){.sais-drawer-chevron{transition:none!important}}
