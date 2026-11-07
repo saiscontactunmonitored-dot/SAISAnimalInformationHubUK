@@ -151,10 +151,10 @@ await page.goto(BASE, { waitUntil: "domcontentloaded" });
 const dropdownSummary = page.locator(".sais-menu summary").first();
 if (await dropdownSummary.count()) {
   await dropdownSummary.click();
-  const dropdownOpen = await dropdownSummary.locator("..").evaluate(node => node.open);
+  const dropdownOpen = await dropdownSummary.locator("xpath=..").evaluate(node => node.open);
   if (!dropdownOpen) errors.push("Desktop navigation dropdown did not open.");
   await page.keyboard.press("Escape");
-  const dropdownClosed = await dropdownSummary.locator("..").evaluate(node => !node.open);
+  const dropdownClosed = await dropdownSummary.locator("xpath=..").evaluate(node => !node.open);
   if (!dropdownClosed) errors.push("Escape did not close the desktop navigation dropdown.");
 }
 
