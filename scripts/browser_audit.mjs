@@ -57,6 +57,18 @@ for (const url of urls) {
   const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
   if (!response || response.status() !== 200) errors.push("Page did not return HTTP 200: " + url);
   await page.waitForLoadState("load", { timeout: 15000 }).catch(() => warnings.push("Load event timed out: " + url));
+  const imageFailures = await page.evaluate(async () => {
+    const images = [...document.images];
+    images.forEach(image => { image.loading = "eager"; });
+    await Promise.all(images.map(image => image.complete ? Promise.resolve() : new Promise(resolve => {
+      const finish = () => resolve();
+      image.addEventListener("load", finish, { once: true });
+      image.addEventListener("error", finish, { once: true });
+      setTimeout(finish, 10000);
+    })));
+    return images.filter(image => !image.naturalWidth).map(image => image.currentSrc || image.src);
+  });
+  if (imageFailures.length) errors.push("Images failed to load on " + url + ": " + imageFailures.join(", "));
   const result = await page.evaluate(() => {
     const title = document.title.trim();
     const h1 = document.querySelectorAll("h1").length;
