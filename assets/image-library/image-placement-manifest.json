@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "Animal Information Hub UK",
-  "note": "Placement plan for the image pack supplied by the site owner. Binary files are not yet present in the GitHub repository; do not publish references until the corresponding files have been uploaded and verified.",
+  "note": "Placement plan for all individual image assets supplied by the site owner. Optimised WebP derivatives are generated in assets/images. Contact-sheet screenshots are retained separately as review references and are not published as combined artwork.",
   "imageBase": "assets/images/",
   "items": [
     {
