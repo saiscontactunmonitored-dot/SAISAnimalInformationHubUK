@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sais-animal-hub-v33';
+const CACHE_NAME = 'sais-animal-hub-v34';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
   BASE + 'accessibility/',
@@ -50,7 +50,7 @@ const APP_SHELL = [
   BASE + 'assets/images/dogs/dog-sit-training.webp',
   BASE + 'assets/images/dogs/dog-down-position-training.webp',
   BASE + 'assets/images/dogs/dog-collar-handling-training.webp',
-  BASE + 'assets/images/dogs/dog-lead-training.webp',
+  BASE + 'assets/images/dogs/dog-paw-training.webp',
   BASE + 'assets/images/dogs/choosing-kong-toy.webp',
   BASE + 'assets/images/dogs/puppy-car-travel.webp',
   BASE + 'assets/images/general/pet-health-and-safety.webp',
