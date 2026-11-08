@@ -9,7 +9,7 @@
       "target": "assets/images/branding/animal-information-hub-logo.webp",
       "page": "all pages / shared header and PWA identity",
       "alt": "Animal Information Hub logo: orange circle with a blue paw print",
-      "status": "pending-binary-upload",
+      "status": "existing-shared-logo-review",
       "note": "Existing root info-logo.png is already referenced by the shared shell; replace only after visual and PWA icon review."
     },
     {
@@ -17,42 +17,42 @@
       "target": "assets/images/dogs/dog-name-recognition-training.webp",
       "page": "animal-care-training/training-tips-advice/",
       "alt": "Dog taking part in a name-recognition training exercise",
-      "status": "pending-binary-upload"
+      "status": "placed"
     },
     {
       "source": "sittraining.png",
       "target": "assets/images/dogs/dog-sit-training.webp",
       "page": "animal-care-training/training-tips-advice/",
       "alt": "Dog practising a sit cue during a training session",
-      "status": "pending-binary-upload"
+      "status": "placed"
     },
     {
       "source": "droptodog.png",
       "target": "assets/images/dogs/dog-down-position-training.webp",
       "page": "animal-care-training/training-tips-advice/",
       "alt": "Dog practising a relaxed down position outdoors",
-      "status": "pending-binary-upload"
+      "status": "placed"
     },
     {
       "source": "collargrab.png",
       "target": "assets/images/dogs/dog-collar-handling-training.webp",
       "page": "animal-care-training/training-tips-advice/",
       "alt": "Dog calmly engaging with a handler during a collar-handling exercise",
-      "status": "pending-binary-upload"
+      "status": "placed"
     },
     {
       "source": "trainingpaw.jpg",
       "target": "assets/images/dogs/dog-lead-training.webp",
       "page": "animal-care-training/training-tips-advice/",
       "alt": "Dog practising lead skills with a handler",
-      "status": "pending-binary-upload"
+      "status": "placed"
     },
     {
       "source": "introducekong.png",
       "target": "assets/images/dogs/choosing-kong-toy.webp",
       "page": "animal-care-training/fun-enrichment/",
       "alt": "Illustrated guide comparing Kong toy sizes and shapes",
-      "status": "pending-binary-upload",
+      "status": "placed",
       "note": "Keep any visible source credit and product context."
     },
     {
@@ -60,7 +60,7 @@
       "target": "assets/images/dogs/dog-vomiting-guide.webp",
       "page": "animal-care-training/health-safety-for-pets/",
       "alt": "Dog vomiting visual guide showing common appearance differences",
-      "status": "pending-editorial-review",
+      "status": "placed-editorial-review",
       "note": "Check veterinary accuracy and preserve source attribution before publication."
     },
     {
@@ -68,7 +68,7 @@
       "target": "assets/images/wildlife/adder-bite-first-aid-guide.webp",
       "page": "wildlife-information/ and animal-care-training/health-safety-for-pets/",
       "alt": "Adder bite facts, risks and first-aid guidance infographic",
-      "status": "pending-editorial-review",
+      "status": "placed-editorial-review",
       "note": "Verify current UK first-aid advice and attribution before publication."
     },
     {
@@ -76,7 +76,7 @@
       "target": "assets/images/dogs/dog-dominance-theory-explainer.webp",
       "page": "animal-care-training/training-tips-advice/",
       "alt": "Infographic explaining misconceptions about dominance theory in dogs",
-      "status": "pending-editorial-review",
+      "status": "placed-editorial-review",
       "note": "Review claims, references and image credit."
     },
     {
@@ -84,7 +84,7 @@
       "target": "assets/images/dogs/dog-food-resource-graphic.webp",
       "page": "dog-information/",
       "alt": "Dog food resource graphic",
-      "status": "pending-binary-upload",
+      "status": "placed",
       "note": "Check whether this is a logo/graphic rather than an informative food guide; don't present it as nutritional advice."
     },
     {
@@ -92,7 +92,7 @@
       "target": "assets/images/cats/feline-grimace-scale-resource.webp",
       "page": "cat-information/",
       "alt": "Feline Grimace Scale resource graphic for recognising signs of pain in cats",
-      "status": "pending-editorial-review",
+      "status": "placed-editorial-review",
       "note": "Link to the authoritative original resource and retain attribution."
     },
     {
@@ -100,7 +100,7 @@
       "target": "assets/images/partners/rabbit-welfare-association-fund.webp",
       "page": "rabbit-information/",
       "alt": "Rabbit Welfare Association and Fund logo",
-      "status": "pending-permission-check",
+      "status": "placed-permission-check",
       "note": "Use as a linked organisation logo only where permission/brand use is appropriate."
     },
     {
@@ -108,35 +108,35 @@
       "target": "assets/images/partners/bunny-jackpot-foundation.webp",
       "page": "rabbit-information/",
       "alt": "The Bunny Jackpot Foundation logo",
-      "status": "pending-permission-check"
+      "status": "placed-permission-check"
     },
     {
       "source": "hayexpertslogo.png",
       "target": "assets/images/partners/the-hay-experts.webp",
       "page": "rabbit-information/ and rodent-information/",
       "alt": "The Hay Experts logo",
-      "status": "pending-permission-check"
+      "status": "placed-permission-check"
     },
     {
       "source": "allwindsfirstaid.png",
       "target": "assets/images/partners/allwinds-dog-first-aid.webp",
       "page": "animal-care-training/health-safety-for-pets/",
       "alt": "Allwinds Dog First Aid logo",
-      "status": "pending-permission-check"
+      "status": "placed-permission-check"
     },
     {
       "source": "thewildliefdirectory.jpg",
       "target": "assets/images/partners/help-wildlife.webp",
       "page": "wildlife-information/",
       "alt": "Help Wildlife directory logo",
-      "status": "pending-permission-check"
+      "status": "placed-permission-check"
     },
     {
       "source": "rescue2home.png",
       "target": "assets/images/partners/rescue-2-home-animal-support.webp",
       "page": "animal-help-resources/ and relevant partner listings",
       "alt": "Rescue 2 Home Animal Support logo",
-      "status": "pending-permission-check",
+      "status": "placed-permission-check",
       "note": "Only display if the relationship and permission are current."
     },
     {
@@ -152,21 +152,21 @@
       "target": "assets/images/general/pet-health-and-safety.webp",
       "page": "animal-care-training/health-safety-for-pets/",
       "alt": "Pet health and safety feature image",
-      "status": "pending-binary-upload"
+      "status": "placed"
     },
     {
       "source": "puppytravel.png",
       "target": "assets/images/dogs/puppy-car-travel.webp",
       "page": "dog-information/ or a future puppy travel article",
       "alt": "Puppies travelling safely in the back of a car",
-      "status": "pending-binary-upload"
+      "status": "placed"
     },
     {
       "source": "easypeasydoggysqausy.png",
       "target": "assets/images/books/easy-peasy-doggy-squeezy-cover.webp",
       "page": "animal-care-training/recommended-animal-books/",
       "alt": "Cover of Easy Peasy Doggy Squeezy by Steve Mann",
-      "status": "pending-permission-check",
+      "status": "placed-permission-check",
       "note": "Book cover; confirm permitted use."
     },
     {
@@ -174,21 +174,21 @@
       "target": "assets/images/books/doggie-language-cover.webp",
       "page": "animal-care-training/recommended-animal-books/",
       "alt": "Cover of Doggie Language by Lili Chin",
-      "status": "pending-permission-check"
+      "status": "placed-permission-check"
     },
     {
       "source": "whydoesmydogdothat.png",
       "target": "assets/images/books/why-does-my-dog-do-that-cover.webp",
       "page": "animal-care-training/recommended-animal-books/",
       "alt": "Cover of Why Does My Dog Do That?",
-      "status": "pending-permission-check"
+      "status": "placed-permission-check"
     },
     {
       "source": "logo.png",
       "target": "assets/images/awards/sme-news-award-logo.webp",
       "page": "About/recognition area only, if the award claim is current",
       "alt": "SME News UK Enterprise Awards logo",
-      "status": "pending-claim-verification"
+      "status": "placed-award-claim-verified"
     },
     {
       "source": "Screenshot 2026-11-07 21.23.19.png",
@@ -217,6 +217,104 @@
       "page": "reference only; crop separate graphics after permission check",
       "alt": "Contact sheet of Rescue 2 Home logo, animal tips and lost and found graphics",
       "status": "reference-only"
+    },
+    {
+      "source": "animalenrichment.png",
+      "target": "assets/images/general/animal-enrichment.webp",
+      "page": "animal-care-training/fun-enrichment/",
+      "alt": "Animal enrichment tips graphic",
+      "status": "placed"
+    },
+    {
+      "source": "animalrescuetips.png",
+      "target": "assets/images/general/animal-rescue-tips.webp",
+      "page": "animal-care-training/rescue-tips/",
+      "alt": "Animal rescue tips graphic",
+      "status": "placed"
+    },
+    {
+      "source": "cat.png",
+      "target": "assets/images/animals/cat.webp",
+      "page": "cat-information/ and homepage animal category",
+      "alt": "Cat photograph for the cat information section",
+      "status": "placed"
+    },
+    {
+      "source": "chicken.png",
+      "target": "assets/images/animals/chicken.webp",
+      "page": "chicken-information/",
+      "alt": "Chicken photograph for the chicken information section",
+      "status": "placed"
+    },
+    {
+      "source": "dog.png",
+      "target": "assets/images/animals/dog.webp",
+      "page": "dog-information/ and homepage dog category",
+      "alt": "Dog photograph for the dog information section",
+      "status": "placed"
+    },
+    {
+      "source": "dogdecoderbanner.png",
+      "target": "assets/images/dogs/dog-decoder-banner.webp",
+      "page": "animal-care-training/ specialist resources",
+      "alt": "Dog Decoder educational banner",
+      "status": "placed"
+    },
+    {
+      "source": "horse.png",
+      "target": "assets/images/animals/horse.webp",
+      "page": "horse-information/ and homepage animal categories",
+      "alt": "Horse photograph for the horse information section",
+      "status": "placed"
+    },
+    {
+      "source": "loastandfoundadivce.png",
+      "target": "assets/images/lost-found/lost-and-found-advice.webp",
+      "page": "animal-help-resources/lost-found-animals/",
+      "alt": "Lost and found animal advice graphic",
+      "status": "placed"
+    },
+    {
+      "source": "nutravetlogo.png",
+      "target": "assets/images/partners/nutravet.webp",
+      "page": "animal-care-training/ specialist resources",
+      "alt": "Nutravet logo",
+      "status": "placed-permission-check"
+    },
+    {
+      "source": "r2hlarge.png",
+      "target": "assets/images/partners/rescue-2-home-large.webp",
+      "page": "animal-help-resources/",
+      "alt": "Rescue 2 Home Animal Support supplied service graphic",
+      "status": "placed-permission-check"
+    },
+    {
+      "source": "recommendedbooks.png",
+      "target": "assets/images/books/recommended-animal-books.webp",
+      "page": "animal-care-training/recommended-animal-books/",
+      "alt": "Recommended animal books graphic",
+      "status": "placed"
+    },
+    {
+      "source": "reptile-exotic.png",
+      "target": "assets/images/animals/reptile-exotic.webp",
+      "page": "reptileexotic-information/",
+      "alt": "Reptile and exotic animal photograph",
+      "status": "placed"
+    },
+    {
+      "source": "rodents.png",
+      "target": "assets/images/animals/rodents.webp",
+      "page": "rodent-information/",
+      "alt": "Rodent photograph for the small animal information section",
+      "status": "placed"
+    },
+    {
+      "source": "wildlife.png",
+      "target": "assets/images/animals/wildlife.webp",
+      "page": "wildlife-information/ and homepage wildlife category",
+      "alt": "British wildlife photograph",
+      "status": "placed"
     }
   ]
 }
