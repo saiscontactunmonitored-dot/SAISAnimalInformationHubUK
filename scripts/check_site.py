@@ -179,6 +179,14 @@ else:
         if "BASE + '" + asset + "'" not in worker:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
+if worker_path.exists():
+    if "sais-animal-hub-v38" not in worker:
+        errors.append("Service worker cache must be v38 for the launch release")
+    for image in sorted((ROOT / "assets" / "images").rglob("*")):
+        if image.is_file() and image.suffix.lower() in (".webp", ".png", ".jpg", ".jpeg", ".svg"):
+            relative = image.relative_to(ROOT).as_posix()
+            if "BASE + '" + relative + "'" not in worker:
+                errors.append("Published image is missing from offline precache: " + relative)
 if not shell_script_path.exists():
     errors.append("Shared site shell script is missing")
 else:
