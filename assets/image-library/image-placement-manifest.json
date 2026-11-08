@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "Animal Information Hub UK",
-  "note": "Placement decisions checked against the original Somerset Animal Information Hub pages. Training image filenames follow the original section headings: Name Game, Sit, Paw, Tracking (no supplied illustration), Collar Grab, Puppy Car Travel, Drop to your Dog and Kong. General Information partner logos are grouped on animal-help-resources/.",
+  "note": "Placement decisions are matched to the original SAIS Animal Information Hub website. Homepage animal order: Dog, Cat, Chicken, Rabbit, Rodent, Reptile/Exotic, Horse, Wildlife. Reference-only contact sheets are not published as combined images.",
   "imageBase": "assets/images/",
   "items": [
     {
@@ -58,7 +58,7 @@
     {
       "source": "dogvomitguide.png",
       "target": "assets/images/dogs/dog-vomiting-guide.webp",
-      "page": "animal-care-training/health-safety-for-pets/ — Dog vomiting guide",
+      "page": "dog-information/ — Dog Vomit Guide",
       "alt": "Dog vomiting visual guide showing common appearance differences",
       "status": "placed-editorial-review",
       "note": "Check veterinary accuracy and preserve source attribution before publication."
@@ -66,7 +66,7 @@
     {
       "source": "adderbites.png",
       "target": "assets/images/wildlife/adder-bite-first-aid-guide.webp",
-      "page": "wildlife-information/ and animal-care-training/health-safety-for-pets/",
+      "page": "dog-information/ — Adder Bites Article",
       "alt": "Adder bite facts, risks and first-aid guidance infographic",
       "status": "placed-editorial-review",
       "note": "Verify current UK first-aid advice and attribution before publication."
@@ -120,7 +120,7 @@
     {
       "source": "allwindsfirstaid.png",
       "target": "assets/images/partners/allwinds-dog-first-aid.webp",
-      "page": "animal-help-resources/ — General Information / First Aid (External)",
+      "page": "animal-care-training/ — Core Resources / First Aid (External)",
       "alt": "Allwinds Dog First Aid logo",
       "status": "placed-permission-check"
     },
@@ -134,7 +134,7 @@
     {
       "source": "rescue2home.png",
       "target": "assets/images/partners/rescue-2-home-animal-support.webp",
-      "page": "animal-help-resources/ and relevant partner listings",
+      "page": "animal-care-training/ and animal-help-resources/ — Rescue to Home Animal Support",
       "alt": "Rescue 2 Home Animal Support logo",
       "status": "placed-permission-check",
       "note": "Only display if the relationship and permission are current."
@@ -150,7 +150,7 @@
     {
       "source": "heatth&saftey.png",
       "target": "assets/images/general/pet-health-and-safety.webp",
-      "page": "animal-care-training/health-safety-for-pets/",
+      "page": "animal-care-training/health-safety-for-pets/ — Health & Safety for Pets feature image",
       "alt": "Pet health and safety feature image",
       "status": "placed"
     },
@@ -228,7 +228,7 @@
     {
       "source": "animalrescuetips.png",
       "target": "assets/images/general/animal-rescue-tips.webp",
-      "page": "animal-care-training/rescue-tips/",
+      "page": "animal-help-resources/ — Rescue Tips landing card and dedicated Rescue Tips guide",
       "alt": "Animal rescue tips graphic",
       "status": "placed"
     },
@@ -256,7 +256,7 @@
     {
       "source": "dogdecoderbanner.png",
       "target": "assets/images/dogs/dog-decoder-banner.webp",
-      "page": "animal-help-resources/ — General Information / Dog Decoder",
+      "page": "animal-care-training/ — Specialists & Partners / Dog Decoder",
       "alt": "Dog Decoder educational banner",
       "status": "placed-permission-check"
     },
@@ -270,21 +270,21 @@
     {
       "source": "loastandfoundadivce.png",
       "target": "assets/images/lost-found/lost-and-found-advice.webp",
-      "page": "animal-help-resources/lost-found-animals/",
+      "page": "animal-help-resources/ — Lost & Found Advice landing card and Lost & Found guide",
       "alt": "Lost and found animal advice graphic",
       "status": "placed"
     },
     {
       "source": "nutravetlogo.png",
       "target": "assets/images/partners/nutravet.webp",
-      "page": "animal-help-resources/ — General Information / NutraVet Pet Health Articles",
+      "page": "animal-care-training/ — Specialists & Partners / NutraVet Pet Health Articles",
       "alt": "Nutravet logo",
       "status": "placed-permission-check"
     },
     {
       "source": "r2hlarge.png",
       "target": "assets/images/partners/rescue-2-home-large.webp",
-      "page": "animal-help-resources/",
+      "page": "animal-help-resources/ — Rescue to Home Animal Support",
       "alt": "Rescue 2 Home Animal Support supplied service graphic",
       "status": "placed-permission-check"
     },
