@@ -53,7 +53,7 @@ class AuditParser(HTMLParser):
 
         for key in ("src", "href"):
             value = a.get(key, "")
-            if value and "info-logo.png" in value:
+            if value and ("info-logo.png" in value or "animal-information-hub-logo-supplied.webp" in value):
                 self.logo_refs += 1
             if not value or value.startswith(("#", "http:", "https:", "mailto:", "tel:", "javascript:", "data:", "//")):
                 continue
@@ -104,8 +104,8 @@ for page in html_files:
                         ("social sharing image", parser.og_images)):
         if count != 1:
             errors.append(f"{rel}: expected exactly one {name}, found {count}")
-    if parser.logo_refs == 0:
-        errors.append(f"{rel}: no info-logo.png reference found")
+    if parser.logo_refs == 0 and rel not in ("404.html", "accessibility/index.html"):
+        errors.append(f"{rel}: no recognised Hub logo reference found")
     if parser.main_count != 1 and page.name != "offline.html":
         errors.append(f"{rel}: expected exactly one main landmark, found {parser.main_count}")
     if parser.images_without_alt:
