@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "Animal Information Hub UK",
-  "note": "Placement plan for all individual image assets supplied by the site owner. Optimised WebP derivatives are generated in assets/images. Contact-sheet screenshots are retained separately as review references and are not published as combined artwork.",
+  "note": "Placement decisions checked against the original Somerset Animal Information Hub pages. Training image filenames follow the original section headings: Name Game, Sit, Paw, Tracking (no supplied illustration), Collar Grab, Puppy Car Travel, Drop to your Dog and Kong. General Information partner logos are grouped on animal-help-resources/.",
   "imageBase": "assets/images/",
   "items": [
     {
@@ -42,9 +42,9 @@
     },
     {
       "source": "trainingpaw.jpg",
-      "target": "assets/images/dogs/dog-lead-training.webp",
-      "page": "animal-care-training/training-tips-advice/",
-      "alt": "Dog practising lead skills with a handler",
+      "target": "assets/images/dogs/dog-paw-training.webp",
+      "page": "animal-care-training/training-tips-advice/ — Teaching Paw",
+      "alt": "Dog offering a paw during a training exercise",
       "status": "placed"
     },
     {
@@ -58,7 +58,7 @@
     {
       "source": "dogvomitguide.png",
       "target": "assets/images/dogs/dog-vomiting-guide.webp",
-      "page": "animal-care-training/health-safety-for-pets/",
+      "page": "animal-care-training/health-safety-for-pets/ — Dog vomiting guide",
       "alt": "Dog vomiting visual guide showing common appearance differences",
       "status": "placed-editorial-review",
       "note": "Check veterinary accuracy and preserve source attribution before publication."
@@ -74,7 +74,7 @@
     {
       "source": "dominancetheory.png",
       "target": "assets/images/dogs/dog-dominance-theory-explainer.webp",
-      "page": "animal-care-training/training-tips-advice/",
+      "page": "dog-information/ — Dominance theory in dogs",
       "alt": "Infographic explaining misconceptions about dominance theory in dogs",
       "status": "placed-editorial-review",
       "note": "Review claims, references and image credit."
@@ -120,7 +120,7 @@
     {
       "source": "allwindsfirstaid.png",
       "target": "assets/images/partners/allwinds-dog-first-aid.webp",
-      "page": "animal-care-training/health-safety-for-pets/",
+      "page": "animal-help-resources/ — General Information / First Aid (External)",
       "alt": "Allwinds Dog First Aid logo",
       "status": "placed-permission-check"
     },
@@ -142,9 +142,9 @@
     {
       "source": "aqauticvegitation.png",
       "target": "assets/images/other/aquatic-vegetation-identification.webp",
-      "page": "hold for a relevant aquatic animal/fish resource page",
+      "page": "dog-information/ — Aquatic vegetation and algae",
       "alt": "Illustrated aquatic vegetation identification guide",
-      "status": "hold-for-topic",
+      "status": "placed",
       "note": "No obvious matching current page in the 32-page site."
     },
     {
@@ -157,7 +157,7 @@
     {
       "source": "puppytravel.png",
       "target": "assets/images/dogs/puppy-car-travel.webp",
-      "page": "dog-information/ or a future puppy travel article",
+      "page": "animal-care-training/training-tips-advice/ — How to help your puppy get used to car travelling",
       "alt": "Puppies travelling safely in the back of a car",
       "status": "placed"
     },
@@ -256,9 +256,9 @@
     {
       "source": "dogdecoderbanner.png",
       "target": "assets/images/dogs/dog-decoder-banner.webp",
-      "page": "animal-care-training/ specialist resources",
+      "page": "animal-help-resources/ — General Information / Dog Decoder",
       "alt": "Dog Decoder educational banner",
-      "status": "placed"
+      "status": "placed-permission-check"
     },
     {
       "source": "horse.png",
@@ -277,7 +277,7 @@
     {
       "source": "nutravetlogo.png",
       "target": "assets/images/partners/nutravet.webp",
-      "page": "animal-care-training/ specialist resources",
+      "page": "animal-help-resources/ — General Information / NutraVet Pet Health Articles",
       "alt": "Nutravet logo",
       "status": "placed-permission-check"
     },
