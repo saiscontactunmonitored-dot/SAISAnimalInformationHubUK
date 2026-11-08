@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sais-animal-hub-v30';
+const CACHE_NAME = 'sais-animal-hub-v31';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
   BASE + 'accessibility/',
@@ -38,6 +38,22 @@ const APP_SHELL = [
   BASE + 'assets/site-shell.js',
   BASE + 'icon.svg',
   BASE + 'info-logo.png',
+  BASE + 'assets/images/animals/dog.webp',
+  BASE + 'assets/images/animals/cat.webp',
+  BASE + 'assets/images/animals/chicken.webp',
+  BASE + 'assets/images/animals/horse.webp',
+  BASE + 'assets/images/animals/rabbit.webp',
+  BASE + 'assets/images/animals/rodents.webp',
+  BASE + 'assets/images/animals/reptile-exotic.webp',
+  BASE + 'assets/images/animals/wildlife.webp',
+  BASE + 'assets/images/dogs/dog-name-recognition-training.webp',
+  BASE + 'assets/images/dogs/dog-sit-training.webp',
+  BASE + 'assets/images/dogs/dog-down-position-training.webp',
+  BASE + 'assets/images/dogs/dog-collar-handling-training.webp',
+  BASE + 'assets/images/dogs/dog-lead-training.webp',
+  BASE + 'assets/images/dogs/choosing-kong-toy.webp',
+  BASE + 'assets/images/dogs/puppy-car-travel.webp',
+  BASE + 'assets/images/general/pet-health-and-safety.webp',
   BASE + 'manifest.json'
 ];
 self.addEventListener('install', event => {
