@@ -157,6 +157,27 @@ if (await menuButton.count() !== 1 || !(await menuButton.isVisible())) {
   if (!focusReturned) warnings.push("Mobile menu did not restore focus to its trigger after closing.");
 }
 
+// Exercise the same drawer interactions at tablet width, including single-open accordion behaviour.
+await page.setViewportSize({ width: 768, height: 1024 });
+await page.goto(BASE, { waitUntil: "domcontentloaded" });
+const tabletMenu = page.locator(".sais-mobile-menu-button");
+if (!(await tabletMenu.isVisible())) errors.push("Tablet menu button is not visible at 768px.");
+else {
+  await tabletMenu.click();
+  const tabletDrawer = page.locator("#sais-mobile-drawer");
+  const tabletGroups = page.locator(".sais-drawer-group-toggle");
+  if (await tabletDrawer.getAttribute("aria-hidden") !== "false") errors.push("Tablet navigation drawer did not open.");
+  if (await tabletGroups.count() >= 2) {
+    await tabletGroups.nth(0).click();
+    await tabletGroups.nth(1).click();
+    if (await tabletGroups.nth(0).getAttribute("aria-expanded") !== "false") errors.push("Opening a tablet menu group did not close the previous group.");
+    if (await tabletGroups.nth(1).getAttribute("aria-expanded") !== "true") errors.push("Tablet menu group did not open.");
+  }
+  const scrollState = await tabletDrawer.evaluate(node => ({scroll:node.scrollHeight,client:node.clientHeight,overflow:getComputedStyle(node).overflowY}));
+  if (scrollState.scroll > scrollState.client && !["auto","scroll"].includes(scrollState.overflow)) errors.push("Tablet navigation drawer cannot scroll when expanded.");
+  await page.keyboard.press("Escape");
+}
+
 // Exercise desktop dropdown keyboard dismissal.
 await page.setViewportSize({ width: 1365, height: 900 });
 await page.goto(BASE, { waitUntil: "domcontentloaded" });
@@ -200,11 +221,23 @@ await page.goto(BASE, { waitUntil: "domcontentloaded" });
 await page.evaluate(() => navigator.serviceWorker.ready);
 await page.reload({ waitUntil: "domcontentloaded" });
 await page.waitForFunction(() => !!navigator.serviceWorker?.controller, { timeout: 30000 }).catch(() => errors.push("Service worker did not take control of the page."));
+// Confirm install metadata and the standalone presentation hooks are present.
+const manifestResponse = await context.request.get(BASE + "manifest.json");
+if (!manifestResponse.ok()) errors.push("PWA manifest did not load.");
+else {
+  const manifest = await manifestResponse.json();
+  if (manifest.display !== "standalone") errors.push("PWA manifest is not configured for standalone display.");
+  if (!manifest.start_url?.startsWith("/SAISAnimalInformationHubUK/")) errors.push("PWA start URL is outside the project scope.");
+  if (!manifest.icons?.length) errors.push("PWA manifest has no install icons.");
+}
+const appMeta = await page.locator('meta[name="apple-mobile-web-app-capable"]').getAttribute("content").catch(() => null);
+if (appMeta !== "yes") warnings.push("Apple home-screen metadata was not found on the live page.");
+
 const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v30")) errors.push("Expected v29 offline cache was not created.");
+if (!workerState.caches.some(name => name === "sais-animal-hub-v38")) errors.push("Expected v38 offline cache was not created.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
 const offlinePage = BASE + "dog-information/";
