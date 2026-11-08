@@ -34,7 +34,7 @@ jobs:
             'rodents.png':'animals/rodents.webp','reptile-exotic.png':'animals/reptile-exotic.webp',
             'namegame.png':'dogs/dog-name-recognition-training.webp','sittraining.png':'dogs/dog-sit-training.webp',
             'droptodog.png':'dogs/dog-down-position-training.webp','collargrab.png':'dogs/dog-collar-handling-training.webp',
-            'trainingpaw.jpg':'dogs/dog-lead-training.webp','introducekong.png':'dogs/choosing-kong-toy.webp',
+            'trainingpaw.jpg':'dogs/dog-paw-training.webp','introducekong.png':'dogs/choosing-kong-toy.webp',
             'dogvomitguide.png':'dogs/dog-vomiting-guide.webp','adderbites.png':'wildlife/adder-bite-first-aid-guide.webp',
             'dominancetheory.png':'dogs/dog-dominance-theory-explainer.webp','allaboutdogfood.png':'dogs/dog-food-resource-graphic.webp',
             'felinegrimiclevel.png':'cats/feline-grimace-scale-resource.webp','rabbitwelfare.png':'partners/rabbit-welfare-association-fund.webp',
