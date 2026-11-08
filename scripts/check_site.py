@@ -171,7 +171,7 @@ else:
         if expected not in worker:
             errors.append(f"Offline app shell does not precache page: {rel}")
 
-    for asset in ("assets/css/site.css", "assets/css/redesign-2026.css",
+    for asset in ("assets/css/site.css", "assets/css/redesign-2026.css", "assets/css/launch-polish.css",
                   "assets/site-shell.css", "assets/site-shell.js",
                   "info-logo.png", "icon.svg", "manifest.json"):
         if not (ROOT / asset).exists():
