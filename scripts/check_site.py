@@ -237,7 +237,8 @@ for page in html_files:
     elif description and og_description != description:
         errors.append(f"{rel}: Open Graph description does not match SEO description")
 
-    is_nonindexable = rel in ("404.html", "offline.html")
+    has_noindex = bool(re.search(r'<meta\b[^>]*name="robots"[^>]*content="[^"]*noindex', source, re.IGNORECASE))
+    is_nonindexable = rel in ("404.html", "offline.html") or has_noindex
     if is_nonindexable:
         if not re.search(r'<meta\b[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*noindex', source, re.IGNORECASE):
             errors.append(f"{rel}: must be marked noindex")
