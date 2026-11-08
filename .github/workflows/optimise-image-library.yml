@@ -1,0 +1,76 @@
+name: Optimise supplied image library
+
+on:
+  push:
+    paths:
+      - 'assets/image-library/**'
+      - '.github/workflows/optimise-image-library.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  optimise:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install image optimiser
+        run: npm install --no-save sharp
+      - name: Convert approved image assets to WebP
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const sharp = require('sharp');
+          const base = 'assets/image-library';
+          const mappings = {
+            'dog.png': 'assets/images/animals/dog.webp',
+            'cat.png': 'assets/images/animals/cat.webp',
+            'chicken.png': 'assets/images/animals/chicken.webp',
+            'horse.png': 'assets/images/animals/horse.webp',
+            'wildlife.png': 'assets/images/animals/wildlife.webp',
+            'rabbit.png': 'assets/images/animals/rabbit.webp',
+            'rodents.png': 'assets/images/animals/rodents.webp',
+            'reptile-exotic.png': 'assets/images/animals/reptile-exotic.webp',
+            'namegame.png': 'assets/images/dogs/dog-name-recognition-training.webp',
+            'sittraining.png': 'assets/images/dogs/dog-sit-training.webp',
+            'droptodog.png': 'assets/images/dogs/dog-down-position-training.webp',
+            'collargrab.png': 'assets/images/dogs/dog-collar-handling-training.webp',
+            'trainingpaw.jpg': 'assets/images/dogs/dog-lead-training.webp',
+            'introducekong.png': 'assets/images/dogs/choosing-kong-toy.webp',
+            'heatth&saftey.png': 'assets/images/general/pet-health-and-safety.webp',
+            'puppytravel.png': 'assets/images/dogs/puppy-car-travel.webp'
+          };
+          (async () => {
+            for (const [source, destination] of Object.entries(mappings)) {
+              const input = path.join(base, source);
+              if (!fs.existsSync(input)) throw new Error('Missing supplied image: ' + input);
+              fs.mkdirSync(path.dirname(destination), { recursive: true });
+              await sharp(input)
+                .rotate()
+                .resize({ width: 1600, height: 1200, fit: 'inside', withoutEnlargement: true })
+                .webp({ quality: 78, effort: 5 })
+                .toFile(destination);
+              const size = fs.statSync(destination).size;
+              console.log(source + ' -> ' + destination + ' (' + size + ' bytes)');
+            }
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+      - name: Commit optimised images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/images
+          if git diff --cached --quiet; then
+            echo "No optimised image changes to commit."
+          else
+            git commit -m "Add optimised WebP animal and training images"
+            git push
+          fi
