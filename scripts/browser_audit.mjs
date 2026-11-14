@@ -321,8 +321,8 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v40")) errors.push("Expected v40 offline cache was not created.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v40")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!workerState.caches.some(name => name === "sais-animal-hub-v41")) errors.push("Expected v41 offline cache was not created.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v41")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
