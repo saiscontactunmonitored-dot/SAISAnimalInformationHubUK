@@ -238,6 +238,28 @@ if (JSON.stringify(desktopDestinations) !== JSON.stringify(mobileDestinations.so
   errors.push("Mobile hamburger dropdown destinations do not match desktop dropdown destinations.");
 }
 
+// Confirm the installed-PWA class does not override the rebuilt responsive breakpoints.
+await page.setViewportSize({ width: 1365, height: 900 });
+await page.goto(BASE, { waitUntil: "domcontentloaded" });
+await page.waitForFunction(() => [...document.styleSheets].some(sheet => sheet.href && sheet.href.includes("assets/css/navigation-rebuild-2026.css")));
+await page.evaluate(() => document.documentElement.classList.add("sais-standalone"));
+let standaloneDesktop = await page.evaluate(() => ({
+  nav: getComputedStyle(document.querySelector(".sais-navigation-inner")).display,
+  button: getComputedStyle(document.querySelector(".sais-mobile-menu-button")).display
+}));
+if (standaloneDesktop.nav === "none" || standaloneDesktop.button !== "none") {
+  errors.push("Installed PWA desktop navigation does not use the desktop layout.");
+}
+await page.setViewportSize({ width: 390, height: 844 });
+let standaloneMobile = await page.evaluate(() => ({
+  nav: getComputedStyle(document.querySelector(".sais-navigation-inner")).display,
+  button: getComputedStyle(document.querySelector(".sais-mobile-menu-button")).display
+}));
+if (standaloneMobile.nav !== "none" || standaloneMobile.button === "none") {
+  errors.push("Installed PWA mobile navigation does not use the hamburger layout.");
+}
+await page.evaluate(() => document.documentElement.classList.remove("sais-standalone"));
+
 // Exercise desktop dropdown keyboard dismissal.
 await page.setViewportSize({ width: 1365, height: 900 });
 await page.goto(BASE, { waitUntil: "domcontentloaded" });
