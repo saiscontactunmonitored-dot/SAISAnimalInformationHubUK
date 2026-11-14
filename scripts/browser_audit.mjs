@@ -178,6 +178,66 @@ else {
   await page.keyboard.press("Escape");
 }
 
+// Check the full desktop navigation and every dropdown at common laptop/desktop widths.
+for (const width of [1200, 1280, 1365, 1649]) {
+  await page.setViewportSize({ width, height: 900 });
+  await page.goto(BASE, { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => [...document.styleSheets].some(sheet => sheet.href && sheet.href.includes("assets/css/navigation-rebuild-2026.css")));
+  const desktopState = await page.evaluate(() => {
+    const nav = document.querySelector(".sais-navigation-inner");
+    const button = document.querySelector(".sais-mobile-menu-button");
+    const rect = nav?.getBoundingClientRect();
+    return {
+      navVisible: !!nav && getComputedStyle(nav).display !== "none" && !!rect && rect.width > 0,
+      buttonVisible: !!button && getComputedStyle(button).display !== "none" && button.getBoundingClientRect().width > 0,
+      menus: document.querySelectorAll(".sais-menu").length,
+      overflow: document.documentElement.scrollWidth > window.innerWidth + 2
+    };
+  });
+  if (!desktopState.navVisible) errors.push("Desktop navigation is hidden at " + width + "px.");
+  if (desktopState.buttonVisible) errors.push("Hamburger is showing instead of desktop navigation at " + width + "px.");
+  if (desktopState.menus !== 4) errors.push("Expected four desktop dropdowns at " + width + "px, found " + desktopState.menus + ".");
+  if (desktopState.overflow) errors.push("Desktop navigation causes horizontal overflow at " + width + "px.");
+  for (let i = 0; i < desktopState.menus; i++) {
+    const menu = page.locator(".sais-menu").nth(i);
+    const summary = menu.locator("summary");
+    await summary.click();
+    const panel = menu.locator(".sais-menu-panel");
+    if (!(await panel.isVisible())) {
+      errors.push("Desktop dropdown " + (i + 1) + " did not open at " + width + "px.");
+      continue;
+    }
+    const panelState = await panel.evaluate(node => {
+      const rect = node.getBoundingClientRect();
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, links: node.querySelectorAll("a").length };
+    });
+    if (panelState.left < -1 || panelState.right > width + 1 || panelState.top < -1 || panelState.bottom > 901) {
+      errors.push("Desktop dropdown " + (i + 1) + " is outside the viewport at " + width + "px: " + JSON.stringify(panelState));
+    }
+    if (!panelState.links) errors.push("Desktop dropdown " + (i + 1) + " has no links at " + width + "px.");
+    await page.keyboard.press("Escape");
+    if (await menu.evaluate(node => node.open)) errors.push("Escape did not close desktop dropdown " + (i + 1) + " at " + width + "px.");
+  }
+}
+
+// Verify the mobile hamburger exposes the same destinations as all desktop dropdowns.
+await page.setViewportSize({ width: 1365, height: 900 });
+await page.goto(BASE, { waitUntil: "domcontentloaded" });
+await page.waitForFunction(() => [...document.styleSheets].some(sheet => sheet.href && sheet.href.includes("assets/css/navigation-rebuild-2026.css")));
+const desktopDestinations = await page.locator(".sais-menu-panel a").evaluateAll(nodes => nodes.map(node => node.href).sort());
+await page.setViewportSize({ width: 390, height: 844 });
+await page.goto(BASE, { waitUntil: "domcontentloaded" });
+await page.locator(".sais-mobile-menu-button").click();
+const mobileDestinations = [];
+for (const toggle of await page.locator(".sais-drawer-group-toggle").all()) {
+  await toggle.click();
+  const panelId = await toggle.getAttribute("aria-controls");
+  if (panelId) mobileDestinations.push(...await page.locator("#" + panelId + " a").evaluateAll(nodes => nodes.map(node => node.href)));
+}
+if (JSON.stringify(desktopDestinations) !== JSON.stringify(mobileDestinations.sort())) {
+  errors.push("Mobile hamburger dropdown destinations do not match desktop dropdown destinations.");
+}
+
 // Exercise desktop dropdown keyboard dismissal.
 await page.setViewportSize({ width: 1365, height: 900 });
 await page.goto(BASE, { waitUntil: "domcontentloaded" });
@@ -230,6 +290,8 @@ else {
   if (!manifest.start_url?.startsWith("/SAISAnimalInformationHubUK/")) errors.push("PWA start URL is outside the project scope.");
   if (!manifest.icons?.length) errors.push("PWA manifest has no install icons.");
 }
+const navigationCssLoaded = await page.evaluate(() => [...document.styleSheets].some(sheet => sheet.href && sheet.href.includes("assets/css/navigation-rebuild-2026.css")));
+if (!navigationCssLoaded) errors.push("Rebuilt navigation stylesheet did not load on the live page.");
 const appMeta = await page.locator('meta[name="apple-mobile-web-app-capable"]').getAttribute("content").catch(() => null);
 if (appMeta !== "yes") warnings.push("Apple home-screen metadata was not found on the live page.");
 
@@ -237,7 +299,9 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v38")) errors.push("Expected v38 offline cache was not created.");
+if (!workerState.caches.some(name => name === "sais-animal-hub-v40")) errors.push("Expected v40 offline cache was not created.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v40")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
 const offlinePage = BASE + "dog-information/";
