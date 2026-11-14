@@ -81,6 +81,17 @@ def resolve_local(page, value, rel, kind):
 html_files = sorted(ROOT.rglob("*.html"))
 if not html_files:
     errors.append("No HTML pages found")
+navigation_css_path = ROOT / "assets" / "css" / "navigation-rebuild-2026.css"
+if not navigation_css_path.exists():
+    errors.append("Navigation stylesheet is missing")
+else:
+    navigation_css = navigation_css_path.read_text(encoding="utf-8")
+    for feature in ("sais-donate-button", "sais-donation-overlay",
+                    "sais-donation-dialog", "sais-donation-primary"):
+        if feature not in navigation_css:
+            errors.append(f"Navigation stylesheet is missing Donate styling: {feature}")
+
+
 
 for page in html_files:
     parser = AuditParser()
@@ -200,7 +211,7 @@ else:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
     for feature in ("sais-header-top", "sais-header-clock-panel", "sais-header-brand",
                     "sais-header-search-panel", "sais-header-tagline", "sais-donate-button",
-                    "sais-donation-overlay", "saisOpenDonationModal",
+                    "sais-donation-overlay", "saisOpenDonationModal", "buildDonationModal",
                     "https://www.paypal.com/pools/c/9uo95OuMew"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing rebuilt header feature: {feature}")
