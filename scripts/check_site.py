@@ -172,7 +172,7 @@ else:
             errors.append(f"Offline app shell does not precache page: {rel}")
 
     for asset in ("assets/css/site.css", "assets/css/redesign-2026.css", "assets/css/launch-polish.css",
-                  "assets/site-shell.css", "assets/site-shell.js",
+                  "assets/site-shell.css", "assets/css/navigation-rebuild-2026.css", "assets/site-shell.js",
                   "info-logo.png", "icon.svg", "manifest.json"):
         if not (ROOT / asset).exists():
             errors.append(f"Offline app-shell asset is missing: {asset}")
@@ -180,8 +180,10 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v39" not in worker:
-        errors.append("Service worker cache must be v38 for the launch release")
+    if "sais-animal-hub-v40" not in worker:
+        errors.append("Service worker cache must be v40 for the navigation rebuild")
+    if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
+        errors.append("Service worker does not precache the rebuilt navigation stylesheet")
     for image in sorted((ROOT / "assets" / "images").rglob("*")):
         if image.is_file() and image.suffix.lower() in (".webp", ".png", ".jpg", ".jpeg", ".svg"):
             relative = image.relative_to(ROOT).as_posix()
@@ -192,7 +194,8 @@ if not shell_script_path.exists():
 else:
     shell_script = shell_script_path.read_text(encoding="utf-8")
     for feature in ("beforeinstallprompt", "sais-install-prompt",
-                    "sais-install-footer-trigger", "serviceWorker.register"):
+                    "sais-install-footer-trigger", "serviceWorker.register",
+                    "assets/css/navigation-rebuild-2026.css"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
 
