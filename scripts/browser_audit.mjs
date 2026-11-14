@@ -20,7 +20,7 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v43");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v44");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
@@ -100,6 +100,9 @@ for (const url of urls) {
       partsPresent: !!headerTop && !!headerBrand && !!headerClock && !!headerSearch && !!headerTagline,
       centeredBrandDelta: brandRect ? Math.abs((brandRect.left + brandRect.width / 2) - window.innerWidth / 2) : Infinity,
       clockVisible: !!headerClock && headerClock.getBoundingClientRect().width > 0,
+      clockBackground: headerClock ? getComputedStyle(headerClock).backgroundColor : "",
+      clockLocation: headerClock?.querySelector(".sais-clock-location")?.textContent?.trim() || "",
+      clockDateColour: headerClock ? getComputedStyle(headerClock.querySelector("#dateTime")).color : "",
       searchVisible: !!headerSearch && headerSearch.getBoundingClientRect().width > 0
     };
     return {
@@ -118,6 +121,11 @@ for (const url of urls) {
   if (!result.lang) errors.push("Missing document language: " + url);
   if (!result.header.partsPresent || !result.header.clockVisible || !result.header.searchVisible) {
     errors.push("Screenshot-style shared header is incomplete on " + url);
+  }
+  if (result.header.clockLocation !== "London, UK" ||
+      result.header.clockBackground !== "rgb(255, 255, 255)" ||
+      result.header.clockDateColour !== "rgb(23, 23, 23)") {
+    errors.push("Clock location or white-background/black-date styling is incorrect on " + url);
   }
   if (result.header.centeredBrandDelta > 3) {
     errors.push("Hub logo panel is not centred on " + url + " (offset " + Math.round(result.header.centeredBrandDelta) + "px).");
@@ -349,8 +357,8 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v43")) errors.push("Expected v43 offline cache was not created.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v43")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!workerState.caches.some(name => name === "sais-animal-hub-v44")) errors.push("Expected v43 offline cache was not created.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v44")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
