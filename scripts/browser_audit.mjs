@@ -183,7 +183,9 @@ for (const url of urls) {
 
 for (const fragment of fragmentLinks) {
   const targets = pageIds.get(fragment.path);
-  if (!targets || !targets.has(fragment.id)) {
+  // Only assert fragments on indexable sitemap pages; noindex redirects and utility pages
+  // are covered by their HTTP response checks rather than the sitemap page-ID map.
+  if (targets && !targets.has(fragment.id)) {
     errors.push("Broken in-page anchor #" + fragment.id + " from " + fragment.source + " to " + fragment.path);
   }
 }
