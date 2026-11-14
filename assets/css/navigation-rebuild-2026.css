@@ -738,7 +738,7 @@
    This keeps the pattern visible on every page without touching the dark navigation. */
 @media(min-width:1200px){
   .sais-header-top{
-    background-color:#fff!important;
+    background-color:#edf3f6!important;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='170' viewBox='0 0 190 170'%3E%3Cg fill='%23173746' fill-opacity='.045'%3E%3Cellipse cx='42' cy='83' rx='13' ry='10' transform='rotate(-25 42 83)'/%3E%3Cellipse cx='28' cy='61' rx='5' ry='8' transform='rotate(-20 28 61)'/%3E%3Cellipse cx='43' cy='53' rx='5' ry='8' transform='rotate(-5 43 53)'/%3E%3Cellipse cx='58' cy='58' rx='5' ry='8' transform='rotate(15 58 58)'/%3E%3Cellipse cx='70' cy='70' rx='5' ry='8' transform='rotate(28 70 70)'/%3E%3Cellipse cx='139' cy='147' rx='12' ry='9' transform='rotate(20 139 147)'/%3E%3Cellipse cx='119' cy='133' rx='5' ry='8' transform='rotate(-18 119 133)'/%3E%3Cellipse cx='133' cy='121' rx='5' ry='8' transform='rotate(-5 133 121)'/%3E%3Cellipse cx='149' cy='122' rx='5' ry='8' transform='rotate(12 149 122)'/%3E%3Cellipse cx='163' cy='135' rx='5' ry='8' transform='rotate(25 163 135)'/%3E%3C/g%3E%3C/svg%3E")!important;
     background-repeat:repeat!important;
     background-position:center top!important;
