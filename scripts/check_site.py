@@ -180,7 +180,7 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v38" not in worker:
+    if "sais-animal-hub-v39" not in worker:
         errors.append("Service worker cache must be v38 for the launch release")
     for image in sorted((ROOT / "assets" / "images").rglob("*")):
         if image.is_file() and image.suffix.lower() in (".webp", ".png", ".jpg", ".jpeg", ".svg"):
