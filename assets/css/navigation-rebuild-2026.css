@@ -744,3 +744,222 @@
     background-position:center top!important;
   }
 }
+
+
+/* Site-wide donation prompt and fundraiser link */
+.sais-donate-button{
+ display:inline-flex!important;
+ flex:0 0 auto!important;
+ align-items:center!important;
+ justify-content:center!important;
+ min-height:42px!important;
+ min-width:82px!important;
+ margin:0 0 0 5px!important;
+ padding:9px 16px!important;
+ border:1px solid #efa451!important;
+ border-radius:9px!important;
+ background:#efa451!important;
+ color:#173746!important;
+ font:850 12px/1.2 system-ui,sans-serif!important;
+ text-decoration:none!important;
+ white-space:nowrap!important;
+ cursor:pointer!important;
+ box-shadow:0 3px 9px rgba(8,28,37,.12)!important;
+ transition:background .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+.sais-donate-button:hover,.sais-donate-button:focus-visible{
+ background:#f7bd7d!important;
+ border-color:#f7bd7d!important;
+ color:#173746!important;
+ transform:translateY(-1px);
+ outline:3px solid rgba(239,164,81,.38)!important;
+ outline-offset:2px!important;
+}
+.sais-donate-button--drawer{display:none!important}
+@media(max-width:1300px){
+ .sais-donate-button--desktop{display:none!important}
+ .sais-donate-button--drawer{
+  display:flex!important;
+  width:100%!important;
+  min-height:50px!important;
+  margin:12px 0 6px!important;
+  font-size:14px!important;
+ }
+}
+.sais-donation-overlay{
+ position:fixed!important;
+ inset:0!important;
+ z-index:5000!important;
+ display:grid!important;
+ place-items:center!important;
+ padding:20px!important;
+ box-sizing:border-box!important;
+ background:rgba(8,25,33,.72)!important;
+ backdrop-filter:blur(4px)!important;
+}
+.sais-donation-overlay[hidden]{display:none!important}
+.sais-donation-dialog{
+ position:relative!important;
+ display:flex!important;
+ flex-direction:column!important;
+ width:min(680px,100%)!important;
+ max-height:min(88dvh,900px)!important;
+ margin:0!important;
+ overflow:hidden!important;
+ border:1px solid #d7e2e6!important;
+ border-radius:18px!important;
+ background:#fff!important;
+ color:#173746!important;
+ box-shadow:0 24px 80px rgba(4,19,26,.36)!important;
+}
+.sais-donation-head{
+ display:flex!important;
+ align-items:flex-start!important;
+ justify-content:space-between!important;
+ gap:18px!important;
+ padding:24px 26px 20px!important;
+ border-bottom:3px solid #efa451!important;
+ background:#173746!important;
+ color:#fff!important;
+}
+.sais-donation-heading{min-width:0!important}
+.sais-donation-eyebrow{
+ display:block!important;
+ margin:0 0 7px!important;
+ color:#f7bd7d!important;
+ font-size:10px!important;
+ font-weight:900!important;
+ letter-spacing:1.5px!important;
+}
+.sais-donation-head h2{
+ margin:0!important;
+ color:#fff!important;
+ font-size:clamp(19px,3vw,25px)!important;
+ font-weight:850!important;
+ line-height:1.2!important;
+}
+.sais-donation-close{
+ flex:0 0 40px!important;
+ width:40px!important;
+ height:40px!important;
+ min-width:40px!important;
+ min-height:40px!important;
+ padding:0!important;
+ border:1px solid rgba(255,255,255,.35)!important;
+ border-radius:10px!important;
+ background:rgba(255,255,255,.1)!important;
+ color:#fff!important;
+ font-size:27px!important;
+ line-height:1!important;
+ cursor:pointer!important;
+}
+.sais-donation-close:hover,.sais-donation-close:focus-visible{background:rgba(255,255,255,.2)!important;outline:3px solid #efa451!important;outline-offset:2px!important}
+.sais-donation-content{
+ flex:1 1 auto!important;
+ min-height:0!important;
+ padding:22px 26px 8px!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ overscroll-behavior:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+}
+.sais-donation-content h3{
+ margin:18px 0 8px!important;
+ color:#173746!important;
+ font-size:16px!important;
+ font-weight:850!important;
+ line-height:1.3!important;
+}
+.sais-donation-content h3:first-child{margin-top:0!important}
+.sais-donation-content p{
+ margin:0 0 13px!important;
+ color:#43575f!important;
+ font-size:14px!important;
+ line-height:1.7!important;
+}
+.sais-donation-list{
+ display:grid!important;
+ gap:7px!important;
+ margin:0 0 16px!important;
+ padding:0 0 0 21px!important;
+ color:#304c56!important;
+}
+.sais-donation-list li{
+ padding-left:3px!important;
+ color:#304c56!important;
+ font-size:14px!important;
+ line-height:1.55!important;
+}
+.sais-donation-list li::marker{color:#d88435!important}
+.sais-donation-how{
+ margin:14px 0!important;
+ padding:14px 16px!important;
+ border:1px solid #dce7e9!important;
+ border-left:4px solid #efa451!important;
+ border-radius:10px!important;
+ background:#f3f7f8!important;
+}
+.sais-donation-how h3{margin:0 0 5px!important}
+.sais-donation-how p{margin:0!important}
+.sais-donation-thanks{font-weight:650!important}
+.sais-donation-actions{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:flex-end!important;
+ flex-wrap:wrap!important;
+ gap:10px!important;
+ padding:16px 26px 22px!important;
+ border-top:1px solid #e5ecee!important;
+ background:#fbfcfc!important;
+}
+.sais-donation-primary,.sais-donation-secondary{
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ min-height:46px!important;
+ padding:11px 18px!important;
+ border:1px solid transparent!important;
+ border-radius:9px!important;
+ font:850 13px/1.3 system-ui,sans-serif!important;
+ text-align:center!important;
+ text-decoration:none!important;
+ cursor:pointer!important;
+}
+.sais-donation-primary{
+ background:#efa451!important;
+ border-color:#efa451!important;
+ color:#173746!important;
+}
+.sais-donation-primary:hover,.sais-donation-primary:focus-visible{
+ background:#f7bd7d!important;
+ border-color:#f7bd7d!important;
+ color:#173746!important;
+ outline:3px solid rgba(239,164,81,.35)!important;
+ outline-offset:2px!important;
+}
+.sais-donation-secondary{
+ border-color:#cbd9de!important;
+ background:#fff!important;
+ color:#294652!important;
+}
+.sais-donation-secondary:hover,.sais-donation-secondary:focus-visible{
+ background:#edf3f5!important;
+ border-color:#9fb5be!important;
+ outline:3px solid #9fb5be!important;
+ outline-offset:2px!important;
+}
+body.sais-donation-open{overflow:hidden!important}
+@media(max-width:600px){
+ .sais-donation-overlay{padding:10px!important;align-items:center!important}
+ .sais-donation-dialog{width:100%!important;max-height:calc(100dvh - 20px)!important;border-radius:14px!important}
+ .sais-donation-head{padding:17px 17px 15px!important;gap:10px!important}
+ .sais-donation-head h2{font-size:19px!important}
+ .sais-donation-close{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important}
+ .sais-donation-content{padding:18px 17px 7px!important}
+ .sais-donation-content p,.sais-donation-list li{font-size:13px!important}
+ .sais-donation-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:13px 17px 17px!important}
+ .sais-donation-primary,.sais-donation-secondary{width:100%!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .sais-donate-button,.sais-donation-primary,.sais-donation-secondary{transition:none!important}
+}
