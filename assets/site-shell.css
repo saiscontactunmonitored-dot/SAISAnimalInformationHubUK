@@ -649,12 +649,12 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
 
 
 /* 14 November 2026 — prevent the desktop navigation from clipping at laptop/tablet widths */
-@media (max-width:1200px){
+@media (max-width:1300px){
  .sais-navigation{display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:64px!important}
  .sais-mobile-menu-button{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;min-width:112px!important;min-height:46px!important;margin:9px 14px!important}
  .sais-navigation-inner{display:none!important}
 }
-@media (min-width:1201px){
+@media (min-width:1301px){
  .sais-mobile-menu-button{display:none!important}
  .sais-navigation-inner{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;width:min(1500px,calc(100% - 40px))!important;gap:clamp(2px,.35vw,6px)!important}
  .sais-navigation-inner>a,.sais-menu>summary{padding-left:clamp(7px,.75vw,13px)!important;padding-right:clamp(7px,.75vw,13px)!important;font-size:clamp(11px,.82vw,13px)!important;white-space:nowrap!important}
