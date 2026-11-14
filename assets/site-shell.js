@@ -97,7 +97,12 @@ function buildShell(){
  dropdown(inner,"Care topics",groups.care.slice(1));
  dropdown(inner,"More resources",groups.resources.slice(1));
  dropdown(inner,"Articles",groups.articles.slice(1));
+ var desktopDonate=make("button","sais-donate-button sais-donate-button--desktop","Donate");
+ desktopDonate.type="button";
+ desktopDonate.setAttribute("aria-haspopup","dialog");
+ desktopDonate.setAttribute("aria-label","Donate to support Somerset Animal Information Services");
  Array.from(inner.querySelectorAll(".sais-menu")).forEach(function(menu,i){if(i>=2)menu.classList.add("sais-menu--right");});
+ inner.appendChild(desktopDonate);
  nav.appendChild(inner);
 
  var menuButton=make("button","sais-mobile-menu-button");
@@ -174,6 +179,11 @@ function buildShell(){
   section.appendChild(list);
   drawerBody.appendChild(section);
  });
+ var drawerDonate=make("button","sais-donate-button sais-donate-button--drawer","Donate");
+ drawerDonate.type="button";
+ drawerDonate.setAttribute("aria-haspopup","dialog");
+ drawerDonate.setAttribute("aria-label","Donate to support Somerset Animal Information Services");
+ drawerBody.appendChild(drawerDonate);
  drawer.appendChild(drawerBody);
 
  shell.appendChild(top);
@@ -209,6 +219,12 @@ function buildShell(){
   }
  });
  window.addEventListener("resize",function(){if(window.innerWidth>1199&&drawer.classList.contains("is-open"))setDrawer(false,false);});
+ function openDonation(trigger){
+  if(drawer.classList.contains("is-open"))setDrawer(false,false);
+  if(window.saisOpenDonationModal)window.saisOpenDonationModal(trigger);
+ }
+ desktopDonate.addEventListener("click",function(){openDonation(desktopDonate);});
+ drawerDonate.addEventListener("click",function(){openDonation(drawerDonate);});
 
  var anchor=announcement||mast;
  if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(shell,anchor);
@@ -220,6 +236,92 @@ function buildShell(){
  if(announcement&&announcement.isConnected)announcement.remove();
  if(mast&&mast.isConnected)mast.remove();
 }
+
+function buildDonationModal(){
+ if(document.getElementById("sais-donation-overlay"))return;
+ var overlay=make("div","sais-donation-overlay");
+ overlay.id="sais-donation-overlay";
+ overlay.hidden=true;
+ var dialog=make("section","sais-donation-dialog");
+ dialog.setAttribute("role","dialog");
+ dialog.setAttribute("aria-modal","true");
+ dialog.setAttribute("aria-labelledby","sais-donation-title");
+ dialog.setAttribute("aria-describedby","sais-donation-intro");
+ dialog.tabIndex=-1;
+ var head=make("div","sais-donation-head");
+ var heading=make("div","sais-donation-heading");
+ heading.appendChild(make("span","sais-donation-eyebrow","SUPPORT SAIS"));
+ var title=make("h2","","Help keep Somerset Animal Information Services running");
+ title.id="sais-donation-title";
+ heading.appendChild(title);
+ var close=make("button","sais-donation-close","×");
+ close.type="button";
+ close.setAttribute("aria-label","Close donation information");
+ head.appendChild(heading);
+ head.appendChild(close);
+ dialog.appendChild(head);
+ var content=make("div","sais-donation-content");
+ content.appendChild(make("h3","","Why your support matters"));
+ var intro=make("p","","Since 2023, Somerset Animal Information Services (SAIS) has grown from a small project into an independent service helping animal owners, carers and businesses find useful information, support and trusted animal-related services across Somerset and beyond.");
+ intro.id="sais-donation-intro";
+ content.appendChild(intro);
+ content.appendChild(make("p","","We provide a free animal business directory, an Animal Information Hub and helpful resources. Our aim is to keep everything free: no fees for business listings, no paid memberships and no information hidden behind a paywall."));
+ content.appendChild(make("h3","","Your donation helps us:"));
+ var list=make("ul","sais-donation-list");
+ [
+  "Keep our websites, information hub and directory online.",
+  "Cover hosting, domain renewals and ongoing maintenance.",
+  "Improve and develop the Animal Information Hub.",
+  "Expand useful resources for animal owners and carers.",
+  "Keep the animal business directory free for listed businesses."
+ ].forEach(function(item){list.appendChild(make("li","",item));});
+ content.appendChild(list);
+ content.appendChild(make("p","","Every penny raised will go towards the ongoing running and development of SAIS. Keeping the service available takes time, dedication and money, and your support helps us continue that work."));
+ var how=make("div","sais-donation-how");
+ how.appendChild(make("h3","","How to donate"));
+ how.appendChild(make("p","","Select the button below to visit our PayPal fundraiser. You can contribute there with an amount that suits you. Every donation, large or small, makes a difference."));
+ content.appendChild(how);
+ content.appendChild(make("p","sais-donation-thanks","Unable to donate? Sharing the fundraiser with others is another great way to help. Thank you for being part of our journey."));
+ var actions=make("div","sais-donation-actions");
+ var paypal=make("a","sais-donation-primary","Continue to PayPal fundraiser");
+ paypal.href="https://www.paypal.com/pools/c/9uo95OuMew";
+ paypal.setAttribute("aria-label","Open the Somerset Animal Information Services PayPal fundraiser");
+ var later=make("button","sais-donation-secondary","Maybe later");
+ later.type="button";
+ actions.appendChild(paypal);
+ actions.appendChild(later);
+ dialog.appendChild(content);
+ dialog.appendChild(actions);
+ overlay.appendChild(dialog);
+ document.body.appendChild(overlay);
+ var lastTrigger=null;
+ function closeModal(restoreFocus){
+  overlay.hidden=true;
+  document.body.classList.remove("sais-donation-open");
+  if(restoreFocus!==false&&lastTrigger&&lastTrigger.isConnected)lastTrigger.focus();
+ }
+ window.saisOpenDonationModal=function(trigger){
+  lastTrigger=trigger||document.activeElement;
+  overlay.hidden=false;
+  document.body.classList.add("sais-donation-open");
+  close.focus();
+ };
+ close.addEventListener("click",function(){closeModal(true);});
+ later.addEventListener("click",function(){closeModal(true);});
+ overlay.addEventListener("click",function(e){if(e.target===overlay)closeModal(true);});
+ document.addEventListener("keydown",function(e){
+  if(overlay.hidden)return;
+  if(e.key==="Escape"){e.preventDefault();closeModal(true);return;}
+  if(e.key==="Tab"){
+   var focusables=Array.from(dialog.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(function(n){return !n.hidden;});
+   if(!focusables.length)return;
+   var first=focusables[0],last=focusables[focusables.length-1];
+   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  }
+ });
+}
+
 function buildFooter(){
  Array.from(document.querySelectorAll("footer,.hub-footer,.foot")).forEach(function(n){if(n.isConnected)n.remove();});
  var f=make("footer","sais-footer"),wrap=make("div","sais-footer-inner"),top=make("div","sais-footer-top");
@@ -325,6 +427,6 @@ function setupInstallExperience(){
  window.addEventListener("appinstalled",function(){deferredPrompt=null;closeDialog(true);});
  window.setTimeout(function(){if(!shown&&(isIOS||deferredPrompt)&&!dismissed())show(false);},10000);
 }
-function init(){loadStyles();registerOfflineSupport();setupInstallExperience();var skip=document.querySelector(".skip-link,.sais-skip-link");if(skip)skip.href="#main-content";else{skip=make("a","sais-skip-link","Skip to main content");skip.href="#main-content";document.body.insertBefore(skip,document.body.firstChild);}var main=document.querySelector("main");if(main&&!main.id)main.id="main-content";buildShell();buildFooter();syncClockVisibility();var clockMedia=window.matchMedia("(max-width: 1199px)");if(clockMedia.addEventListener)clockMedia.addEventListener("change",syncClockVisibility);else if(clockMedia.addListener)clockMedia.addListener(syncClockVisibility);improveReadabilityAndTopButton();bindSearch();bindMenus();updateClock();setInterval(updateClock,30000);}
+function init(){loadStyles();registerOfflineSupport();setupInstallExperience();buildDonationModal();var skip=document.querySelector(".skip-link,.sais-skip-link");if(skip)skip.href="#main-content";else{skip=make("a","sais-skip-link","Skip to main content");skip.href="#main-content";document.body.insertBefore(skip,document.body.firstChild);}var main=document.querySelector("main");if(main&&!main.id)main.id="main-content";buildShell();buildFooter();syncClockVisibility();var clockMedia=window.matchMedia("(max-width: 1199px)");if(clockMedia.addEventListener)clockMedia.addEventListener("change",syncClockVisibility);else if(clockMedia.addListener)clockMedia.addListener(syncClockVisibility);improveReadabilityAndTopButton();bindSearch();bindMenus();updateClock();setInterval(updateClock,30000);}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
