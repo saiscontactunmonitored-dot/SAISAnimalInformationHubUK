@@ -19,15 +19,15 @@ async function waitForPublishedRelease() {
       const [html, css, worker] = await Promise.all([
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
-      const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v44");
+      const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band") && css.includes(".sais-header-top") && css.includes("data:image/svg+xml");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v49");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The latest navigation rebuild and v41 offline cache did not become available within three minutes.");
+  throw new Error("The current navigation rebuild and v49 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
@@ -103,6 +103,7 @@ for (const url of urls) {
       clockBackground: headerClock ? getComputedStyle(headerClock).backgroundColor : "",
       clockLocation: headerClock?.querySelector(".sais-clock-location")?.textContent?.trim() || "",
       clockDateColour: headerClock ? getComputedStyle(headerClock.querySelector("#dateTime")).color : "",
+      desktopPawPattern: !!headerTop && getComputedStyle(headerTop).backgroundImage.includes("data:image/svg+xml"),
       searchVisible: !!headerSearch && headerSearch.getBoundingClientRect().width > 0
     };
     return {
@@ -127,6 +128,7 @@ for (const url of urls) {
       result.header.clockDateColour !== "rgb(23, 23, 23)") {
     errors.push("Clock location or white-background/black-date styling is incorrect on " + url);
   }
+  if (!result.header.desktopPawPattern) errors.push("Desktop masthead paw pattern is missing on " + url);
   if (result.header.centeredBrandDelta > 3) {
     errors.push("Hub logo panel is not centred on " + url + " (offset " + Math.round(result.header.centeredBrandDelta) + "px).");
   }
@@ -149,20 +151,26 @@ for (const url of urls) {
   }
 }
 
-const mobilePages = [BASE, BASE + "dog-information/", BASE + "cat-information/", BASE + "wildlife-information/", BASE + "contact/"];
-for (const url of mobilePages) {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 2);
-  if (overflow) errors.push("Horizontal overflow at 390px mobile viewport: " + url);
-}
-
-// Tablet layout checks on representative routes.
-for (const url of mobilePages) {
-  await page.setViewportSize({ width: 768, height: 1024 });
-  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 2);
-  if (overflow) errors.push("Horizontal overflow at 768px tablet viewport: " + url);
+const mobilePages = urls;
+for (const width of [390, 768]) {
+  for (const url of mobilePages) {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 1024 });
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+    const responsive = await page.evaluate(() => {
+      const clock = document.querySelector(".sais-header-clock-panel");
+      const brand = document.querySelector(".sais-header-brand");
+      const search = document.querySelector(".sais-header-search-panel");
+      return {
+        overflow: document.documentElement.scrollWidth > window.innerWidth + 2,
+        clockVisible: !!clock && clock.getBoundingClientRect().width > 0,
+        brandVisible: !!brand && brand.getBoundingClientRect().width > 0,
+        searchVisible: !!search && search.getBoundingClientRect().width > 0
+      };
+    });
+    if (responsive.overflow) errors.push("Horizontal overflow at " + width + "px viewport: " + url);
+    if (responsive.clockVisible) errors.push("Clock/time panel should be hidden at " + width + "px: " + url);
+    if (!responsive.brandVisible || !responsive.searchVisible) errors.push("Header identity/search missing at " + width + "px: " + url);
+  }
 }
 
 // Exercise the responsive drawer, its group controls, Escape handling and focus trap.
@@ -214,8 +222,27 @@ else {
   await page.keyboard.press("Escape");
 }
 
+
+ // Verify compact laptop/tablet widths use the drawer before the full desktop menu breakpoint.
+ for (const width of [320, 390, 768, 1024, 1050, 1051, 1199, 1200, 1280, 1300]) {
+   await page.setViewportSize({ width, height: 900 });
+   await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 30000 });
+   const compactState = await page.evaluate(() => {
+     const nav = document.querySelector(".sais-navigation-inner");
+     const button = document.querySelector(".sais-mobile-menu-button");
+     return {
+       navVisible: !!nav && getComputedStyle(nav).display !== "none" && nav.getBoundingClientRect().width > 0,
+       buttonVisible: !!button && getComputedStyle(button).display !== "none" && button.getBoundingClientRect().width > 0,
+       overflow: document.documentElement.scrollWidth > window.innerWidth + 2
+     };
+   });
+   if (compactState.navVisible) errors.push("Desktop links are shown instead of the compact navigation at " + width + "px.");
+   if (!compactState.buttonVisible) errors.push("Hamburger navigation is missing at compact width " + width + "px.");
+   if (compactState.overflow) errors.push("Navigation/header causes horizontal overflow at compact width " + width + "px.");
+ }
+
 // Check the full desktop navigation and every dropdown at common laptop/desktop widths.
-for (const width of [1200, 1280, 1365, 1649]) {
+for (const width of [1301, 1365, 1649]) {
   await page.setViewportSize({ width, height: 900 });
   await page.goto(BASE, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => [...document.styleSheets].some(sheet => sheet.href && sheet.href.includes("assets/css/navigation-rebuild-2026.css")));
@@ -357,8 +384,8 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v44")) errors.push("Expected v43 offline cache was not created.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v44")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!workerState.caches.some(name => name === "sais-animal-hub-v49")) errors.push("Expected v49 offline cache was not created.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v49")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
