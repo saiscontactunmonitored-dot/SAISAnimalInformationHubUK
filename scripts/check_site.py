@@ -180,8 +180,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v45" not in worker:
-        errors.append("Service worker cache must be v45 after the responsive header update")
+    if "sais-animal-hub-v46" not in worker:
+        errors.append("Service worker cache must be v46 after the responsive clock visibility fix")
     if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
         errors.append("Service worker does not precache the rebuilt navigation stylesheet")
     for image in sorted((ROOT / "assets" / "images").rglob("*")):
