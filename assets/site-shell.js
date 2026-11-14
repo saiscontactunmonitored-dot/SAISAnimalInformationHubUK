@@ -35,7 +35,7 @@ function buildShell(){
  var top=make("div","sais-header-top");
  var clockPanel=make("div","sais-header-clock-panel");
  var date=make("div","sais-clock");
- date.innerHTML='<span class="sais-clock-icon" aria-hidden="true">▦</span><span class="sais-clock-copy"><small id="weekday"></small><strong id="dateTime"></strong></span>';
+ date.innerHTML='<span class="sais-clock-icon" aria-hidden="true">▦</span><span class="sais-clock-copy"><small class="sais-clock-location">London, UK</small><small id="weekday"></small><strong id="dateTime"></strong></span>';
  clockPanel.appendChild(date);
 
  var brand=make("a","sais-header-brand");
