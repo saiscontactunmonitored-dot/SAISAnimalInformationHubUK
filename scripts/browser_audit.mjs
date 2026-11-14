@@ -19,8 +19,8 @@ async function waitForPublishedRelease() {
       const [html, css, worker] = await Promise.all([
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
-      const currentNavigation = css.includes("Installed PWA uses the same desktop/mobile breakpoint");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v41");
+      const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v42");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
@@ -90,9 +90,21 @@ for (const url of urls) {
     const badLinks = [...document.querySelectorAll("a[href]")].map(anchor => anchor.href)
       .filter(href => href.startsWith(location.origin) && !href.startsWith(location.origin + "/SAISAnimalInformationHubUK/"));
     const navDuration = performance.getEntriesByType("navigation")[0]?.loadEventEnd || 0;
+    const headerTop = document.querySelector(".sais-header-top");
+    const headerBrand = document.querySelector(".sais-header-brand");
+    const headerClock = document.querySelector(".sais-header-clock-panel");
+    const headerSearch = document.querySelector(".sais-header-search-panel");
+    const headerTagline = document.querySelector(".sais-header-tagline");
+    const brandRect = headerBrand?.getBoundingClientRect();
+    const header = {
+      partsPresent: !!headerTop && !!headerBrand && !!headerClock && !!headerSearch && !!headerTagline,
+      centeredBrandDelta: brandRect ? Math.abs((brandRect.left + brandRect.width / 2) - window.innerWidth / 2) : Infinity,
+      clockVisible: !!headerClock && headerClock.getBoundingClientRect().width > 0,
+      searchVisible: !!headerSearch && headerSearch.getBoundingClientRect().width > 0
+    };
     return {
       title, h1, description, canonical, ogDescription, ogUrl,
-      imagesWithoutAlt, badLinks, navDuration,
+      imagesWithoutAlt, badLinks, navDuration, header,
       overflow: document.documentElement.scrollWidth > window.innerWidth + 2,
       lang: document.documentElement.lang
     };
@@ -104,6 +116,12 @@ for (const url of urls) {
   if (result.ogDescription !== result.description) errors.push("Open Graph description mismatch: " + url);
   if (result.ogUrl !== url) errors.push("Open Graph URL mismatch: " + url);
   if (!result.lang) errors.push("Missing document language: " + url);
+  if (!result.header.partsPresent || !result.header.clockVisible || !result.header.searchVisible) {
+    errors.push("Screenshot-style shared header is incomplete on " + url);
+  }
+  if (result.header.centeredBrandDelta > 3) {
+    errors.push("Hub logo panel is not centred on " + url + " (offset " + Math.round(result.header.centeredBrandDelta) + "px).");
+  }
   if (result.imagesWithoutAlt) warnings.push(result.imagesWithoutAlt + " images without alt attributes: " + url);
   if (result.badLinks.length) errors.push("Root-relative links outside project prefix: " + url);
   if (result.overflow) warnings.push("Possible horizontal overflow at desktop viewport: " + url);
@@ -331,8 +349,8 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v41")) errors.push("Expected v41 offline cache was not created.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v41")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!workerState.caches.some(name => name === "sais-animal-hub-v42")) errors.push("Expected v41 offline cache was not created.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v42")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
