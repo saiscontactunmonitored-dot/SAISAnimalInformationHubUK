@@ -220,8 +220,9 @@ function buildShell(){
  });
  window.addEventListener("resize",function(){if(window.innerWidth>1199&&drawer.classList.contains("is-open"))setDrawer(false,false);});
  function openDonation(trigger){
+  var restoreTarget=drawer.classList.contains("is-open")?menuButton:trigger;
   if(drawer.classList.contains("is-open"))setDrawer(false,false);
-  if(window.saisOpenDonationModal)window.saisOpenDonationModal(trigger);
+  if(window.saisOpenDonationModal)window.saisOpenDonationModal(restoreTarget);
  }
  desktopDonate.addEventListener("click",function(){openDonation(desktopDonate);});
  drawerDonate.addEventListener("click",function(){openDonation(drawerDonate);});
