@@ -20,7 +20,7 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v42");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v43");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
@@ -349,8 +349,8 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v42")) errors.push("Expected v41 offline cache was not created.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v42")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!workerState.caches.some(name => name === "sais-animal-hub-v43")) errors.push("Expected v43 offline cache was not created.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v43")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
