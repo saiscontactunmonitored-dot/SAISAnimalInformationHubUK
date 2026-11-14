@@ -29,7 +29,7 @@ async function waitForPublishedRelease() {
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The current navigation rebuild and v49 offline cache did not become available within three minutes.");
+  throw new Error("The current navigation rebuild and v50 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
@@ -319,17 +319,20 @@ for (const width of [1301, 1365, 1649]) {
   const desktopState = await page.evaluate(() => {
     const nav = document.querySelector(".sais-navigation-inner");
     const button = document.querySelector(".sais-mobile-menu-button");
+    const donate = document.querySelector(".sais-donate-button--desktop");
     const rect = nav?.getBoundingClientRect();
     return {
       navVisible: !!nav && getComputedStyle(nav).display !== "none" && !!rect && rect.width > 0,
       buttonVisible: !!button && getComputedStyle(button).display !== "none" && button.getBoundingClientRect().width > 0,
       menus: document.querySelectorAll(".sais-menu").length,
+      donateVisible: !!donate && getComputedStyle(donate).display !== "none" && donate.getBoundingClientRect().width > 0,
       overflow: document.documentElement.scrollWidth > window.innerWidth + 2
     };
   });
   if (!desktopState.navVisible) errors.push("Desktop navigation is hidden at " + width + "px.");
   if (desktopState.buttonVisible) errors.push("Hamburger is showing instead of desktop navigation at " + width + "px.");
   if (desktopState.menus !== 4) errors.push("Expected four desktop dropdowns at " + width + "px, found " + desktopState.menus + ".");
+  if (!desktopState.donateVisible) errors.push("Desktop Donate button is missing at " + width + "px.");
   if (desktopState.overflow) errors.push("Desktop navigation causes horizontal overflow at " + width + "px.");
   for (let i = 0; i < desktopState.menus; i++) {
     const menu = page.locator(".sais-menu").nth(i);
@@ -436,6 +439,55 @@ if (await dropdownSummary.count()) {
  }
  await touchContext.close();
 
+
+ // Verify the desktop Donate button opens a complete, accessible fundraiser dialog.
+ await page.setViewportSize({width:1365,height:900});
+ await page.goto(BASE,{waitUntil:"domcontentloaded",timeout:30000});
+ const desktopDonate = page.locator(".sais-donate-button--desktop");
+ if (await desktopDonate.count() !== 1 || !(await desktopDonate.isVisible())) {
+   errors.push("Desktop Donate button is missing or not visible.");
+ } else {
+   await desktopDonate.click();
+   const donateDialog = page.locator("#sais-donation-overlay");
+   if (!(await donateDialog.isVisible())) errors.push("Desktop Donate button did not open the fundraiser popup.");
+   const donateCopy = (await donateDialog.innerText()).toLowerCase();
+   for (const phrase of ["since 2023","no paid memberships","hosting","domain renewals","animal information hub","every penny raised","sharing the fundraiser"]) {
+     if (!donateCopy.includes(phrase)) errors.push("Fundraiser popup is missing key information: " + phrase + ".");
+   }
+   const paypalLink = donateDialog.locator(".sais-donation-primary");
+   if (await paypalLink.getAttribute("href") !== "https://www.paypal.com/pools/c/9uo95OuMew") {
+     errors.push("Fundraiser popup PayPal link is missing or incorrect.");
+   }
+   await page.keyboard.press("Escape");
+   if (await donateDialog.isVisible()) errors.push("Escape did not close the fundraiser popup.");
+   const focusRestored = await page.evaluate(() => document.activeElement?.classList.contains("sais-donate-button--desktop"));
+   if (!focusRestored) errors.push("Closing the desktop fundraiser popup did not restore focus to Donate.");
+   await desktopDonate.click();
+   await donateDialog.locator(".sais-donation-close").click();
+   if (await donateDialog.isVisible()) errors.push("Fundraiser popup close button did not close the popup.");
+ }
+ 
+ // Verify Donate is available in the mobile drawer and returns focus to the menu trigger.
+ await page.setViewportSize({width:390,height:844});
+ await page.goto(BASE,{waitUntil:"domcontentloaded",timeout:30000});
+ const mobileMenuTrigger = page.locator(".sais-mobile-menu-button");
+ await mobileMenuTrigger.click();
+ const mobileDonate = page.locator(".sais-donate-button--drawer");
+ if (await mobileDonate.count() !== 1) errors.push("Mobile drawer Donate button is missing.");
+ else {
+   await mobileDonate.scrollIntoViewIfNeeded();
+   if (!(await mobileDonate.isVisible())) errors.push("Mobile drawer Donate button is not visible.");
+   await mobileDonate.click();
+   const mobileDonateDialog = page.locator("#sais-donation-overlay");
+   if (!(await mobileDonateDialog.isVisible())) errors.push("Mobile drawer Donate button did not open the fundraiser popup.");
+   if (await page.locator("#sais-mobile-drawer").getAttribute("aria-hidden") !== "true") {
+     errors.push("Mobile drawer did not close when opening the fundraiser popup.");
+   }
+   await mobileDonateDialog.locator(".sais-donation-close").click();
+   const menuFocusRestored = await page.evaluate(() => document.activeElement?.classList.contains("sais-mobile-menu-button"));
+   if (!menuFocusRestored) errors.push("Closing the mobile fundraiser popup did not restore focus to the menu button.");
+ }
+ 
 // Test the shared search index, Enter submission, result routes and no-result message.
  await page.setViewportSize({ width: 1365, height: 900 });
  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 30000 });
@@ -538,7 +590,7 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v50")) errors.push("Expected v49 offline cache was not created.");
+if (!workerState.caches.some(name => name === "sais-animal-hub-v50")) errors.push("Expected v50 offline cache was not created.");
 const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v50")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
