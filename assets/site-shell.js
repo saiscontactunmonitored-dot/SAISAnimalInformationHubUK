@@ -23,9 +23,71 @@ function removeLegacy(){
  Array.from(document.querySelectorAll("nav")).forEach(function(n){if(n.isConnected)n.remove();});
 }
 function buildShell(){
+ var announcement=document.querySelector(".announcement");
+ var mast=document.querySelector(".masthead");
+ var taglineText=announcement?announcement.textContent.replace(/\\s+/g," ").trim():"Practical animal information. Clear guidance. A better starting point for animal care.";
  removeLegacy();
- var shell=make("section","sais-shell");shell.setAttribute("aria-label","Site navigation");
- var nav=make("nav","sais-navigation");nav.setAttribute("aria-label","Main navigation");
+
+ var shell=make("section","sais-shell");
+ shell.setAttribute("aria-label","Animal Information Hub UK site header");
+
+ // Top header: date/time on the left, Hub identity in the centre, search on the right.
+ var top=make("div","sais-header-top");
+ var clockPanel=make("div","sais-header-clock-panel");
+ var date=make("div","sais-clock");
+ date.innerHTML='<span class="sais-clock-icon" aria-hidden="true">▦</span><span class="sais-clock-copy"><small id="weekday"></small><strong id="dateTime"></strong></span>';
+ clockPanel.appendChild(date);
+
+ var brand=make("a","sais-header-brand");
+ brand.href=route("");
+ brand.setAttribute("aria-label","Animal Information Hub UK home");
+ var brandMain=make("span","sais-header-brand-main");
+ var logo=make("img","sais-header-logo");
+ logo.src=route("info-logo.png");
+ logo.alt="";
+ logo.width=58;
+ logo.height=58;
+ logo.decoding="async";
+ var brandCopy=make("span","sais-header-brand-copy");
+ brandCopy.appendChild(make("strong","","Animal Information Hub UK"));
+ var powered=make("small","");powered.innerHTML='<span aria-hidden="true">●</span> Powered by SAIS';
+ brandCopy.appendChild(powered);
+ brandMain.appendChild(logo);
+ brandMain.appendChild(brandCopy);
+ brand.appendChild(brandMain);
+ var credit=make("span","sais-header-brand-credit");
+ credit.appendChild(document.createTextNode("An information service from"));
+ credit.appendChild(make("strong","","Somerset Animal Information Services"));
+ brand.appendChild(credit);
+
+ var searchPanel=make("div","sais-header-search-panel");
+ var form=make("form","sais-search");
+ form.setAttribute("role","search");
+ form.id="siteSearch";
+ var input=make("input");
+ input.type="search";
+ input.id="searchInput";
+ input.placeholder="Search animals, care topics, advice and resources";
+ input.setAttribute("aria-label","Search the Animal Information Hub");
+ input.autocomplete="off";
+ var submit=make("button","","Search");
+ submit.type="submit";
+ form.appendChild(input);
+ form.appendChild(submit);
+ var results=make("div","sais-results");
+ results.id="searchResults";
+ results.hidden=true;
+ results.setAttribute("aria-live","polite");
+ searchPanel.appendChild(form);
+ searchPanel.appendChild(results);
+
+ top.appendChild(clockPanel);
+ top.appendChild(brand);
+ top.appendChild(searchPanel);
+
+ // Primary desktop navigation and the existing responsive hamburger drawer.
+ var nav=make("nav","sais-navigation");
+ nav.setAttribute("aria-label","Main navigation");
  var inner=make("div","sais-navigation-inner");
  link(inner,"Home","");
  link(inner,"Animal Care & Training","animal-care-training/");
@@ -37,11 +99,39 @@ function buildShell(){
  dropdown(inner,"Articles",groups.articles.slice(1));
  Array.from(inner.querySelectorAll(".sais-menu")).forEach(function(menu,i){if(i>=2)menu.classList.add("sais-menu--right");});
  nav.appendChild(inner);
- var menuButton=make("button","sais-mobile-menu-button");menuButton.innerHTML='<span class="sais-hamburger-icon" aria-hidden="true"><span></span></span><span class="sais-menu-button-label">Menu</span>';menuButton.type="button";menuButton.setAttribute("aria-controls","sais-mobile-drawer");menuButton.setAttribute("aria-expanded","false");menuButton.setAttribute("aria-label","Open site menu");nav.insertBefore(menuButton,inner);
- var backdrop=make("div","sais-drawer-backdrop");backdrop.id="sais-drawer-backdrop";backdrop.hidden=true;
- var drawer=make("aside","sais-mobile-drawer");drawer.id="sais-mobile-drawer";drawer.setAttribute("role","dialog");drawer.setAttribute("aria-modal","true");drawer.setAttribute("aria-label","Site menu");drawer.setAttribute("aria-hidden","true");drawer.inert=true;
- var drawerHead=make("div","sais-drawer-head");var drawerTitle=make("strong","","Explore the Hub");drawerTitle.id="sais-drawer-title";drawer.setAttribute("aria-labelledby","sais-drawer-title");drawerHead.appendChild(drawerTitle);
- var close=make("button","sais-drawer-close","×");close.type="button";close.setAttribute("aria-label","Close site menu");drawerHead.appendChild(close);drawer.appendChild(drawerHead);
+
+ var menuButton=make("button","sais-mobile-menu-button");
+ menuButton.innerHTML='<span class="sais-hamburger-icon" aria-hidden="true"><span></span></span><span class="sais-menu-button-label">Menu</span>';
+ menuButton.type="button";
+ menuButton.setAttribute("aria-controls","sais-mobile-drawer");
+ menuButton.setAttribute("aria-expanded","false");
+ menuButton.setAttribute("aria-label","Open site menu");
+ nav.insertBefore(menuButton,inner);
+
+ var tagline=make("div","sais-header-tagline",taglineText);
+ tagline.setAttribute("aria-label","Site strapline");
+
+ var backdrop=make("div","sais-drawer-backdrop");
+ backdrop.id="sais-drawer-backdrop";
+ backdrop.hidden=true;
+ var drawer=make("aside","sais-mobile-drawer");
+ drawer.id="sais-mobile-drawer";
+ drawer.setAttribute("role","dialog");
+ drawer.setAttribute("aria-modal","true");
+ drawer.setAttribute("aria-label","Site menu");
+ drawer.setAttribute("aria-hidden","true");
+ drawer.inert=true;
+ var drawerHead=make("div","sais-drawer-head");
+ var drawerTitle=make("strong","","Explore the Hub");
+ drawerTitle.id="sais-drawer-title";
+ drawer.setAttribute("aria-labelledby","sais-drawer-title");
+ drawerHead.appendChild(drawerTitle);
+ var close=make("button","sais-drawer-close","×");
+ close.type="button";
+ close.setAttribute("aria-label","Close site menu");
+ drawerHead.appendChild(close);
+ drawer.appendChild(drawerHead);
+
  var drawerBody=make("div","sais-drawer-body");
  link(drawerBody,"Home","");
  link(drawerBody,"Animal Care & Training","animal-care-training/");
@@ -57,10 +147,16 @@ function buildShell(){
  mobileGroups.forEach(function(group,i){
   var section=make("section","sais-drawer-group");
   var toggle=make("button","sais-drawer-group-toggle",group[0]);
-  toggle.type="button";toggle.id="sais-drawer-group-toggle-"+i;
-  toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-controls","sais-drawer-group-panel-"+i);
-  var chevron=make("span","sais-drawer-chevron","⌄");chevron.setAttribute("aria-hidden","true");toggle.appendChild(chevron);
-  var list=make("div","sais-drawer-links");list.id="sais-drawer-group-panel-"+i;list.hidden=true;
+  toggle.type="button";
+  toggle.id="sais-drawer-group-toggle-"+i;
+  toggle.setAttribute("aria-expanded","false");
+  toggle.setAttribute("aria-controls","sais-drawer-group-panel-"+i);
+  var chevron=make("span","sais-drawer-chevron","⌄");
+  chevron.setAttribute("aria-hidden","true");
+  toggle.appendChild(chevron);
+  var list=make("div","sais-drawer-links");
+  list.id="sais-drawer-group-panel-"+i;
+  list.hidden=true;
   list.setAttribute("aria-labelledby",toggle.id);
   group[1].forEach(function(item){link(list,item[0],item[1]);});
   mobileGroupToggles.push({toggle:toggle,list:list,section:section});
@@ -73,25 +169,55 @@ function buildShell(){
     other.section.classList.toggle("is-expanded",active);
    });
   });
-  section.appendChild(toggle);section.appendChild(list);drawerBody.appendChild(section);
+  section.appendChild(toggle);
+  section.appendChild(list);
+  drawerBody.appendChild(section);
  });
- drawer.appendChild(drawerBody);shell.appendChild(nav);shell.appendChild(backdrop);shell.appendChild(drawer);
- function setDrawer(open,restoreFocus){drawer.classList.toggle("is-open",open);backdrop.hidden=!open;drawer.setAttribute("aria-hidden",String(!open));drawer.inert=!open;menuButton.setAttribute("aria-expanded",String(open));menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");document.body.classList.toggle("sais-drawer-open",open);if(open)close.focus();else if(restoreFocus!==false)menuButton.focus();}
+ drawer.appendChild(drawerBody);
+
+ shell.appendChild(top);
+ shell.appendChild(nav);
+ shell.appendChild(tagline);
+ shell.appendChild(backdrop);
+ shell.appendChild(drawer);
+
+ function setDrawer(open,restoreFocus){
+  drawer.classList.toggle("is-open",open);
+  backdrop.hidden=!open;
+  drawer.setAttribute("aria-hidden",String(!open));
+  drawer.inert=!open;
+  menuButton.setAttribute("aria-expanded",String(open));
+  menuButton.setAttribute("aria-label",open?"Close site menu":"Open site menu");
+  document.body.classList.toggle("sais-drawer-open",open);
+  if(open)close.focus();
+  else if(restoreFocus!==false)menuButton.focus();
+ }
  menuButton.addEventListener("click",function(){setDrawer(!drawer.classList.contains("is-open"));});
  close.addEventListener("click",function(){setDrawer(false);});
  backdrop.addEventListener("click",function(){setDrawer(false);});
  drawer.addEventListener("click",function(e){if(e.target.closest("a"))setDrawer(false);});
- document.addEventListener("keydown",function(e){if(!drawer.classList.contains("is-open"))return;if(e.key==="Escape"){e.preventDefault();setDrawer(false);return;}if(e.key==="Tab"){var focusables=Array.from(drawer.querySelectorAll("a[href],button:not([disabled]),summary,[tabindex]:not([tabindex=\"-1\"])")).filter(function(n){return !n.closest("[hidden]")&&n.offsetParent!==null;});if(!focusables.length)return;var first=focusables[0],last=focusables[focusables.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});window.addEventListener("resize",function(){if(window.innerWidth>1199&&drawer.classList.contains("is-open"))setDrawer(false,false);});
- var tools=make("div","sais-tools");
- var form=make("form","sais-search");form.setAttribute("role","search");form.id="siteSearch";
- var input=make("input");input.type="search";input.id="searchInput";input.placeholder="Search animals, care topics, advice and resources";input.setAttribute("aria-label","Search the Animal Information Hub");input.autocomplete="off";
- var submit=make("button","","Search");submit.type="submit";
- form.appendChild(input);form.appendChild(submit);tools.appendChild(form);
- var results=make("div","sais-results");results.id="searchResults";results.hidden=true;results.setAttribute("aria-live","polite");tools.appendChild(results);
- var date=make("div","sais-clock");date.innerHTML='<span class="sais-clock-icon" aria-hidden="true">▦</span><span><small id="weekday"></small><strong id="dateTime"></strong></span>';tools.appendChild(date);
- shell.appendChild(tools);
- var mast=document.querySelector(".masthead");
- if(mast)mast.insertAdjacentElement("afterend",shell);else document.body.insertBefore(shell,document.body.firstChild);
+ document.addEventListener("keydown",function(e){
+  if(!drawer.classList.contains("is-open"))return;
+  if(e.key==="Escape"){e.preventDefault();setDrawer(false);return;}
+  if(e.key==="Tab"){
+   var focusables=Array.from(drawer.querySelectorAll('a[href],button:not([disabled]),summary,[tabindex]:not([tabindex="-1"])')).filter(function(n){return !n.closest("[hidden]")&&n.offsetParent!==null;});
+   if(!focusables.length)return;
+   var first=focusables[0],last=focusables[focusables.length-1];
+   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  }
+ });
+ window.addEventListener("resize",function(){if(window.innerWidth>1199&&drawer.classList.contains("is-open"))setDrawer(false,false);});
+
+ var anchor=announcement||mast;
+ if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(shell,anchor);
+ else{
+  var skip=document.querySelector(".skip-link,.sais-skip-link");
+  if(skip&&skip.parentNode)skip.insertAdjacentElement("afterend",shell);
+  else document.body.insertBefore(shell,document.body.firstChild);
+ }
+ if(announcement&&announcement.isConnected)announcement.remove();
+ if(mast&&mast.isConnected)mast.remove();
 }
 function buildFooter(){
  Array.from(document.querySelectorAll("footer,.hub-footer,.foot")).forEach(function(n){if(n.isConnected)n.remove();});
