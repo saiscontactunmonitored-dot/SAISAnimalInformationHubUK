@@ -95,6 +95,9 @@ for (const url of urls) {
     const headerClock = document.querySelector(".sais-header-clock-panel");
     const headerSearch = document.querySelector(".sais-header-search-panel");
     const headerTagline = document.querySelector(".sais-header-tagline");
+    const desktopNav = document.querySelector(".sais-navigation-inner");
+    const hamburger = document.querySelector(".sais-mobile-menu-button");
+    const headerLogo = document.querySelector(".sais-header-logo");
     const brandRect = headerBrand?.getBoundingClientRect();
     const header = {
       partsPresent: !!headerTop && !!headerBrand && !!headerClock && !!headerSearch && !!headerTagline,
@@ -105,6 +108,13 @@ for (const url of urls) {
       clockDateColour: headerClock ? getComputedStyle(headerClock.querySelector("#dateTime")).color : "",
       desktopPawPattern: !!headerTop && getComputedStyle(headerTop).backgroundImage.includes("data:image/svg+xml"),
       searchVisible: !!headerSearch && headerSearch.getBoundingClientRect().width > 0
+      shellCount: document.querySelectorAll(".sais-shell").length,
+      navigationCount: document.querySelectorAll(".sais-navigation").length,
+      footerCount: document.querySelectorAll(".sais-footer").length,
+      desktopNavVisible: !!desktopNav && getComputedStyle(desktopNav).display !== "none" && desktopNav.getBoundingClientRect().width > 0,
+      desktopDropdownCount: document.querySelectorAll(".sais-menu").length,
+      hamburgerVisible: !!hamburger && getComputedStyle(hamburger).display !== "none" && hamburger.getBoundingClientRect().width > 0,
+      logoCorrect: !!headerLogo && headerLogo.src.split("?")[0].endsWith("/info-logo.png")
     };
     return {
       title, h1, description, canonical, ogDescription, ogUrl,
@@ -123,6 +133,13 @@ for (const url of urls) {
   if (!result.header.partsPresent || !result.header.clockVisible || !result.header.searchVisible) {
     errors.push("Screenshot-style shared header is incomplete on " + url);
   }
+  if (result.header.shellCount !== 1 || result.header.navigationCount !== 1 || result.header.footerCount !== 1) {
+    errors.push("Shared header/navigation/footer does not appear exactly once on " + url);
+  }
+  if (!result.header.desktopNavVisible || result.header.desktopDropdownCount !== 4 || result.header.hamburgerVisible) {
+    errors.push("Desktop navigation layout is incorrect on " + url);
+  }
+  if (!result.header.logoCorrect) errors.push("Header is not using the supplied info-logo.png on " + url);
   if (result.header.clockLocation !== "London, UK" ||
       result.header.clockBackground !== "rgb(255, 255, 255)" ||
       result.header.clockDateColour !== "rgb(23, 23, 23)") {
@@ -152,7 +169,7 @@ for (const url of urls) {
 }
 
 const mobilePages = urls;
-for (const width of [390, 768]) {
+for (const width of [390, 683, 768]) {
   for (const url of mobilePages) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1024 });
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
@@ -160,18 +177,49 @@ for (const width of [390, 768]) {
       const clock = document.querySelector(".sais-header-clock-panel");
       const brand = document.querySelector(".sais-header-brand");
       const search = document.querySelector(".sais-header-search-panel");
+      const nav = document.querySelector(".sais-navigation-inner");
+      const menuButton = document.querySelector(".sais-mobile-menu-button");
+      const footer = document.querySelectorAll(".sais-footer").length;
+      const navCount = document.querySelectorAll(".sais-navigation").length;
       return {
         overflow: document.documentElement.scrollWidth > window.innerWidth + 2,
         clockVisible: !!clock && clock.getBoundingClientRect().width > 0,
         brandVisible: !!brand && brand.getBoundingClientRect().width > 0,
         searchVisible: !!search && search.getBoundingClientRect().width > 0
+        menuVisible: !!menuButton && getComputedStyle(menuButton).display !== "none" && menuButton.getBoundingClientRect().width > 0,
+        desktopLinksHidden: !!nav && getComputedStyle(nav).display === "none",
+        footerCount: footer,
+        navCount
       };
     });
     if (responsive.overflow) errors.push("Horizontal overflow at " + width + "px viewport: " + url);
     if (responsive.clockVisible) errors.push("Clock/time panel should be hidden at " + width + "px: " + url);
     if (!responsive.brandVisible || !responsive.searchVisible) errors.push("Header identity/search missing at " + width + "px: " + url);
+    if (!responsive.menuVisible || !responsive.desktopLinksHidden) errors.push("Responsive navigation is incorrect at " + width + "px: " + url);
+    if (responsive.footerCount !== 1 || responsive.navCount !== 1) errors.push("Responsive footer/navigation count is incorrect at " + width + "px: " + url);
   }
 }
+
+
+ // Confirm the two floating accessibility controls are separate, visible and do not overlap on a phone.
+ await page.setViewportSize({ width: 390, height: 844 });
+ await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 30000 });
+ const floatingState = await page.evaluate(() => {
+   const access = document.querySelector("#sais-accessibility-widget .sais-accessibility-toggle");
+   const top = document.querySelector("#sais-back-to-top");
+   const a = access?.getBoundingClientRect();
+   const b = top?.getBoundingClientRect();
+   return {
+     accessCount: document.querySelectorAll("#sais-accessibility-widget .sais-accessibility-toggle").length,
+     topCount: document.querySelectorAll("#sais-back-to-top").length,
+     accessVisible: !!a && a.width > 0 && a.height > 0,
+     topVisible: !!b && b.width > 0 && b.height > 0,
+     overlap: !!a && !!b && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
+   };
+ });
+ if (floatingState.accessCount !== 1 || floatingState.topCount !== 1 || !floatingState.accessVisible || !floatingState.topVisible || floatingState.overlap) {
+   errors.push("Floating accessibility/back-to-top controls are missing, duplicated or overlapping on mobile.");
+ }
 
 // Exercise the responsive drawer, its group controls, Escape handling and focus trap.
 await page.setViewportSize({ width: 390, height: 844 });
@@ -335,6 +383,41 @@ if (await dropdownSummary.count()) {
   const dropdownClosed = await dropdownSummary.locator("xpath=..").evaluate(node => !node.open);
   if (!dropdownClosed) errors.push("Escape did not close the desktop navigation dropdown.");
 }
+
+
+ // Test the shared search index, Enter submission, result routes and no-result message.
+ await page.setViewportSize({ width: 1365, height: 900 });
+ await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 30000 });
+ const searchInput = page.locator("#searchInput");
+ const searchTests = [
+   {term:"dog",label:"Dogs",path:"dog-information/"},
+   {term:"cat",label:"Cats",path:"cat-information/"},
+   {term:"horse",label:"Horses",path:"horse-information/"},
+   {term:"books",label:"Recommended Animal Books",path:"animal-care-training/recommended-animal-books/"},
+   {term:"training",label:"Training Tips & Advice",path:"animal-care-training/training-tips-advice/"},
+   {term:"health",label:"Health & Safety for Pets",path:"animal-care-training/health-safety-for-pets/"},
+   {term:"wildlife law",label:"Dogs, Wildlife & the Law",path:"animal-articles/dogs-wildlife-law/"},
+   {term:"lost animal",label:"Lost & Found Animals",path:"animal-help-resources/lost-found-animals/"},
+   {term:"boarding licence",label:"Boarding & Home Boarding Laws",path:"animal-articles/boarding-home-boarding-laws/"},
+   {term:"hydrotherapy",label:"Benefits of Hydrotherapy",path:"animal-articles/benefits-of-hydrotherapy/"}
+ ];
+ for (const test of searchTests) {
+   await searchInput.fill(test.term);
+   await searchInput.press("Enter");
+   const resultLink = page.locator("#searchResults a").filter({hasText:test.label});
+   if (!(await resultLink.count())) errors.push("Search for '" + test.term + "' did not return " + test.label + ".");
+   else {
+     const href = await resultLink.first().getAttribute("href");
+     if (!href || !href.includes(test.path)) errors.push("Search result route is wrong for '" + test.term + "': " + href);
+   }
+ }
+ await searchInput.fill("sais-no-match-query-987654");
+ await searchInput.press("Enter");
+ const noResultText = (await page.locator("#searchResults").innerText()).toLowerCase();
+ if (!noResultText.includes("no matching pages found")) errors.push("Search no-result message is missing or unclear.");
+ await searchInput.fill("dog");
+ await page.locator("#searchResults a").filter({hasText:"Dogs"}).click();
+ await page.waitForURL("**/dog-information/**", {timeout:10000}).catch(() => errors.push("Search result did not open the Dog Information page."));
 
 // Exercise the accessibility panel and Escape-to-close behaviour.
 const accessibilityToggle = page.locator(".sais-accessibility-toggle");
