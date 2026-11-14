@@ -1,0 +1,215 @@
+/* Animal Information Hub UK — rebuilt shared navigation
+   Design direction: a contained, floating capsule inspired by the second reference.
+   All existing destinations and dropdown groups remain supplied by site-shell.js. */
+
+.sais-shell{
+  position:relative!important;
+  z-index:1000!important;
+  overflow:visible!important;
+  background:#102a36!important;
+  border:0!important;
+  box-shadow:0 10px 28px rgba(16,42,54,.14)!important;
+}
+.sais-navigation{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-height:0!important;
+  padding:14px 24px 10px!important;
+  overflow:visible!important;
+  background:transparent!important;
+  box-sizing:border-box!important;
+}
+.sais-navigation-inner{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-wrap:nowrap!important;
+  gap:clamp(2px,.35vw,7px)!important;
+  width:min(1480px,100%)!important;
+  min-height:68px!important;
+  margin:0 auto!important;
+  padding:9px 12px!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(255,255,255,.7)!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  box-shadow:0 9px 30px rgba(4,22,30,.2),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.sais-navigation-inner>a,
+.sais-menu>summary{
+  display:inline-flex!important;
+  flex:0 1 auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:0!important;
+  min-height:46px!important;
+  margin:0!important;
+  padding:10px clamp(7px,.8vw,14px)!important;
+  border:1px solid transparent!important;
+  border-radius:12px!important;
+  background:transparent!important;
+  color:#173746!important;
+  font:750 clamp(11px,.86vw,13px)/1.25 system-ui,sans-serif!important;
+  text-align:center!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease!important;
+}
+.sais-navigation-inner>a:first-child{
+  background:#e99a4b!important;
+  border-color:#e99a4b!important;
+  color:#172b35!important;
+  font-weight:850!important;
+}
+.sais-navigation-inner>a:first-child:hover{
+  background:#f4b16d!important;
+  border-color:#f4b16d!important;
+  color:#172b35!important;
+  transform:translateY(-1px);
+}
+.sais-navigation-inner>a:hover,
+.sais-navigation-inner>a[aria-current=page],
+.sais-menu>summary:hover,
+.sais-menu[open]>summary{
+  background:#edf3f1!important;
+  border-color:#d7e4df!important;
+  color:#124e48!important;
+}
+.sais-menu{position:relative!important;flex:0 0 auto!important;min-width:0!important}
+.sais-menu>summary::-webkit-details-marker{display:none!important}
+.sais-menu>summary:after{
+  content:""!important;
+  width:7px!important;height:7px!important;
+  margin:0 0 4px 9px!important;
+  border-right:1.7px solid currentColor!important;
+  border-bottom:1.7px solid currentColor!important;
+  transform:rotate(45deg)!important;
+  transition:transform .16s ease,margin .16s ease!important;
+}
+.sais-menu[open]>summary:after{
+  margin-bottom:0!important;
+  transform:rotate(225deg)!important;
+}
+.sais-menu-panel{
+  position:absolute!important;
+  top:calc(100% + 12px)!important;
+  left:0!important;
+  right:auto!important;
+  z-index:1200!important;
+  display:grid!important;
+  gap:4px!important;
+  width:min(350px,calc(100vw - 32px))!important;
+  min-width:min(260px,calc(100vw - 32px))!important;
+  max-width:calc(100vw - 32px)!important;
+  max-height:min(68vh,560px)!important;
+  padding:10px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  box-sizing:border-box!important;
+  border:1px solid #dce7e3!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  box-shadow:0 18px 48px rgba(12,30,38,.22)!important;
+}
+.sais-menu--right .sais-menu-panel{
+  left:auto!important;
+  right:0!important;
+}
+.sais-menu-panel a{
+  display:block!important;
+  min-width:0!important;
+  padding:11px 13px!important;
+  border:1px solid transparent!important;
+  border-radius:9px!important;
+  color:#263e48!important;
+  font:600 13px/1.45 system-ui,sans-serif!important;
+  text-decoration:none!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.sais-menu-panel a:hover,
+.sais-menu-panel a[aria-current=page]{
+  border-color:#f0d4b5!important;
+  background:#fff4e8!important;
+  color:#713e17!important;
+}
+.sais-navigation-inner a:focus-visible,
+.sais-menu>summary:focus-visible,
+.sais-menu-panel a:focus-visible{
+  outline:3px solid #e99a4b!important;
+  outline-offset:3px!important;
+}
+.sais-mobile-menu-button{display:none!important}
+.sais-drawer-backdrop{z-index:1998!important}
+.sais-mobile-drawer{z-index:1999!important}
+
+/* Keep the existing hamburger drawer as the single navigation on compact screens. */
+@media(max-width:1199px){
+  .sais-navigation{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    min-height:66px!important;
+    padding:8px 18px!important;
+  }
+  .sais-navigation-inner{display:none!important}
+  .sais-mobile-menu-button{
+    display:inline-flex!important;
+    position:relative!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex:0 0 auto!important;
+    gap:12px!important;
+    min-width:116px!important;
+    min-height:46px!important;
+    margin:0!important;
+    padding:0 17px!important;
+    border:1px solid rgba(255,255,255,.35)!important;
+    border-radius:12px!important;
+    background:rgba(255,255,255,.1)!important;
+    color:#fff!important;
+    font:800 14px/1 system-ui,sans-serif!important;
+    cursor:pointer!important;
+    box-sizing:border-box!important;
+  }
+  .sais-mobile-menu-button:hover,
+  .sais-mobile-menu-button:focus-visible{
+    background:rgba(255,255,255,.2)!important;
+    outline:3px solid #e99a4b!important;
+    outline-offset:3px!important;
+  }
+  .sais-mobile-menu-button:before,
+  .sais-mobile-menu-button:after{display:none!important;content:none!important}
+  .sais-hamburger-icon{
+    position:relative!important;
+    display:block!important;
+    flex:0 0 20px!important;
+    width:20px!important;height:16px!important;
+    margin:0!important;
+    border-top:2px solid currentColor!important;
+    border-bottom:2px solid currentColor!important;
+    box-sizing:border-box!important;
+  }
+  .sais-hamburger-icon>span{
+    position:absolute!important;left:0!important;right:0!important;top:5px!important;
+    display:block!important;height:2px!important;background:currentColor!important;
+  }
+  .sais-menu-button-label{display:block!important;white-space:nowrap!important}
+}
+@media(max-width:760px){
+  .sais-navigation{min-height:62px!important;padding:8px 14px!important}
+  .sais-mobile-menu-button{min-height:44px!important;min-width:112px!important}
+}
+@media(max-width:440px){
+  .sais-navigation{min-height:58px!important;padding:7px 12px!important}
+  .sais-mobile-menu-button{min-height:43px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .sais-navigation-inner *,
+  .sais-menu-panel *,
+  .sais-mobile-menu-button{transition:none!important}
+}
