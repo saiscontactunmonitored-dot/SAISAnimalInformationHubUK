@@ -181,7 +181,7 @@ else:
 
 if worker_path.exists():
     if "sais-animal-hub-v49" not in worker:
-        errors.append("Service worker cache must be v49 after the desktop masthead watermark update")
+        errors.append("Service worker cache must be v50 after the Donate popup update")
     if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
         errors.append("Service worker does not precache the rebuilt navigation stylesheet")
     for image in sorted((ROOT / "assets" / "images").rglob("*")):
@@ -199,7 +199,9 @@ else:
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
     for feature in ("sais-header-top", "sais-header-clock-panel", "sais-header-brand",
-                    "sais-header-search-panel", "sais-header-tagline"):
+                    "sais-header-search-panel", "sais-header-tagline", "sais-donate-button",
+                    "sais-donation-overlay", "saisOpenDonationModal",
+                    "https://www.paypal.com/pools/c/9uo95OuMew"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing rebuilt header feature: {feature}")
 
