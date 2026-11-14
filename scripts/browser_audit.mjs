@@ -107,7 +107,7 @@ for (const url of urls) {
       clockLocation: headerClock?.querySelector(".sais-clock-location")?.textContent?.trim() || "",
       clockDateColour: headerClock ? getComputedStyle(headerClock.querySelector("#dateTime")).color : "",
       desktopPawPattern: !!headerTop && getComputedStyle(headerTop).backgroundImage.includes("data:image/svg+xml"),
-      searchVisible: !!headerSearch && headerSearch.getBoundingClientRect().width > 0
+      searchVisible: !!headerSearch && headerSearch.getBoundingClientRect().width > 0,
       shellCount: document.querySelectorAll(".sais-shell").length,
       navigationCount: document.querySelectorAll(".sais-navigation").length,
       footerCount: document.querySelectorAll(".sais-footer").length,
@@ -185,7 +185,7 @@ for (const width of [390, 683, 768]) {
         overflow: document.documentElement.scrollWidth > window.innerWidth + 2,
         clockVisible: !!clock && clock.getBoundingClientRect().width > 0,
         brandVisible: !!brand && brand.getBoundingClientRect().width > 0,
-        searchVisible: !!search && search.getBoundingClientRect().width > 0
+        searchVisible: !!search && search.getBoundingClientRect().width > 0,
         menuVisible: !!menuButton && getComputedStyle(menuButton).display !== "none" && menuButton.getBoundingClientRect().width > 0,
         desktopLinksHidden: !!nav && getComputedStyle(nav).display === "none",
         footerCount: footer,
