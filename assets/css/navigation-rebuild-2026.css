@@ -249,3 +249,13 @@
   .sais-navigation-inner{display:flex!important}
   .sais-mobile-menu-button{display:none!important}
 }
+
+/* Installed PWA uses the same desktop/mobile breakpoint as the normal website. */
+@media(min-width:1200px){
+  html.sais-standalone .sais-navigation-inner{display:flex!important}
+  html.sais-standalone .sais-mobile-menu-button{display:none!important}
+}
+@media(max-width:1199px){
+  html.sais-standalone .sais-navigation-inner{display:none!important}
+  html.sais-standalone .sais-mobile-menu-button{display:inline-flex!important}
+}
