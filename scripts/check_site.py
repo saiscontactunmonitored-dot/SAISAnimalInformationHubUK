@@ -180,7 +180,7 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v41" not in worker:
+    if "sais-animal-hub-v42" not in worker:
         errors.append("Service worker cache must be v40 for the navigation rebuild")
     if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
         errors.append("Service worker does not precache the rebuilt navigation stylesheet")
@@ -198,6 +198,11 @@ else:
                     "assets/css/navigation-rebuild-2026.css"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
+    for feature in ("sais-header-top", "sais-header-clock-panel", "sais-header-brand",
+                    "sais-header-search-panel", "sais-header-tagline"):
+        if feature not in shell_script:
+            errors.append(f"Shared site shell is missing rebuilt header feature: {feature}")
+
 
 for page in html_files:
     rel = page.relative_to(ROOT).as_posix()
