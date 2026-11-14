@@ -679,3 +679,55 @@
   .sais-header-clock-panel{width:100%!important;min-height:68px!important;padding:10px 13px!important}
   .sais-header-clock-panel .sais-clock #dateTime{font-size:14px!important}
 }
+
+/* Tablet and mobile header refinement: remove the date/time panel completely.
+   Keep the Hub identity and search clean, centred and easy to use. */
+@media(max-width:1199px){
+  .sais-header-clock-panel{display:none!important}
+  .sais-header-top{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:12px!important;
+    min-height:0!important;
+    padding:14px 16px!important;
+  }
+  .sais-header-brand{
+    grid-column:1!important;
+    grid-row:1!important;
+    justify-self:center!important;
+    width:min(440px,100%)!important;
+    min-height:104px!important;
+    margin:0 auto!important;
+  }
+  .sais-header-search-panel{
+    grid-column:1!important;
+    grid-row:2!important;
+    justify-self:stretch!important;
+    width:min(760px,100%)!important;
+    min-height:0!important;
+    margin:0 auto!important;
+    padding:0!important;
+  }
+}
+@media(max-width:760px){
+  .sais-header-top{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:12px 14px!important;
+  }
+  .sais-header-brand{
+    width:min(420px,100%)!important;
+    min-height:96px!important;
+    padding:9px 12px!important;
+    gap:7px!important;
+  }
+  .sais-header-logo{width:48px!important;height:48px!important;max-width:48px!important}
+  .sais-header-brand-copy strong{font-size:clamp(15px,4.2vw,19px)!important}
+  .sais-header-brand-credit,.sais-header-brand-credit strong{font-size:10px!important}
+  .sais-header-search-panel .sais-search{
+    min-height:46px!important;
+    padding:4px 6px!important;
+    gap:7px!important;
+  }
+  .sais-header-search-panel .sais-search input{font-size:13px!important}
+  .sais-header-search-panel .sais-search button{min-height:36px!important;padding:8px 12px!important}
+}
