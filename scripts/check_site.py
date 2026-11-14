@@ -191,7 +191,7 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v49" not in worker:
+    if "sais-animal-hub-v50" not in worker:
         errors.append("Service worker cache must be v50 after the Donate popup update")
     if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
         errors.append("Service worker does not precache the rebuilt navigation stylesheet")
