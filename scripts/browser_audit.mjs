@@ -11,13 +11,23 @@ async function waitForPublishedRelease() {
   const deadline = Date.now() + 180000;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(BASE, { cache: "no-store" });
-      const html = await response.text();
-      if (response.ok && html.includes('rel="canonical"') && html.includes("Animal Information Hub UK")) return;
+      const [response, cssResponse, workerResponse] = await Promise.all([
+        fetch(BASE, { cache: "no-store" }),
+        fetch(BASE + "assets/css/navigation-rebuild-2026.css", { cache: "no-store" }),
+        fetch(BASE + "sw.js", { cache: "no-store" })
+      ]);
+      const [html, css, worker] = await Promise.all([
+        response.text(), cssResponse.text(), workerResponse.text()
+      ]);
+      const currentNavigation = css.includes("Installed PWA uses the same desktop/mobile breakpoint");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v41");
+      if (response.ok && cssResponse.ok && workerResponse.ok &&
+          html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
+          currentNavigation && currentOfflineCache) return;
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The latest GitHub Pages build did not become available within three minutes.");
+  throw new Error("The latest navigation rebuild and v41 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
