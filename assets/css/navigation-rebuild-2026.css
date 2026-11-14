@@ -597,3 +597,39 @@
   .sais-header-search-panel .sais-search{min-height:47px!important}
   .sais-header-tagline{min-height:34px!important;padding:8px 12px!important;font-size:10px!important}
 }
+
+
+/* Final SAIS brand refinement: calm blue-grey masthead, navy navigation,
+   restrained orange highlights and a clear current-page indicator. */
+.sais-header-top{background:#edf3f6!important;border-bottom:1px solid #d7e2e7!important}
+.sais-header-clock-panel{background:#173746!important;border:1px solid #294f5d!important;border-radius:13px!important;box-shadow:0 7px 18px rgba(23,55,70,.10)!important}
+.sais-header-clock-panel .sais-clock-icon{background:rgba(233,154,75,.17)!important;color:#f0a85f!important}
+.sais-header-brand{min-height:132px!important;border:1px solid #e0e8eb!important;border-radius:14px!important;background:#fff!important;box-shadow:0 7px 20px rgba(23,55,70,.07)!important}
+.sais-header-brand-copy strong,.sais-header-brand-credit strong{color:#173746!important}
+.sais-header-search-panel{background:transparent!important;border:0!important}
+.sais-header-search-panel .sais-search{border:1px solid #cbd9df!important;border-radius:11px!important;box-shadow:0 5px 16px rgba(23,55,70,.06)!important}
+.sais-header-search-panel .sais-search input{color:#173746!important}
+.sais-header-search-panel .sais-search button{background:#e99a4b!important;color:#173746!important;border-radius:8px!important}
+.sais-header-search-panel .sais-search button:hover{background:#f2b777!important;color:#173746!important}
+.sais-header-search-panel .sais-results a:hover{background:#fdf2e6!important;color:#7e461b!important}
+.sais-navigation{background:#173746!important;border-top:1px solid #294e5b!important;border-bottom:3px solid #e99a4b!important;box-shadow:0 8px 20px rgba(17,43,55,.12)!important}
+.sais-navigation-inner>a,.sais-menu>summary{color:#f7fafb!important;border-radius:9px!important}
+.sais-navigation-inner>a:first-child{background:transparent!important;border-color:transparent!important;color:#f7fafb!important}
+.sais-navigation-inner>a:first-child:hover{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.17)!important;color:#fff!important}
+.sais-navigation-inner>a[aria-current="page"],.sais-navigation-inner>a:first-child[aria-current="page"],.sais-menu.is-active>summary{background:#e99a4b!important;border-color:#e99a4b!important;color:#173746!important;box-shadow:0 3px 9px rgba(8,28,37,.13)!important}
+.sais-navigation-inner>a[aria-current="page"]:hover,.sais-menu.is-active>summary:hover{background:#f2b777!important;border-color:#f2b777!important;color:#173746!important}
+.sais-navigation-inner>a:hover,.sais-menu>summary:hover,.sais-menu[open]>summary{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.24)!important;color:#fff!important}
+.sais-menu.is-active[open]>summary{background:#e99a4b!important;border-color:#e99a4b!important;color:#173746!important}
+.sais-menu-panel{border:1px solid #d8e3e7!important;border-top:3px solid #e99a4b!important;border-radius:12px!important;box-shadow:0 18px 42px rgba(17,43,55,.18)!important}
+.sais-menu-panel a[aria-current="page"]{border-color:#efc99f!important;background:#fff2e4!important;color:#78431d!important;font-weight:850!important;box-shadow:inset 3px 0 0 #e99a4b!important}
+.sais-menu-panel a:hover{border-color:#e8d4bf!important;background:#f8f3ee!important;color:#78431d!important}
+.sais-header-tagline{background:#e8f0f3!important;border-bottom:1px solid #d5e1e6!important;color:#173746!important;font-size:11px!important;letter-spacing:.055em!important}
+.sais-mobile-menu-button{background:#244b5b!important;border-color:rgba(255,255,255,.28)!important;color:#fff!important}
+.sais-mobile-menu-button:hover,.sais-mobile-menu-button:focus-visible{background:#315d6d!important}
+.sais-drawer-head{background:#173746!important;border-bottom:3px solid #e99a4b!important}
+.sais-drawer-body>a[aria-current="page"],.sais-drawer-links a[aria-current="page"]{background:#fff2e4!important;border-left:4px solid #e99a4b!important;color:#754018!important;font-weight:850!important}
+.sais-drawer-group.is-active>.sais-drawer-group-toggle{background:#f3f6f7!important;border-left:4px solid #e99a4b!important;color:#173746!important;font-weight:850!important}
+.sais-drawer-group.is-active .sais-drawer-links a[aria-current="page"]{background:#fff2e4!important}
+@media(max-width:1199px){.sais-header-top{background:#edf3f6!important}.sais-header-brand{box-shadow:0 5px 16px rgba(23,55,70,.06)!important}}
+@media(max-width:760px){.sais-header-top{padding:12px 14px 14px!important}.sais-header-brand{border-radius:12px!important}.sais-header-tagline{line-height:1.5!important}}
+@media(prefers-reduced-motion:reduce){.sais-navigation-inner>a,.sais-menu>summary,.sais-menu-panel a{transition:none!important}}
