@@ -6,6 +6,8 @@ const warnings = [];
 const sameOriginFailures = [];
 const internalLinks = new Set();
 const externalLinks = new Set();
+const pageIds = new Map();
+const fragmentLinks = [];
 
 async function waitForPublishedRelease() {
   const deadline = Date.now() + 180000;
@@ -120,7 +122,8 @@ for (const url of urls) {
       title, h1, description, canonical, ogDescription, ogUrl,
       imagesWithoutAlt, badLinks, navDuration, header,
       overflow: document.documentElement.scrollWidth > window.innerWidth + 2,
-      lang: document.documentElement.lang
+      lang: document.documentElement.lang,
+      ids: [...document.querySelectorAll("[id]")].map(node => node.id)
     };
   });
   if (!result.title) errors.push("Missing document title: " + url);
@@ -153,11 +156,21 @@ for (const url of urls) {
   if (result.badLinks.length) errors.push("Root-relative links outside project prefix: " + url);
   if (result.overflow) warnings.push("Possible horizontal overflow at desktop viewport: " + url);
   if (result.navDuration) durations.push(result.navDuration);
+  let loadedPath = new URL(url).pathname;
+  if (loadedPath.endsWith("index.html")) loadedPath = loadedPath.slice(0, -"index.html".length);
+  if (!loadedPath.endsWith("/")) loadedPath += "/";
+  pageIds.set(loadedPath, new Set(result.ids));
   const anchors = await page.locator("a[href]").evaluateAll(nodes => nodes.map(node => node.href));
   for (const href of anchors) {
     try {
       const parsed = new URL(href);
       if (parsed.origin === new URL(BASE).origin && parsed.pathname.startsWith("/SAISAnimalInformationHubUK/")) {
+        if (parsed.hash) {
+          let targetPath = parsed.pathname;
+          if (targetPath.endsWith("index.html")) targetPath = targetPath.slice(0, -"index.html".length);
+          if (!targetPath.endsWith("/")) targetPath += "/";
+          fragmentLinks.push({path:targetPath,id:decodeURIComponent(parsed.hash.slice(1)),source:url});
+        }
         parsed.hash = "";
         internalLinks.add(parsed.href);
       } else if (parsed.protocol === "http:" || parsed.protocol === "https:") {
@@ -165,6 +178,13 @@ for (const url of urls) {
         externalLinks.add(parsed.href);
       }
     } catch {}
+  }
+}
+
+for (const fragment of fragmentLinks) {
+  const targets = pageIds.get(fragment.path);
+  if (!targets || !targets.has(fragment.id)) {
+    errors.push("Broken in-page anchor #" + fragment.id + " from " + fragment.source + " to " + fragment.path);
   }
 }
 
@@ -382,10 +402,39 @@ if (await dropdownSummary.count()) {
   await page.keyboard.press("Escape");
   const dropdownClosed = await dropdownSummary.locator("xpath=..").evaluate(node => !node.open);
   if (!dropdownClosed) errors.push("Escape did not close the desktop navigation dropdown.");
+  await dropdownSummary.focus();
+  await page.keyboard.press("Enter");
+  const keyboardOpened = await dropdownSummary.locator("xpath=..").evaluate(node => node.open);
+  if (!keyboardOpened) errors.push("Keyboard Enter did not open the desktop navigation dropdown.");
+  await page.keyboard.press("Escape");
 }
 
 
- // Test the shared search index, Enter submission, result routes and no-result message.
+ 
+ // Verify the mobile drawer also opens and closes with real touch input.
+ const touchContext = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ const touchPage = await touchContext.newPage();
+ touchPage.on("pageerror", error => errors.push("Touch navigation JavaScript error: " + error.message));
+ await touchPage.goto(BASE, {waitUntil:"domcontentloaded",timeout:30000});
+ const touchMenuButton = touchPage.locator(".sais-mobile-menu-button");
+ if (!(await touchMenuButton.isVisible())) errors.push("Touch navigation button is not visible on mobile.");
+ else {
+   await touchMenuButton.tap();
+   const touchDrawer = touchPage.locator("#sais-mobile-drawer");
+   if (await touchMenuButton.getAttribute("aria-expanded") !== "true" || await touchDrawer.getAttribute("aria-hidden") !== "false") {
+     errors.push("Touch did not open the mobile navigation drawer.");
+   }
+   const touchGroup = touchPage.locator(".sais-drawer-group-toggle").first();
+   if (await touchGroup.count()) {
+     await touchGroup.tap();
+     if (await touchGroup.getAttribute("aria-expanded") !== "true") errors.push("Touch did not expand a mobile navigation group.");
+   }
+   await touchPage.locator(".sais-drawer-backdrop").tap({position:{x:380,y:420}});
+   if (await touchMenuButton.getAttribute("aria-expanded") !== "false") errors.push("Touching outside the drawer did not close mobile navigation.");
+ }
+ await touchContext.close();
+
+// Test the shared search index, Enter submission, result routes and no-result message.
  await page.setViewportSize({ width: 1365, height: 900 });
  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 30000 });
  const searchInput = page.locator("#searchInput");
@@ -427,10 +476,30 @@ if (await accessibilityToggle.count()) {
   if (await accessibilityToggle.getAttribute("aria-expanded") !== "true" || !(await accessibilityPanel.isVisible())) {
     errors.push("Accessibility settings panel did not open correctly.");
   }
+  const largerText = accessibilityPanel.locator("button").filter({hasText:"Larger text"});
+  const boldText = accessibilityPanel.locator("button").filter({hasText:"Bold text"});
+  const highContrast = accessibilityPanel.locator("button").filter({hasText:"High contrast"});
+  const resetAccess = accessibilityPanel.locator(".sais-accessibility-reset");
+  await largerText.click();
+  if (await page.locator("body").evaluate(node => node.style.zoom) !== "1.1") errors.push("Accessibility larger-text control did not change text scale.");
+  await boldText.click();
+  if (await boldText.getAttribute("aria-pressed") !== "true") errors.push("Accessibility bold-text control did not turn on.");
+  await highContrast.click();
+  if (await highContrast.getAttribute("aria-pressed") !== "true") errors.push("Accessibility high-contrast control did not turn on.");
+  await resetAccess.click();
+  if (await page.locator("body").evaluate(node => node.style.zoom) !== "" || await boldText.getAttribute("aria-pressed") !== "false" || await highContrast.getAttribute("aria-pressed") !== "false") {
+    errors.push("Accessibility reset did not restore the default settings.");
+  }
   await page.keyboard.press("Escape");
   if (await accessibilityToggle.getAttribute("aria-expanded") !== "false" || !(await accessibilityPanel.isHidden())) {
     errors.push("Escape did not close the accessibility settings panel.");
   }
+  await accessibilityToggle.click();
+  await accessibilityPanel.locator(".sais-accessibility-close").click();
+  if (await accessibilityToggle.getAttribute("aria-expanded") !== "false") errors.push("Accessibility close button did not close the panel.");
+  await accessibilityToggle.click();
+  await page.mouse.click(650, 180);
+  if (await accessibilityToggle.getAttribute("aria-expanded") !== "false") errors.push("Clicking outside the accessibility panel did not close it.");
 } else {
   errors.push("Accessibility settings control is missing.");
 }
