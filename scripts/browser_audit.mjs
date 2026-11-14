@@ -154,7 +154,7 @@ for (const url of urls) {
   }
   if (result.imagesWithoutAlt) warnings.push(result.imagesWithoutAlt + " images without alt attributes: " + url);
   if (result.badLinks.length) errors.push("Root-relative links outside project prefix: " + url);
-  if (result.overflow) warnings.push("Possible horizontal overflow at desktop viewport: " + url);
+  if (result.overflow) errors.push("Horizontal overflow at desktop viewport: " + url);
   if (result.navDuration) durations.push(result.navDuration);
   let loadedPath = new URL(url).pathname;
   if (loadedPath.endsWith("index.html")) loadedPath = loadedPath.slice(0, -"index.html".length);
@@ -191,9 +191,9 @@ for (const fragment of fragmentLinks) {
 }
 
 const mobilePages = urls;
-for (const width of [390, 683, 768]) {
+for (const width of [320, 390, 683, 768, 1024]) {
   for (const url of mobilePages) {
-    await page.setViewportSize({ width, height: width === 390 ? 844 : 1024 });
+    await page.setViewportSize({ width, height: width === 320 ? 740 : width <= 390 ? 844 : width <= 768 ? 1024 : 768 });
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
     const responsive = await page.evaluate(() => {
       const clock = document.querySelector(".sais-header-clock-panel");
