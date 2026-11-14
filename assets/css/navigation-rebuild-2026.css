@@ -242,3 +242,10 @@
   .sais-menu-panel *,
   .sais-mobile-menu-button{transition:none!important}
 }
+
+/* Explicitly restore desktop links above the hamburger breakpoint.
+   The older shared stylesheet still contains a max-width:1300px drawer rule. */
+@media(min-width:1200px){
+  .sais-navigation-inner{display:flex!important}
+  .sais-mobile-menu-button{display:none!important}
+}
