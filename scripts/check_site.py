@@ -245,8 +245,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v56" not in worker:
-        errors.append("Service worker cache must be v56 after the desktop install and site-wide offline banner update")
+    if "sais-animal-hub-v57" not in worker:
+        errors.append("Service worker cache must be v57 after the desktop install and site-wide offline banner update")
     if "const APP_SHELL = [" in worker and "];" in worker:
         app_shell = worker.split("const APP_SHELL = [", 1)[1].split("];", 1)[0]
         cached_paths = []
