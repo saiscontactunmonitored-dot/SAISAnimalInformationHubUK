@@ -373,6 +373,18 @@ function improveReadabilityAndTopButton(){
 }
 
 function registerOfflineSupport(){
+ // iOS Safari needs explicit web-app metadata in addition to the Apple touch icon.
+ var appMeta=[
+  ["mobile-web-app-capable","yes"],
+  ["apple-mobile-web-app-capable","yes"],
+  ["apple-mobile-web-app-title","Animal Hub"],
+  ["apple-mobile-web-app-status-bar-style","default"]
+ ];
+ appMeta.forEach(function(item){
+  var node=document.querySelector('meta[name="'+item[0]+'"]');
+  if(!node){node=document.createElement("meta");node.name=item[0];document.head.appendChild(node);}
+  node.content=item[1];
+ });
  if(!("serviceWorker" in navigator)||!/^https?:$/.test(location.protocol))return;
  window.addEventListener("load",function(){
   var hadController=!!navigator.serviceWorker.controller;
