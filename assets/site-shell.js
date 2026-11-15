@@ -25,6 +25,7 @@ function removeLegacy(){
 function buildShell(){
  var announcement=document.querySelector(".announcement");
  var mast=document.querySelector(".masthead");
+  if(!mast){mast=Array.from(document.querySelectorAll("header")).find(function(node){return node.querySelector(".brandrow,.brand-row")&&node.querySelector(".brand,.brand-mark,.mark");})||null;}
  var taglineText=announcement?announcement.textContent.replace(/\\s+/g," ").trim():"Practical animal information. Clear guidance. A better starting point for animal care.";
  removeLegacy();
 
