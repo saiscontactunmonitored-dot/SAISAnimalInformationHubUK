@@ -22,14 +22,14 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band") && css.includes(".sais-header-top") && css.includes("data:image/svg+xml");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v55");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v56");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The current navigation rebuild and v54 offline cache did not become available within three minutes.");
+  throw new Error("The current navigation rebuild and v56 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
@@ -696,17 +696,34 @@ const workerState = await page.evaluate(async () => ({
   caches: await caches.keys()
 }));
 const hubCaches = workerState.caches.filter(name => name.startsWith("sais-animal-hub-"));
-if (!hubCaches.includes("sais-animal-hub-v55")) errors.push("Expected v54 offline cache was not created.");
-if (hubCaches.some(name => name !== "sais-animal-hub-v55")) errors.push("Old Animal Hub offline caches were not cleaned up.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v55")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!hubCaches.includes("sais-animal-hub-v56")) errors.push("Expected v54 offline cache was not created.");
+if (hubCaches.some(name => name !== "sais-animal-hub-v56")) errors.push("Old Animal Hub offline caches were not cleaned up.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v56")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 const cachedPwaIcons = await page.evaluate(async () => {
-  const cache = await caches.open("sais-animal-hub-v55");
+  const cache = await caches.open("sais-animal-hub-v56");
   const paths = ["assets/pwa/favicon-32.png","assets/pwa/apple-touch-icon.png","assets/pwa/icon-192.png","assets/pwa/icon-512-maskable.png"];
   return Promise.all(paths.map(async path => ({path,found:!!(await cache.match("/SAISAnimalInformationHubUK/"+path))})));
 });
 for (const item of cachedPwaIcons) if (!item.found) errors.push("PWA icon is missing from offline cache: " + item.path);
 if (!workerState.controller) errors.push("No active service worker controller was found.");
+
+// Confirm the automatic desktop install pop-up appears on a fresh laptop/desktop visit.
+const installContext = await browser.newContext({ viewport: { width: 1365, height: 900 } });
+const installPage = await installContext.newPage();
+await installPage.goto(BASE, { waitUntil: "domcontentloaded" });
+await installPage.waitForSelector(".sais-install-prompt", { timeout: 15000 }).catch(() => errors.push("Desktop install pop-up did not appear on a fresh desktop visit."));
+const desktopInstallState = await installPage.evaluate(() => {
+  const prompt = document.querySelector(".sais-install-prompt");
+  return {
+    visible: !!prompt && getComputedStyle(prompt).display !== "none",
+    heading: prompt?.querySelector("h2")?.textContent || "",
+    instructions: prompt?.querySelector(".sais-install-instructions")?.textContent || ""
+  };
+});
+if (!desktopInstallState.visible || !desktopInstallState.heading.toLowerCase().includes("computer")) errors.push("Desktop install pop-up content is missing or incorrect.");
+if (!desktopInstallState.instructions.toLowerCase().includes("browser menu") || !desktopInstallState.instructions.toLowerCase().includes("address bar")) errors.push("Desktop install guidance is missing browser menu/address bar instructions.");
+await installContext.close();
 
 const offlinePage = BASE + "dog-information/";
 await page.goto(offlinePage, { waitUntil: "domcontentloaded" });
@@ -715,6 +732,17 @@ try {
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   const offlineH1 = await page.locator("h1").first().textContent();
   if (!offlineH1?.trim()) errors.push("Offline reload did not display cached page content.");
+  await page.waitForFunction(() => {
+    const banner = document.getElementById("sais-offline-banner");
+    return !!banner && !banner.hidden;
+  }, null, { timeout: 8000 }).catch(() => errors.push("Site-wide offline banner did not appear after the connection was lost."));
+  const offlineBannerState = await page.evaluate(() => {
+    const banner = document.getElementById("sais-offline-banner");
+    return { visible: !!banner && !banner.hidden, text: banner?.textContent || "", live: banner?.getAttribute("aria-live") || "" };
+  });
+  if (!offlineBannerState.visible || !offlineBannerState.text.includes("🐾") || !offlineBannerState.text.includes("You're offline") || offlineBannerState.live !== "polite") {
+    errors.push("Offline banner is missing its paw prints, message or accessible status announcement.");
+  }
 } catch (error) {
   errors.push("Offline reload failed: " + error.message);
 }
