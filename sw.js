@@ -1,5 +1,5 @@
-const CACHE_NAME = 'sais-animal-hub-v60';
-const BASE = '/SAISAnimalInformationHubUK/';
+const CACHE_NAME = 'sais-animal-hub-v61';
+const BASE = '/';
 const APP_SHELL = [
   BASE + 'accessibility/',
   BASE + 'animal-articles/benefits-of-hydrotherapy/',

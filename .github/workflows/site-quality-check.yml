@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      run_browser:
+        description: 'Run live browser tests after the custom domain is connected'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -25,7 +31,7 @@ jobs:
 
   browser-smoke:
     needs: static-site-audit
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && inputs.run_browser == true
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository

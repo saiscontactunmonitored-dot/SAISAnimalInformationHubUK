@@ -6,7 +6,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-PREFIX = "/SAISAnimalInformationHubUK/"
+PREFIX = "/"
 errors = []
 warnings = []
 
@@ -199,7 +199,7 @@ else:
             if not manifest.get(key):
                 errors.append(f"PWA manifest is missing required field: {key}")
         if not str(manifest.get("start_url", "")).startswith(PREFIX) or not str(manifest.get("scope", "")).startswith(PREFIX):
-            errors.append("PWA start_url and scope must stay inside the GitHub Pages project path")
+            errors.append("PWA start_url and scope must be rooted at the permanent custom domain")
         for icon in manifest.get("icons", []):
             icon_path = str(icon.get("src", "")).replace(PREFIX, "", 1).lstrip("/")
             if not icon_path or not (ROOT / icon_path).exists():
@@ -259,8 +259,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v60" not in worker:
-        errors.append("Service worker cache must be v60 after the desktop install and site-wide offline banner update")
+    if "sais-animal-hub-v61" not in worker:
+        errors.append("Service worker cache must be v61 for the permanent custom-domain release")
     if "const APP_SHELL = [" in worker and "];" in worker:
         app_shell = worker.split("const APP_SHELL = [", 1)[1].split("];", 1)[0]
         cached_paths = []
@@ -318,7 +318,7 @@ for page in html_files:
 from html import unescape
 import xml.etree.ElementTree as ET
 
-SITE_BASE = "https://saiscontactunmonitored-dot.github.io/SAISAnimalInformationHubUK/"
+SITE_BASE = "https://information.somersetanimalinformationservices.com/"
 def tag_attr(tag, name):
     match = re.search(r"\b" + re.escape(name) + r"\s*=\s*([\"'])(.*?)\1", tag, re.IGNORECASE | re.DOTALL)
     return unescape(match.group(2).strip()) if match else ""
