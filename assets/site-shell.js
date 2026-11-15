@@ -405,40 +405,61 @@ function registerOfflineSupport(){
    .catch(function(){});
  },{once:true});
 }
+function setupConnectivityBanner(){
+ if(document.getElementById("sais-offline-banner"))return;
+ var banner=make("div","sais-offline-banner");
+ banner.id="sais-offline-banner";
+ banner.setAttribute("role","status");
+ banner.setAttribute("aria-live","polite");
+ banner.setAttribute("aria-atomic","true");
+ var leftPaws=make("span","sais-offline-paws","🐾");leftPaws.setAttribute("aria-hidden","true");
+ var copy=make("span","sais-offline-copy");
+ copy.appendChild(make("strong","","You're offline"));
+ copy.appendChild(make("span","","Some features may be unavailable. Saved pages may still be available."));
+ var rightPaws=make("span","sais-offline-paws","🐾");rightPaws.setAttribute("aria-hidden","true");
+ banner.appendChild(leftPaws);banner.appendChild(copy);banner.appendChild(rightPaws);
+ document.body.insertBefore(banner,document.body.firstChild);
+ function sync(){var offline=navigator.onLine===false;banner.hidden=!offline;document.documentElement.classList.toggle("sais-is-offline",offline);}
+ window.addEventListener("offline",sync);window.addEventListener("online",sync);sync();
+}
 function setupInstallExperience(){
  var deferredPrompt=null,shown=false,dialog=null;
  var isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
  if(isStandalone){document.documentElement.classList.add("sais-standalone");return;}
  var ua=navigator.userAgent||"";
  var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
- var key="sais-hub-install-dismissed-v1";
+ var isDesktop=!isIOS&&!!(window.matchMedia&&window.matchMedia("(min-width: 900px) and (pointer: fine)").matches);
+ var key="sais-hub-install-dismissed-v2",sessionKey="sais-hub-install-seen-v2";
  function dismissed(){try{return localStorage.getItem(key)==="1";}catch(e){return false;}}
+ function seenThisSession(){try{return sessionStorage.getItem(sessionKey)==="1";}catch(e){return false;}}
  function rememberDismissal(){try{localStorage.setItem(key,"1");}catch(e){}}
+ function rememberShown(){try{sessionStorage.setItem(sessionKey,"1");}catch(e){}}
  function closeDialog(save){if(dialog&&dialog.isConnected)dialog.remove();dialog=null;if(save)rememberDismissal();}
  function show(force){
-  if(dialog||isStandalone||(!force&&dismissed()))return;
-  if(!force&&!deferredPrompt&&!isIOS)return;
-  shown=true;
+  if(dialog||isStandalone||(!force&&(dismissed()||seenThisSession())))return;
+  if(!force&&!deferredPrompt&&!isIOS&&!isDesktop)return;
+  shown=true;if(!force)rememberShown();
   dialog=make("section","sais-install-prompt");
   dialog.setAttribute("role","dialog");dialog.setAttribute("aria-modal","false");dialog.setAttribute("aria-labelledby","sais-install-title");
-  var head=make("div","sais-install-head");
-  var copy=make("div","sais-install-copy");
+  var head=make("div","sais-install-head"),copy=make("div","sais-install-copy");
   copy.appendChild(make("span","sais-install-eyebrow","ANIMAL INFORMATION HUB UK"));
-  copy.appendChild(make("h2","","Keep the Animal Hub close at hand"));
-  copy.appendChild(make("p","","Add the free Hub to your home screen for quicker access to animal information and guidance."));
+  var heading=make("h2","",""+(isDesktop?"Install the Animal Hub on your computer":"Keep the Animal Hub close at hand"));heading.id="sais-install-title";copy.appendChild(heading);
+  copy.appendChild(make("p","",isDesktop?"Install the free Animal Information Hub on your laptop or desktop for quicker access to animal information and guidance.":"Add the free Hub to your home screen for quicker access to animal information and guidance."));
   head.appendChild(copy);
   var x=make("button","sais-install-close","×");x.type="button";x.setAttribute("aria-label","Close install message");head.appendChild(x);dialog.appendChild(head);
   var actions=make("div","sais-install-actions");
-  var primary=make("button","sais-install-primary",deferredPrompt?"Add to Home Screen":(isIOS?"Show me how":"How to add"));
-  primary.type="button";
+  var primary=make("button","sais-install-primary",deferredPrompt?(isDesktop?"Install app":"Add to Home Screen"):(isIOS?"Show me how":"How to install"));primary.type="button";
   var secondary=make("button","sais-install-secondary","Not now");secondary.type="button";
   actions.appendChild(primary);actions.appendChild(secondary);dialog.appendChild(actions);
   var instructions=make("div","sais-install-instructions");instructions.hidden=true;
   if(isIOS){
    instructions.appendChild(make("p","","On your iPhone or iPad:"));
-   var list=make("ol","");
-   ["Open this page in Safari.","Tap the Share button (the square with the upward arrow).","Choose Add to Home Screen, then tap Add."].forEach(function(t){list.appendChild(make("li","",t));});
-   instructions.appendChild(list);
+   var list=make("ol","");["Open this page in Safari.","Tap the Share button (the square with the upward arrow).","Choose Add to Home Screen, then tap Add."].forEach(function(t){list.appendChild(make("li","",t));});instructions.appendChild(list);
+  }else if(isDesktop){
+   instructions.appendChild(make("p","","To install the Hub on your computer:"));
+   var desktopList=make("ol","");
+   ["In Chrome or Edge, select the install icon at the right of the address bar, or open the browser menu and choose Install app.","In other browsers, open the browser menu and look for an option such as Install app or Add to Dock. Availability depends on your browser."].forEach(function(t){desktopList.appendChild(make("li","",t));});
+   instructions.appendChild(desktopList);
   }else{
    instructions.appendChild(make("p","","In your browser, open the page menu or address-bar install icon and choose Install app or Add to Home Screen, if offered."));
   }
@@ -448,15 +469,18 @@ function setupInstallExperience(){
    if(deferredPrompt){var promptEvent=deferredPrompt;deferredPrompt=null;promptEvent.prompt();promptEvent.userChoice.then(function(choice){if(choice&&choice.outcome==="accepted")closeDialog(true);else{primary.textContent="Try again";secondary.textContent="Not now";}}).catch(revealInstructions);}
    else revealInstructions();
   });
-  secondary.addEventListener("click",function(){closeDialog(true);});
-  x.addEventListener("click",function(){closeDialog(true);});
-  dialog.addEventListener("keydown",function(e){if(e.key==="Escape"){closeDialog(false);}});
+  secondary.addEventListener("click",function(){closeDialog(true);});x.addEventListener("click",function(){closeDialog(true);});
+  dialog.addEventListener("keydown",function(e){if(e.key==="Escape")closeDialog(false);});
  }
  window.saisShowInstallPrompt=show;
- window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;if(!shown&&!dismissed())show(false);});
+ window.addEventListener("beforeinstallprompt",function(e){
+  e.preventDefault();deferredPrompt=e;
+  if(dialog){var installButton=dialog.querySelector(".sais-install-primary");if(installButton)installButton.textContent=isDesktop?"Install app":"Add to Home Screen";}
+  if(!shown&&!dismissed()&&!seenThisSession())show(false);
+ });
  window.addEventListener("appinstalled",function(){deferredPrompt=null;closeDialog(true);});
- window.setTimeout(function(){if(!shown&&(isIOS||deferredPrompt)&&!dismissed())show(false);},10000);
+ window.setTimeout(function(){if(!shown&&!dismissed()&&!seenThisSession()&&(isIOS||isDesktop||deferredPrompt))show(false);},7000);
 }
-function init(){loadStyles();registerOfflineSupport();setupInstallExperience();buildDonationModal();var skip=document.querySelector(".skip-link,.sais-skip-link");if(skip)skip.href="#main-content";else{skip=make("a","sais-skip-link","Skip to main content");skip.href="#main-content";document.body.insertBefore(skip,document.body.firstChild);}var main=document.querySelector("main");if(main&&!main.id)main.id="main-content";buildShell();buildFooter();syncClockVisibility();var clockMedia=window.matchMedia("(max-width: 1199px)");if(clockMedia.addEventListener)clockMedia.addEventListener("change",syncClockVisibility);else if(clockMedia.addListener)clockMedia.addListener(syncClockVisibility);improveReadabilityAndTopButton();bindSearch();bindMenus();updateClock();setInterval(updateClock,30000);}
+function init(){loadStyles();registerOfflineSupport();setupConnectivityBanner();setupInstallExperience();buildDonationModal();var skip=document.querySelector(".skip-link,.sais-skip-link");if(skip)skip.href="#main-content";else{skip=make("a","sais-skip-link","Skip to main content");skip.href="#main-content";document.body.insertBefore(skip,document.body.firstChild);}var main=document.querySelector("main");if(main&&!main.id)main.id="main-content";buildShell();buildFooter();syncClockVisibility();var clockMedia=window.matchMedia("(max-width: 1199px)");if(clockMedia.addEventListener)clockMedia.addEventListener("change",syncClockVisibility);else if(clockMedia.addListener)clockMedia.addListener(syncClockVisibility);improveReadabilityAndTopButton();bindSearch();bindMenus();updateClock();setInterval(updateClock,30000);}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
