@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sais-animal-hub-v53';
+const CACHE_NAME = 'sais-animal-hub-v54';
 const BASE = '/SAISAnimalInformationHubUK/';
 const APP_SHELL = [
   BASE + 'accessibility/',
@@ -57,33 +57,18 @@ const APP_SHELL = [
   BASE + 'assets/images/dogs/choosing-kong-toy.webp',
   BASE + 'assets/images/dogs/puppy-car-travel.webp',
   BASE + 'assets/images/general/pet-health-and-safety.webp',
-  BASE + 'assets/images/animals/dog.webp',
-  BASE + 'assets/images/animals/cat.webp',
-  BASE + 'assets/images/animals/chicken.webp',
-  BASE + 'assets/images/animals/horse.webp',
-  BASE + 'assets/images/animals/rabbit.webp',
-  BASE + 'assets/images/animals/rodents.webp',
-  BASE + 'assets/images/animals/reptile-exotic.webp',
-  BASE + 'assets/images/animals/wildlife.webp',
   BASE + 'assets/images/awards/sme-news-award-logo.webp',
   BASE + 'assets/images/books/doggie-language-cover.webp',
   BASE + 'assets/images/books/easy-peasy-doggy-squeezy-cover.webp',
   BASE + 'assets/images/books/recommended-animal-books.webp',
   BASE + 'assets/images/books/why-does-my-dog-do-that-cover.webp',
   BASE + 'assets/images/cats/feline-grimace-scale-resource.webp',
-  BASE + 'assets/images/dogs/choosing-kong-toy.webp',
-  BASE + 'assets/images/dogs/dog-collar-handling-training.webp',
   BASE + 'assets/images/dogs/dog-decoder-banner.webp',
   BASE + 'assets/images/dogs/dog-dominance-theory-explainer.webp',
-  BASE + 'assets/images/dogs/dog-down-position-training.webp',
   BASE + 'assets/images/dogs/dog-food-resource-graphic.webp',
-  BASE + 'assets/images/dogs/dog-name-recognition-training.webp',
-  BASE + 'assets/images/dogs/dog-sit-training.webp',
   BASE + 'assets/images/dogs/dog-vomiting-guide.webp',
-  BASE + 'assets/images/dogs/puppy-car-travel.webp',
   BASE + 'assets/images/general/animal-enrichment.webp',
   BASE + 'assets/images/general/animal-rescue-tips.webp',
-  BASE + 'assets/images/general/pet-health-and-safety.webp',
   BASE + 'assets/images/lost-found/lost-and-found-advice.webp',
   BASE + 'assets/images/other/aquatic-vegetation-identification.webp',
   BASE + 'assets/images/partners/allwinds-dog-first-aid.webp',
@@ -96,6 +81,10 @@ const APP_SHELL = [
   BASE + 'assets/images/partners/the-hay-experts.webp',
   BASE + 'assets/images/wildlife/adder-bite-first-aid-guide.webp',
   BASE + 'assets/images/branding/animal-information-hub-logo-supplied.webp',
+  BASE + 'assets/pwa/favicon-32.png',
+  BASE + 'assets/pwa/apple-touch-icon.png',
+  BASE + 'assets/pwa/icon-192.png',
+  BASE + 'assets/pwa/icon-512-maskable.png',
   BASE + 'manifest.json'
 ];
 self.addEventListener('install', event => {

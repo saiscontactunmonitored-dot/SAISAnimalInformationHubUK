@@ -687,3 +687,9 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
  .sais-mobile-menu-button{display:inline-flex!important}
  .sais-navigation-inner{display:none!important}
 }
+
+/* PWA update prompt: tell visitors when a refreshed offline shell is ready. */
+.sais-update-notice{position:fixed;z-index:1200;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:14px;width:min(540px,calc(100vw - 24px));padding:12px 14px;background:#242320;color:#fffdfa;border:1px solid #ffffff35;border-radius:9px;box-shadow:0 10px 32px #0003;font-size:13px;line-height:1.45}
+.sais-update-refresh{flex:none;min-height:38px;padding:8px 14px;border:0;border-radius:5px;background:#f2a45a;color:#242320;font:inherit;font-weight:800;cursor:pointer}
+.sais-update-refresh:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:480px){.sais-update-notice{align-items:flex-start;gap:9px;font-size:12px}.sais-update-refresh{padding:8px 10px}}

@@ -374,7 +374,24 @@ function improveReadabilityAndTopButton(){
 
 function registerOfflineSupport(){
  if(!("serviceWorker" in navigator)||!/^https?:$/.test(location.protocol))return;
- window.addEventListener("load",function(){navigator.serviceWorker.register(route("sw.js"),{scope:route("")}).catch(function(){});},{once:true});
+ window.addEventListener("load",function(){
+  var hadController=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange",function(){
+   if(!hadController){hadController=true;return;}
+   if(document.getElementById("sais-update-notice"))return;
+   var notice=make("div","sais-update-notice");
+   notice.setAttribute("role","status");
+   notice.appendChild(make("span","","A refreshed version of the Animal Information Hub is ready."));
+   var refresh=make("button","sais-update-refresh","Refresh");
+   refresh.type="button";
+   refresh.addEventListener("click",function(){window.location.reload();});
+   notice.appendChild(refresh);
+   document.body.appendChild(notice);
+  });
+  navigator.serviceWorker.register(route("sw.js"),{scope:route(""),updateViaCache:"none"})
+   .then(function(registration){if(registration.update)registration.update().catch(function(){});})
+   .catch(function(){});
+ },{once:true});
 }
 function setupInstallExperience(){
  var deferredPrompt=null,shown=false,dialog=null;

@@ -28,6 +28,8 @@ class AuditParser(HTMLParser):
         self.links = []
         self.resources = []
         self.icons = 0
+        self.favicons = []
+        self.apple_icons = []
         self.og_images = 0
         self.shell_scripts = 0
         self.logo_refs = 0
@@ -46,6 +48,9 @@ class AuditParser(HTMLParser):
             self.images_without_alt += 1
         if tag == "link" and a.get("rel") == "icon":
             self.icons += 1
+            self.favicons.append(a)
+        if tag == "link" and a.get("rel") == "apple-touch-icon":
+            self.apple_icons.append(a)
         if tag == "meta" and a.get("property") == "og:image":
             self.og_images += 1
         if tag == "script" and "site-shell.js" in a.get("src", ""):
@@ -122,6 +127,17 @@ for page in html_files:
         errors.append(f"{rel}: expected exactly one main landmark, found {parser.main_count}")
     if parser.images_without_alt:
         warnings.append(f"{rel}: {parser.images_without_alt} image(s) missing an alt attribute")
+    if len(parser.favicons) != 1:
+        errors.append(f"{rel}: expected exactly one shared PNG favicon")
+    elif (parser.favicons[0].get("href") != PREFIX + "assets/pwa/favicon-32.png"
+          or parser.favicons[0].get("type") != "image/png"
+          or parser.favicons[0].get("sizes") != "32x32"):
+        errors.append(f"{rel}: favicon must use the shared 32px PNG icon")
+    if len(parser.apple_icons) != 1:
+        errors.append(f"{rel}: expected exactly one shared Apple touch icon")
+    elif (parser.apple_icons[0].get("href") != PREFIX + "assets/pwa/apple-touch-icon.png"
+          or parser.apple_icons[0].get("sizes") != "180x180"):
+        errors.append(f"{rel}: Apple touch icon must use the shared 180px PNG icon")
 
     if rel.as_posix() == "index.html":
         animal_card_tags = re.findall(
@@ -174,6 +190,22 @@ else:
             icon_path = str(icon.get("src", "")).replace(PREFIX, "", 1).lstrip("/")
             if not icon_path or not (ROOT / icon_path).exists():
                 errors.append(f"PWA manifest icon is missing: {icon.get('src', '')}")
+        required_icons = {
+            (PREFIX + "assets/pwa/icon-192.png", "192x192", "image/png", "any"),
+            (PREFIX + "assets/pwa/icon-512-maskable.png", "512x512", "image/png", "maskable"),
+        }
+        actual_icons = {
+            (str(icon.get("src", "")), str(icon.get("sizes", "")),
+             str(icon.get("type", "")), str(icon.get("purpose", "")))
+            for icon in manifest.get("icons", [])
+        }
+        for required in required_icons:
+            if required not in actual_icons:
+                errors.append("PWA manifest is missing required install icon: " + " / ".join(required))
+        if manifest.get("theme_color") != "#f2a45a":
+            errors.append("PWA theme colour must match the SAIS orange brand colour")
+        if manifest.get("display") != "standalone":
+            errors.append("PWA display mode must be standalone")
     except Exception as exc:
         errors.append(f"PWA manifest JSON could not be read: {exc}")
 
@@ -204,15 +236,31 @@ else:
 
     for asset in ("assets/css/site.css", "assets/css/redesign-2026.css", "assets/css/launch-polish.css",
                   "assets/site-shell.css", "assets/css/navigation-rebuild-2026.css", "assets/site-shell.js",
-                  "info-logo.png", "icon.svg", "manifest.json"):
+                  "info-logo.png", "icon.svg", "manifest.json",
+                  "assets/pwa/favicon-32.png", "assets/pwa/apple-touch-icon.png",
+                  "assets/pwa/icon-192.png", "assets/pwa/icon-512-maskable.png"):
         if not (ROOT / asset).exists():
             errors.append(f"Offline app-shell asset is missing: {asset}")
         if "BASE + '" + asset + "'" not in worker:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v53" not in worker:
-        errors.append("Service worker cache must be v53 after the launch-preflight updates")
+    if "sais-animal-hub-v54" not in worker:
+        errors.append("Service worker cache must be v54 after the PWA icon and cache refresh")
+    if "const APP_SHELL = [" in worker and "];" in worker:
+        app_shell = worker.split("const APP_SHELL = [", 1)[1].split("];", 1)[0]
+        cached_paths = []
+        for line in app_shell.splitlines():
+            if "BASE + '" in line:
+                cached_paths.append(line.split("BASE + '", 1)[1].split("'", 1)[0])
+            elif line.strip() == "BASE,":
+                cached_paths.append("")
+        if len(cached_paths) != len(set(cached_paths)):
+            errors.append("Service worker APP_SHELL contains duplicate cache URLs")
+        for icon_path in ("assets/pwa/favicon-32.png", "assets/pwa/apple-touch-icon.png",
+                          "assets/pwa/icon-192.png", "assets/pwa/icon-512-maskable.png"):
+            if icon_path not in cached_paths:
+                errors.append("PWA icon is missing from offline precache: " + icon_path)
     if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
         errors.append("Service worker does not precache the rebuilt navigation stylesheet")
     for image in sorted((ROOT / "assets" / "images").rglob("*")):
@@ -225,8 +273,8 @@ if not shell_script_path.exists():
 else:
     shell_script = shell_script_path.read_text(encoding="utf-8")
     for feature in ("beforeinstallprompt", "sais-install-prompt",
-                    "sais-install-footer-trigger", "serviceWorker.register",
-                    "assets/css/navigation-rebuild-2026.css"):
+                    "sais-install-footer-trigger", "serviceWorker.register", "updateViaCache",
+                    "sais-update-notice", "assets/css/navigation-rebuild-2026.css"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
     for feature in ("sais-header-top", "sais-header-clock-panel", "sais-header-brand",

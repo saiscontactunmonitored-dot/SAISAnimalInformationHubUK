@@ -22,7 +22,7 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band") && css.includes(".sais-header-top") && css.includes("data:image/svg+xml");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v53");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v54");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
@@ -88,6 +88,14 @@ for (const url of urls) {
     const canonical = document.querySelector('link[rel="canonical"]')?.href || "";
     const ogDescription = document.querySelector('meta[property="og:description"]')?.content?.trim() || "";
     const ogUrl = document.querySelector('meta[property="og:url"]')?.content || "";
+    const favicon = document.querySelector('link[rel="icon"]');
+    const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+    const themeColor = document.querySelector('meta[name="theme-color"]')?.content || "";
+    const pwaIcons = {
+      faviconCorrect: !!favicon && favicon.href.endsWith("/assets/pwa/favicon-32.png") && favicon.type === "image/png" && favicon.sizes.value === "32x32",
+      appleTouchIconCorrect: !!appleTouchIcon && appleTouchIcon.href.endsWith("/assets/pwa/apple-touch-icon.png") && appleTouchIcon.sizes.value === "180x180",
+      themeColor
+    };
     const imagesWithoutAlt = [...document.images].filter(image => !image.hasAttribute("alt")).length;
     const badLinks = [...document.querySelectorAll("a[href]")].map(anchor => anchor.href)
       .filter(href => href.startsWith(location.origin) && !href.startsWith(location.origin + "/SAISAnimalInformationHubUK/"));
@@ -119,7 +127,7 @@ for (const url of urls) {
       logoCorrect: !!headerLogo && headerLogo.src.split("?")[0].endsWith("/info-logo.png")
     };
     return {
-      title, h1, description, canonical, ogDescription, ogUrl,
+      title, h1, description, canonical, ogDescription, ogUrl, pwaIcons,
       imagesWithoutAlt, badLinks, navDuration, header,
       overflow: document.documentElement.scrollWidth > window.innerWidth + 2,
       lang: document.documentElement.lang,
@@ -133,6 +141,9 @@ for (const url of urls) {
   if (result.ogDescription !== result.description) errors.push("Open Graph description mismatch: " + url);
   if (result.ogUrl !== url) errors.push("Open Graph URL mismatch: " + url);
   if (!result.lang) errors.push("Missing document language: " + url);
+  if (!result.pwaIcons.faviconCorrect) errors.push("Favicon is missing, incorrect or not a PNG on " + url);
+  if (!result.pwaIcons.appleTouchIconCorrect) errors.push("Apple touch icon is missing or incorrect on " + url);
+  if (result.pwaIcons.themeColor !== "#f2a45a") errors.push("PWA/browser theme colour is incorrect on " + url);
   if (!result.header.partsPresent || !result.header.clockVisible || !result.header.searchVisible) {
     errors.push("Screenshot-style shared header is incomplete on " + url);
   }
@@ -655,7 +666,11 @@ else {
   const manifest = await manifestResponse.json();
   if (manifest.display !== "standalone") errors.push("PWA manifest is not configured for standalone display.");
   if (!manifest.start_url?.startsWith("/SAISAnimalInformationHubUK/")) errors.push("PWA start URL is outside the project scope.");
-  if (!manifest.icons?.length) errors.push("PWA manifest has no install icons.");
+  if (manifest.scope !== "/SAISAnimalInformationHubUK/") errors.push("PWA manifest scope is incorrect.");
+  if (manifest.theme_color !== "#f2a45a") errors.push("PWA theme colour does not match SAIS branding.");
+  if (!manifest.icons?.some(icon => icon.sizes === "192x192" && icon.type === "image/png" && icon.src.endsWith("/assets/pwa/icon-192.png"))) errors.push("PWA 192px install icon is missing.");
+  if (!manifest.icons?.some(icon => icon.sizes === "512x512" && icon.type === "image/png" && icon.purpose === "maskable" && icon.src.endsWith("/assets/pwa/icon-512-maskable.png"))) errors.push("PWA 512px maskable install icon is missing.");
+  if (!manifest.icons?.some(icon => icon.type === "image/svg+xml")) errors.push("Scalable SVG Hub icon is missing from the PWA manifest.");
 }
 const navigationCssLoaded = await page.evaluate(() => [...document.styleSheets].some(sheet => sheet.href && sheet.href.includes("assets/css/navigation-rebuild-2026.css")));
 if (!navigationCssLoaded) errors.push("Rebuilt navigation stylesheet did not load on the live page.");
@@ -666,9 +681,17 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v53")) errors.push("Expected v53 offline cache was not created.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v53")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+const hubCaches = workerState.caches.filter(name => name.startsWith("sais-animal-hub-"));
+if (!hubCaches.includes("sais-animal-hub-v54")) errors.push("Expected v54 offline cache was not created.");
+if (hubCaches.some(name => name !== "sais-animal-hub-v54")) errors.push("Old Animal Hub offline caches were not cleaned up.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v54")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
+const cachedPwaIcons = await page.evaluate(async () => {
+  const cache = await caches.open("sais-animal-hub-v54");
+  const paths = ["assets/pwa/favicon-32.png","assets/pwa/apple-touch-icon.png","assets/pwa/icon-192.png","assets/pwa/icon-512-maskable.png"];
+  return Promise.all(paths.map(async path => ({path,found:!!(await cache.match("/SAISAnimalInformationHubUK/"+path))})));
+});
+for (const item of cachedPwaIcons) if (!item.found) errors.push("PWA icon is missing from offline cache: " + item.path);
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
 const offlinePage = BASE + "dog-information/";
@@ -680,6 +703,13 @@ try {
   if (!offlineH1?.trim()) errors.push("Offline reload did not display cached page content.");
 } catch (error) {
   errors.push("Offline reload failed: " + error.message);
+}
+try {
+  await page.goto(BASE + "offline-fallback-check/", {waitUntil:"domcontentloaded",timeout:15000});
+  const fallbackHeading = (await page.locator("h1").first().textContent()) || "";
+  if (!fallbackHeading.toLowerCase().includes("offline")) errors.push("Uncached offline navigation did not show the offline fallback page.");
+} catch (error) {
+  errors.push("Offline fallback page could not be opened without a connection: " + error.message);
 }
 await context.setOffline(false);
 
