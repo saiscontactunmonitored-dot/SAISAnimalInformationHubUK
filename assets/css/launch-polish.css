@@ -1,0 +1,48 @@
+/* Launch polish — shared across the Hub and installed PWA */
+:root{color-scheme:light;--hub-safe-top:env(safe-area-inset-top,0px);--hub-safe-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:1.5rem;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:100vh;min-height:100dvh;padding-bottom:var(--hub-safe-bottom)}
+body,button,input,select,textarea{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+img{max-width:100%;height:auto}
+figure{min-width:0}
+figcaption{color:#52636b;line-height:1.55}
+a{overflow-wrap:anywhere;text-underline-offset:3px}
+button,a,[role=button]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:3px solid #a95318!important;outline-offset:3px!important}
+.skip-link,.sais-skip-link{z-index:20000}
+.sais-shell{isolation:isolate}
+.sais-navigation,.sais-tools,.sais-footer{min-width:0}
+.sais-drawer-backdrop{overscroll-behavior:contain}
+.sais-mobile-drawer{padding-bottom:max(24px,var(--hub-safe-bottom));overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sais-drawer-head{padding-top:max(18px,var(--hub-safe-top))}
+.sais-drawer-body{padding-bottom:max(32px,var(--hub-safe-bottom))}
+.sais-drawer-group-toggle,.sais-mobile-menu-button,.sais-drawer-close{touch-action:manipulation}
+.sais-results{max-height:min(60dvh,520px);overflow:auto;overscroll-behavior:contain}
+.sais-search input{min-width:0}
+.sais-footer{padding-bottom:var(--hub-safe-bottom)}
+.sais-footer-bottom{flex-wrap:wrap}
+.sais-accessibility-panel{max-height:min(72dvh,620px);overflow:auto;overscroll-behavior:contain}
+.sais-install-prompt{max-height:calc(100dvh - 32px - var(--hub-safe-top) - var(--hub-safe-bottom));overflow:auto;overscroll-behavior:contain}
+.sais-back-to-top,.sais-accessibility-widget{bottom:max(14px,var(--hub-safe-bottom))!important}
+.sais-back-to-top{right:max(12px,env(safe-area-inset-right))!important}
+.sais-accessibility-widget{left:max(12px,env(safe-area-inset-left))!important}
+.sais-standalone body{min-height:100dvh}
+.sais-standalone .masthead{padding-top:max(14px,var(--hub-safe-top))!important}
+@media(max-width:760px){
+ .sais-tools{padding-bottom:12px}
+ .sais-search{min-width:0}
+ .sais-search input{font-size:16px}
+ .sais-drawer-body>a,.sais-drawer-group-toggle{min-height:50px}
+ .sais-footer-bottom{padding-bottom:max(16px,var(--hub-safe-bottom))}
+}
+@media(hover:none){
+ .animal-card:hover,.topic-card:hover,.info:hover{transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto!important}
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media(forced-colors:active){
+ :focus-visible{outline:3px solid Highlight!important}
+ .sais-mobile-drawer,.sais-drawer-group,.sais-drawer-body>a{border:1px solid CanvasText!important}
+}
