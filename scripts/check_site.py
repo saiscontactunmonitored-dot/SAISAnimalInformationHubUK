@@ -87,7 +87,8 @@ if not navigation_css_path.exists():
 else:
     navigation_css = navigation_css_path.read_text(encoding="utf-8")
     for feature in ("sais-donate-button", "sais-donation-overlay",
-                    "sais-donation-dialog", "sais-donation-primary"):
+                    "sais-donation-dialog", "sais-donation-primary",
+                    "touch-action:manipulation", "(pointer:coarse)", ".animal-card>*{pointer-events:none!important}"):
         if feature not in navigation_css:
             errors.append(f"Navigation stylesheet is missing Donate styling: {feature}")
 
@@ -121,6 +122,25 @@ for page in html_files:
         errors.append(f"{rel}: expected exactly one main landmark, found {parser.main_count}")
     if parser.images_without_alt:
         warnings.append(f"{rel}: {parser.images_without_alt} image(s) missing an alt attribute")
+
+    if rel.as_posix() == "index.html":
+        animal_card_tags = re.findall(
+            r'<a\b[^>]*class="[^"]*\banimal-card\b[^"]*"[^>]*>',
+            source, re.IGNORECASE
+        )
+        animal_card_hrefs = [
+            re.search(r'href="([^"]+)"', tag, re.IGNORECASE).group(1)
+            for tag in animal_card_tags
+            if re.search(r'href="([^"]+)"', tag, re.IGNORECASE)
+        ]
+        if len(animal_card_tags) != 8:
+            errors.append(f"{rel}: expected eight animal cards, found {len(animal_card_tags)}")
+        if len(animal_card_hrefs) != len(set(animal_card_hrefs)):
+            errors.append(f"{rel}: duplicate animal-card destinations remain")
+        if re.search(r'<div\b[^>]*class="[^"]*\baccessibility-widget\b', source, re.IGNORECASE):
+            errors.append(f"{rel}: legacy accessibility widget duplicates the shared floating control")
+        if re.search(r'<a\b[^>]*class="[^"]*\bback-to-top\b', source, re.IGNORECASE):
+            errors.append(f"{rel}: legacy Back to top control duplicates the shared floating control")
 
     for href in parser.links:
         resolve_local(page, href, rel, "link")
@@ -191,8 +211,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v50" not in worker:
-        errors.append("Service worker cache must be v50 after the Donate popup update")
+    if "sais-animal-hub-v51" not in worker:
+        errors.append("Service worker cache must be v51 after the Android animal chooser fix")
     if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
         errors.append("Service worker does not precache the rebuilt navigation stylesheet")
     for image in sorted((ROOT / "assets" / "images").rglob("*")):

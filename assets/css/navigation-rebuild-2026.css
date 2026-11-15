@@ -963,3 +963,13 @@ body.sais-donation-open{overflow:hidden!important}
 @media(prefers-reduced-motion:reduce){
  .sais-donate-button,.sais-donation-primary,.sais-donation-secondary{transition:none!important}
 }
+
+
+/* Android and other touch screens: keep the full animal card as one reliable tap target. */
+.animal-card{cursor:pointer!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(216,137,67,.18)!important}
+.animal-card>*{pointer-events:none!important}
+@media (hover:none),(pointer:coarse){
+ .animal-card:hover{transform:none!important;box-shadow:0 2px 8px rgba(24,45,54,.07)!important}
+ .animal-card:hover .editorial-photo{transform:none!important}
+ .animal-card:active{border-color:#b86d32!important;background:#fff8f0!important}
+}
