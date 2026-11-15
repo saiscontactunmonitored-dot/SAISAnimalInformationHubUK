@@ -92,11 +92,10 @@ function buildShell(){
  link(inner,"Home","");
  link(inner,"Animal Care & Training","animal-care-training/");
  link(inner,"Animal Help & Resources","animal-help-resources/");
- link(inner,"Animal Articles","animal-articles/");
  dropdown(inner,"Choose an animal",groups.animals);
  dropdown(inner,"Care topics",groups.care.slice(1));
  dropdown(inner,"More resources",groups.resources.slice(1));
- dropdown(inner,"Articles",groups.articles.slice(1));
+ dropdown(inner,"Animal Articles",groups.articles);
  var desktopDonate=make("button","sais-donate-button sais-donate-button--desktop","Donate");
  desktopDonate.type="button";
  desktopDonate.setAttribute("aria-haspopup","dialog");
@@ -141,12 +140,11 @@ function buildShell(){
  link(drawerBody,"Home","");
  link(drawerBody,"Animal Care & Training","animal-care-training/");
  link(drawerBody,"Animal Help & Resources","animal-help-resources/");
- link(drawerBody,"Animal Articles","animal-articles/");
  var mobileGroups=[
   ["Choose an animal",groups.animals],
   ["Care topics",groups.care.slice(1)],
   ["More resources",groups.resources.slice(1)],
-  ["Articles",groups.articles.slice(1)]
+  ["Animal Articles",groups.articles]
  ];
  var mobileGroupToggles=[];
  mobileGroups.forEach(function(group,i){
@@ -326,7 +324,7 @@ function buildDonationModal(){
 function buildFooter(){
  Array.from(document.querySelectorAll("footer,.hub-footer,.foot")).forEach(function(n){if(n.isConnected)n.remove();});
  var f=make("footer","sais-footer"),wrap=make("div","sais-footer-inner"),top=make("div","sais-footer-top");
- var brand=make("section","sais-footer-brand"),mark=make("span","sais-footer-mark","✦");mark.setAttribute("aria-hidden","true");
+ var brand=make("section","sais-footer-brand"),mark=make("img","sais-footer-mark");mark.src=route("info-logo.png");mark.alt="Animal Information Hub UK information logo";mark.width=76;mark.height=76;mark.decoding="async";
  brand.appendChild(mark);brand.appendChild(make("h2","","Animal Information Hub UK"));
  brand.appendChild(make("p","","Practical animal information, clear guidance and trusted starting points for better animal care."));
  brand.appendChild(make("span","sais-footer-powered","Powered by Somerset Animal Information Services"));
