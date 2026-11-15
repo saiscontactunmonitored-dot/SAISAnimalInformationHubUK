@@ -554,7 +554,7 @@ if (await dropdownSummary.count()) {
  const noResultText = (await page.locator("#searchResults").innerText()).toLowerCase();
  if (!noResultText.includes("no matching pages found")) errors.push("Search no-result message is missing or unclear.");
  await searchInput.fill("dog");
- await page.locator("#searchResults a").filter({hasText:"Dogs"}).click();
+ await page.locator("#searchResults a").filter({hasText:/^Dogs$/}).click();
  await page.waitForURL("**/dog-information/**", {timeout:10000}).catch(() => errors.push("Search result did not open the Dog Information page."));
 
 // Exercise the accessibility panel and Escape-to-close behaviour.
