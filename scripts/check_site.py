@@ -245,8 +245,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v54" not in worker:
-        errors.append("Service worker cache must be v54 after the PWA icon and cache refresh")
+    if "sais-animal-hub-v55" not in worker:
+        errors.append("Service worker cache must be v55 after the iOS install metadata update")
     if "const APP_SHELL = [" in worker and "];" in worker:
         app_shell = worker.split("const APP_SHELL = [", 1)[1].split("];", 1)[0]
         cached_paths = []
@@ -274,7 +274,8 @@ else:
     shell_script = shell_script_path.read_text(encoding="utf-8")
     for feature in ("beforeinstallprompt", "sais-install-prompt",
                     "sais-install-footer-trigger", "serviceWorker.register", "updateViaCache",
-                    "sais-update-notice", "info-logo.png", "assets/css/navigation-rebuild-2026.css"):
+                    "sais-update-notice", "apple-mobile-web-app-capable", "mobile-web-app-capable",
+                    "info-logo.png", "assets/css/navigation-rebuild-2026.css"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
     for feature in ("sais-header-top", "sais-header-clock-panel", "sais-header-brand",
