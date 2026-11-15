@@ -133,6 +133,7 @@ for (const url of urls) {
       footerCount: document.querySelectorAll(".sais-footer").length,
       desktopNavVisible: !!desktopNav && getComputedStyle(desktopNav).display !== "none" && desktopNav.getBoundingClientRect().width > 0,
       desktopDropdownCount: document.querySelectorAll(".sais-menu").length,
+      legacyPageBrandingCount: document.querySelectorAll(".announcement,header.masthead,header .brandrow,header .brand-row,header .mark").length,
       hamburgerVisible: !!hamburger && getComputedStyle(hamburger).display !== "none" && hamburger.getBoundingClientRect().width > 0,
       logoCorrect: !!headerLogo && headerLogo.src.split("?")[0].endsWith("/info-logo.png")
     };
@@ -165,6 +166,8 @@ for (const url of urls) {
     errors.push("Desktop navigation layout is incorrect on " + url);
   }
   if (!result.header.logoCorrect) errors.push("Header is not using the supplied info-logo.png on " + url);
+  const isSpeciesPage = /\/(dog-information|cat-information|horse-information|wildlife-information|chicken-information|bird-information|rabbit-information|rodent-information|reptileexotic-information)\//.test(new URL(url).pathname);
+  if (isSpeciesPage && result.header.legacyPageBrandingCount !== 0) errors.push("Legacy page-specific branding still appears alongside the shared header on " + url);
   if (result.header.clockLocation !== "London, UK" ||
       result.header.clockBackground !== "rgb(255, 255, 255)" ||
       result.header.clockDateColour !== "rgb(23, 23, 23)") {
