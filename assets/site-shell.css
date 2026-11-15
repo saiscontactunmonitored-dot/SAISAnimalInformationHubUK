@@ -693,3 +693,23 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
 .sais-update-refresh{flex:none;min-height:38px;padding:8px 14px;border:0;border-radius:5px;background:#f2a45a;color:#242320;font:inherit;font-weight:800;cursor:pointer}
 .sais-update-refresh:focus-visible{outline:3px solid #fff;outline-offset:3px}
 @media(max-width:480px){.sais-update-notice{align-items:flex-start;gap:9px;font-size:12px}.sais-update-refresh{padding:8px 10px}}
+
+
+/* Site-wide offline banner — fixed at the top on every page and installed app */
+.sais-offline-banner{
+ position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:30000!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:13px!important;
+ width:100%!important;min-height:42px!important;box-sizing:border-box!important;
+ padding:calc(8px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 8px max(14px,env(safe-area-inset-left,0px))!important;
+ border:0!important;border-bottom:1px solid #ca7b35!important;background:#f2a45a!important;color:#172b35!important;
+ box-shadow:0 3px 12px rgba(23,43,53,.16)!important;font:700 13px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;text-align:center!important;
+}
+.sais-offline-banner[hidden]{display:none!important}
+.sais-offline-paws{flex:0 0 auto;color:#713a13;font-size:20px;line-height:1}
+.sais-offline-copy{display:inline-flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:5px 8px;min-width:0}
+.sais-offline-copy strong{color:#172b35;font-size:13px;font-weight:900}
+.sais-offline-copy>span{color:#273c46;font-size:12px;font-weight:650}
+@media(max-width:600px){
+ .sais-offline-banner{gap:8px!important;min-height:44px!important;padding-right:10px!important;padding-left:10px!important;font-size:12px!important}
+ .sais-offline-paws{font-size:17px}.sais-offline-copy{gap:2px 5px}.sais-offline-copy>span{font-size:11px}
+}
