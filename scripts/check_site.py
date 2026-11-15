@@ -109,6 +109,20 @@ for page in html_files:
         continue
 
     rel = page.relative_to(ROOT)
+    animal_species_pages = {
+        "dog-information/index.html", "cat-information/index.html",
+        "horse-information/index.html", "wildlife-information/index.html",
+        "chicken-information/index.html", "bird-information/index.html",
+        "rabbit-information/index.html", "rodent-information/index.html",
+        "reptileexotic-information/index.html",
+    }
+    if rel.as_posix() in animal_species_pages:
+        if re.search(r'<div\\b[^>]*class=["\\'][^"\\']*\\bannouncement\\b', source, re.IGNORECASE):
+            errors.append(f"{rel}: legacy announcement strip must not be present; use the shared Hub header")
+        if re.search(r'<header\\b[^>]*>[\\s\\S]*?(?:brandrow|brand-row)[\\s\\S]*?</header>', source, re.IGNORECASE):
+            errors.append(f"{rel}: duplicate page-specific Hub brand header must be removed")
+        if re.search(r'<span\\b[^>]*class=["\\']mark["\\'][^>]*>\\s*✦', source, re.IGNORECASE):
+            errors.append(f"{rel}: legacy orange star logo must not be present")
     if not re.search(r"<html\b[^>]*\blang=[\"']", source, re.IGNORECASE):
         errors.append(f"{rel}: missing document language")
     if not re.search(r"<title\b[^>]*>\s*[^<]+\s*</title>", source, re.IGNORECASE):
@@ -245,8 +259,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v58" not in worker:
-        errors.append("Service worker cache must be v58 after the desktop install and site-wide offline banner update")
+    if "sais-animal-hub-v59" not in worker:
+        errors.append("Service worker cache must be v59 after the desktop install and site-wide offline banner update")
     if "const APP_SHELL = [" in worker and "];" in worker:
         app_shell = worker.split("const APP_SHELL = [", 1)[1].split("];", 1)[0]
         cached_paths = []
