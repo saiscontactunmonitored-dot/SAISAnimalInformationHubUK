@@ -259,8 +259,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v59" not in worker:
-        errors.append("Service worker cache must be v59 after the desktop install and site-wide offline banner update")
+    if "sais-animal-hub-v60" not in worker:
+        errors.append("Service worker cache must be v60 after the desktop install and site-wide offline banner update")
     if "const APP_SHELL = [" in worker and "];" in worker:
         app_shell = worker.split("const APP_SHELL = [", 1)[1].split("];", 1)[0]
         cached_paths = []
@@ -329,6 +329,10 @@ def find_meta(source, key_name, key_value):
             return tag
     return ""
 
+def count_meta(source, key_name, key_value):
+    return sum(1 for tag in re.findall(r"<meta\b[^>]*>", source, re.IGNORECASE)
+               if tag_attr(tag, key_name).lower() == key_value.lower())
+
 seo_titles = {}
 seo_descriptions = {}
 expected_sitemap_urls = set()
@@ -346,6 +350,11 @@ for page in html_files:
 
     if not title:
         errors.append(f"{rel}: missing SEO title")
+    for key_name, key_value in (("name", "description"), ("property", "og:title"),
+                                ("property", "og:description"), ("property", "og:url")):
+        count = count_meta(source, key_name, key_value)
+        if count != 1:
+            errors.append(f"{rel}: expected exactly one {key_name}={key_value} meta tag, found {count}")
     if not description:
         errors.append(f"{rel}: missing SEO meta description")
     if not og_title or not og_description or not og_url:
