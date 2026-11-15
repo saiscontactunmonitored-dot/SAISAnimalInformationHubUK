@@ -22,14 +22,14 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band") && css.includes(".sais-header-top") && css.includes("data:image/svg+xml");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v59");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v60");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The current navigation rebuild and v59 offline cache did not become available within three minutes.");
+  throw new Error("The current navigation rebuild and v60 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
@@ -89,9 +89,14 @@ for (const url of urls) {
     const title = document.title.trim();
     const h1 = document.querySelectorAll("h1").length;
     const description = document.querySelector('meta[name="description"]')?.content?.trim() || "";
+    const descriptionCount = document.querySelectorAll('meta[name="description"]').length;
     const canonical = document.querySelector('link[rel="canonical"]')?.href || "";
+    const canonicalCount = document.querySelectorAll('link[rel="canonical"]').length;
+    const ogTitleCount = document.querySelectorAll('meta[property="og:title"]').length;
     const ogDescription = document.querySelector('meta[property="og:description"]')?.content?.trim() || "";
+    const ogDescriptionCount = document.querySelectorAll('meta[property="og:description"]').length;
     const ogUrl = document.querySelector('meta[property="og:url"]')?.content || "";
+    const ogUrlCount = document.querySelectorAll('meta[property="og:url"]').length;
     const favicon = document.querySelector('link[rel="icon"]');
     const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
     const themeColor = document.querySelector('meta[name="theme-color"]')?.content || "";
@@ -138,7 +143,7 @@ for (const url of urls) {
       logoCorrect: !!headerLogo && headerLogo.src.split("?")[0].endsWith("/info-logo.png")
     };
     return {
-      title, h1, description, canonical, ogDescription, ogUrl, pwaIcons,
+      title, h1, description, descriptionCount, canonical, canonicalCount, ogTitleCount, ogDescription, ogDescriptionCount, ogUrl, ogUrlCount, pwaIcons,
       imagesWithoutAlt, badLinks, navDuration, header,
       overflow: document.documentElement.scrollWidth > window.innerWidth + 2,
       lang: document.documentElement.lang,
@@ -148,6 +153,7 @@ for (const url of urls) {
   if (!result.title) errors.push("Missing document title: " + url);
   if (result.h1 !== 1) errors.push("Expected one H1, found " + result.h1 + ": " + url);
   if (!result.description) errors.push("Missing meta description: " + url);
+  if (result.descriptionCount !== 1 || result.ogTitleCount !== 1 || result.ogDescriptionCount !== 1 || result.ogUrlCount !== 1 || result.canonicalCount !== 1) errors.push("Duplicate or missing SEO/social/canonical metadata: " + url);
   if (result.canonical !== url) errors.push("Canonical mismatch: " + url);
   if (result.ogDescription !== result.description) errors.push("Open Graph description mismatch: " + url);
   if (result.ogUrl !== url) errors.push("Open Graph URL mismatch: " + url);
@@ -699,12 +705,12 @@ const workerState = await page.evaluate(async () => ({
   caches: await caches.keys()
 }));
 const hubCaches = workerState.caches.filter(name => name.startsWith("sais-animal-hub-"));
-if (!hubCaches.includes("sais-animal-hub-v59")) errors.push("Expected v59 offline cache was not created.");
-if (hubCaches.some(name => name !== "sais-animal-hub-v59")) errors.push("Old Animal Hub offline caches were not cleaned up.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v59")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!hubCaches.includes("sais-animal-hub-v60")) errors.push("Expected v60 offline cache was not created.");
+if (hubCaches.some(name => name !== "sais-animal-hub-v60")) errors.push("Old Animal Hub offline caches were not cleaned up.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v60")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 const cachedPwaIcons = await page.evaluate(async () => {
-  const cache = await caches.open("sais-animal-hub-v59");
+  const cache = await caches.open("sais-animal-hub-v60");
   const paths = ["assets/pwa/favicon-32.png","assets/pwa/apple-touch-icon.png","assets/pwa/icon-192.png","assets/pwa/icon-512-maskable.png"];
   return Promise.all(paths.map(async path => ({path,found:!!(await cache.match("/SAISAnimalInformationHubUK/"+path))})));
 });
