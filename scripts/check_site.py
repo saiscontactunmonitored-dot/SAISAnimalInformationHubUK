@@ -117,11 +117,11 @@ for page in html_files:
         "reptileexotic-information/index.html",
     }
     if rel.as_posix() in animal_species_pages:
-        if re.search(r'<div\\b[^>]*class=["\\'][^"\\']*\\bannouncement\\b', source, re.IGNORECASE):
+        if re.search(r"<div\b[^>]*class=['\"][^'\"]*\bannouncement\b", source, re.IGNORECASE):
             errors.append(f"{rel}: legacy announcement strip must not be present; use the shared Hub header")
-        if re.search(r'<header\\b[^>]*>[\\s\\S]*?(?:brandrow|brand-row)[\\s\\S]*?</header>', source, re.IGNORECASE):
+        if re.search(r"<header\b[^>]*>[\s\S]*?(?:brandrow|brand-row)[\s\S]*?</header>", source, re.IGNORECASE):
             errors.append(f"{rel}: duplicate page-specific Hub brand header must be removed")
-        if re.search(r'<span\\b[^>]*class=["\\']mark["\\'][^>]*>\\s*✦', source, re.IGNORECASE):
+        if re.search(r"<span\b[^>]*class=['\"]mark['\"][^>]*>\s*✦", source, re.IGNORECASE):
             errors.append(f"{rel}: legacy orange star logo must not be present")
     if not re.search(r"<html\b[^>]*\blang=[\"']", source, re.IGNORECASE):
         errors.append(f"{rel}: missing document language")
