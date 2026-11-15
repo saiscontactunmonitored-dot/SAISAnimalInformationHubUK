@@ -1,6 +1,7 @@
 (function(){
 "use strict";
-var ROOT="/SAISAnimalInformationHubUK";
+// The Hub is served from its own subdomain root, not a GitHub project subdirectory.
+var ROOT="";
 var path=window.location.pathname;
 var base=(path===ROOT||path.indexOf(ROOT+"/")===0)?ROOT:"";
 var route=function(p){return (base||"")+"/"+String(p||"").replace(/^\//,"");};
