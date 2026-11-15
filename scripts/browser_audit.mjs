@@ -22,7 +22,7 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band") && css.includes(".sais-header-top") && css.includes("data:image/svg+xml");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v54");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v55");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
@@ -95,9 +95,15 @@ for (const url of urls) {
     const favicon = document.querySelector('link[rel="icon"]');
     const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
     const themeColor = document.querySelector('meta[name="theme-color"]')?.content || "";
+    const appleCapable = document.querySelector('meta[name="apple-mobile-web-app-capable"]')?.content || "";
+    const mobileCapable = document.querySelector('meta[name="mobile-web-app-capable"]')?.content || "";
+    const appleTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]')?.content || "";
     const pwaIcons = {
       faviconCorrect: !!favicon && favicon.href.endsWith("/assets/pwa/favicon-32.png") && favicon.type === "image/png" && favicon.sizes.value === "32x32",
       appleTouchIconCorrect: !!appleTouchIcon && appleTouchIcon.href.endsWith("/assets/pwa/apple-touch-icon.png") && appleTouchIcon.sizes.value === "180x180",
+      appleCapable,
+      mobileCapable,
+      appleTitle,
       themeColor
     };
     const imagesWithoutAlt = [...document.images].filter(image => !image.hasAttribute("alt")).length;
@@ -148,6 +154,7 @@ for (const url of urls) {
   if (!result.pwaIcons.faviconCorrect) errors.push("Favicon is missing, incorrect or not a PNG on " + url);
   if (!result.pwaIcons.appleTouchIconCorrect) errors.push("Apple touch icon is missing or incorrect on " + url);
   if (result.pwaIcons.themeColor !== "#f2a45a") errors.push("PWA/browser theme colour is incorrect on " + url);
+  if (result.pwaIcons.appleCapable !== "yes" || result.pwaIcons.mobileCapable !== "yes" || result.pwaIcons.appleTitle !== "Animal Hub") errors.push("Apple/Android home-screen metadata is missing or incorrect on " + url);
   if (!result.header.partsPresent || !result.header.clockVisible || !result.header.searchVisible) {
     errors.push("Screenshot-style shared header is incomplete on " + url);
   }
@@ -689,12 +696,12 @@ const workerState = await page.evaluate(async () => ({
   caches: await caches.keys()
 }));
 const hubCaches = workerState.caches.filter(name => name.startsWith("sais-animal-hub-"));
-if (!hubCaches.includes("sais-animal-hub-v54")) errors.push("Expected v54 offline cache was not created.");
-if (hubCaches.some(name => name !== "sais-animal-hub-v54")) errors.push("Old Animal Hub offline caches were not cleaned up.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v54")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!hubCaches.includes("sais-animal-hub-v55")) errors.push("Expected v54 offline cache was not created.");
+if (hubCaches.some(name => name !== "sais-animal-hub-v55")) errors.push("Old Animal Hub offline caches were not cleaned up.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v55")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 const cachedPwaIcons = await page.evaluate(async () => {
-  const cache = await caches.open("sais-animal-hub-v54");
+  const cache = await caches.open("sais-animal-hub-v55");
   const paths = ["assets/pwa/favicon-32.png","assets/pwa/apple-touch-icon.png","assets/pwa/icon-192.png","assets/pwa/icon-512-maskable.png"];
   return Promise.all(paths.map(async path => ({path,found:!!(await cache.match("/SAISAnimalInformationHubUK/"+path))})));
 });
