@@ -22,14 +22,14 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band") && css.includes(".sais-header-top") && css.includes("data:image/svg+xml");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v57");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v58");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The current navigation rebuild and v57 offline cache did not become available within three minutes.");
+  throw new Error("The current navigation rebuild and v58 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
@@ -696,12 +696,12 @@ const workerState = await page.evaluate(async () => ({
   caches: await caches.keys()
 }));
 const hubCaches = workerState.caches.filter(name => name.startsWith("sais-animal-hub-"));
-if (!hubCaches.includes("sais-animal-hub-v57")) errors.push("Expected v54 offline cache was not created.");
-if (hubCaches.some(name => name !== "sais-animal-hub-v57")) errors.push("Old Animal Hub offline caches were not cleaned up.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v57")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!hubCaches.includes("sais-animal-hub-v58")) errors.push("Expected v54 offline cache was not created.");
+if (hubCaches.some(name => name !== "sais-animal-hub-v58")) errors.push("Old Animal Hub offline caches were not cleaned up.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v58")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 const cachedPwaIcons = await page.evaluate(async () => {
-  const cache = await caches.open("sais-animal-hub-v57");
+  const cache = await caches.open("sais-animal-hub-v58");
   const paths = ["assets/pwa/favicon-32.png","assets/pwa/apple-touch-icon.png","assets/pwa/icon-192.png","assets/pwa/icon-512-maskable.png"];
   return Promise.all(paths.map(async path => ({path,found:!!(await cache.match("/SAISAnimalInformationHubUK/"+path))})));
 });
