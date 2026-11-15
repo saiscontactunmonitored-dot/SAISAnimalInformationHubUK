@@ -121,8 +121,8 @@ for page in html_files:
                         ("social sharing image", parser.og_images)):
         if count != 1:
             errors.append(f"{rel}: expected exactly one {name}, found {count}")
-    if parser.logo_refs == 0 and rel not in ("404.html", "accessibility/index.html"):
-        errors.append(f"{rel}: no recognised Hub logo reference found")
+    if parser.logo_refs == 0 and parser.shell_scripts != 1:
+        errors.append(f"{rel}: shared site shell must be present to supply the Hub header logo")
     if parser.main_count != 1 and page.name != "offline.html":
         errors.append(f"{rel}: expected exactly one main landmark, found {parser.main_count}")
     if parser.images_without_alt:
@@ -274,7 +274,7 @@ else:
     shell_script = shell_script_path.read_text(encoding="utf-8")
     for feature in ("beforeinstallprompt", "sais-install-prompt",
                     "sais-install-footer-trigger", "serviceWorker.register", "updateViaCache",
-                    "sais-update-notice", "assets/css/navigation-rebuild-2026.css"):
+                    "sais-update-notice", "info-logo.png", "assets/css/navigation-rebuild-2026.css"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
     for feature in ("sais-header-top", "sais-header-clock-panel", "sais-header-brand",
