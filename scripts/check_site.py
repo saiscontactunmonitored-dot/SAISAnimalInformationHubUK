@@ -211,8 +211,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v52" not in worker:
-        errors.append("Service worker cache must be v52 after the mobile drawer touch-target fix")
+    if "sais-animal-hub-v53" not in worker:
+        errors.append("Service worker cache must be v53 after the launch-preflight updates")
     if "BASE + 'assets/css/navigation-rebuild-2026.css'" not in worker:
         errors.append("Service worker does not precache the rebuilt navigation stylesheet")
     for image in sorted((ROOT / "assets" / "images").rglob("*")):
