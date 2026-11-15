@@ -985,3 +985,19 @@ body.sais-donation-open{overflow:hidden!important}
 }
 .sais-drawer-group-toggle{min-height:54px!important}
 .sais-drawer-links a{min-height:46px!important}
+
+/* Keep the full desktop menu at wide desktop sizes; use the tap-friendly drawer
+   up to 1300px so the navigation never squeezes across smaller laptops/tablets. */
+@media(max-width:1300px){
+ .sais-navigation{display:flex!important;align-items:center!important;justify-content:flex-start!important}
+ .sais-navigation-inner{display:none!important}
+ .sais-mobile-menu-button{display:inline-flex!important}
+ html.sais-standalone .sais-navigation-inner{display:none!important}
+ html.sais-standalone .sais-mobile-menu-button{display:inline-flex!important}
+}
+@media(min-width:1301px){
+ .sais-navigation-inner{display:flex!important}
+ .sais-mobile-menu-button{display:none!important}
+ html.sais-standalone .sais-navigation-inner{display:flex!important}
+ html.sais-standalone .sais-mobile-menu-button{display:none!important}
+}
