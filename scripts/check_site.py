@@ -245,8 +245,8 @@ else:
             errors.append(f"Offline app shell does not precache asset: {asset}")
 
 if worker_path.exists():
-    if "sais-animal-hub-v55" not in worker:
-        errors.append("Service worker cache must be v55 after the iOS install metadata update")
+    if "sais-animal-hub-v56" not in worker:
+        errors.append("Service worker cache must be v56 after the desktop install and site-wide offline banner update")
     if "const APP_SHELL = [" in worker and "];" in worker:
         app_shell = worker.split("const APP_SHELL = [", 1)[1].split("];", 1)[0]
         cached_paths = []
@@ -275,9 +275,13 @@ else:
     for feature in ("beforeinstallprompt", "sais-install-prompt",
                     "sais-install-footer-trigger", "serviceWorker.register", "updateViaCache",
                     "sais-update-notice", "apple-mobile-web-app-capable", "mobile-web-app-capable",
-                    "info-logo.png", "assets/css/navigation-rebuild-2026.css"):
+                    "info-logo.png", "assets/css/navigation-rebuild-2026.css", "setupConnectivityBanner", "sais-offline-banner",
+                    "isDesktop", "pointer: fine"):
         if feature not in shell_script:
             errors.append(f"Shared site shell is missing PWA feature: {feature}")
+    shell_styles_path = ROOT / "assets" / "site-shell.css"
+    if not shell_styles_path.exists() or ".sais-offline-banner" not in shell_styles_path.read_text(encoding="utf-8"):
+        errors.append("Shared site shell stylesheet is missing the site-wide offline banner styles")
     for feature in ("sais-header-top", "sais-header-clock-panel", "sais-header-brand",
                     "sais-header-search-panel", "sais-header-tagline", "sais-donate-button",
                     "sais-donation-overlay", "saisOpenDonationModal", "buildDonationModal",
