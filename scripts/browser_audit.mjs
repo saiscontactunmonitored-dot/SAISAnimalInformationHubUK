@@ -22,14 +22,14 @@ async function waitForPublishedRelease() {
         response.text(), cssResponse.text(), workerResponse.text()
       ]);
       const currentNavigation = css.includes("Screenshot-matched SAIS header: orange top band") && css.includes(".sais-header-top") && css.includes("data:image/svg+xml");
-      const currentOfflineCache = worker.includes("sais-animal-hub-v51");
+      const currentOfflineCache = worker.includes("sais-animal-hub-v52");
       if (response.ok && cssResponse.ok && workerResponse.ok &&
           html.includes('rel="canonical"') && html.includes("Animal Information Hub UK") &&
           currentNavigation && currentOfflineCache) return;
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The current navigation rebuild and v51 offline cache did not become available within three minutes.");
+  throw new Error("The current navigation rebuild and v52 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
@@ -438,6 +438,48 @@ if (await dropdownSummary.count()) {
    if (await touchMenuButton.getAttribute("aria-expanded") !== "false") errors.push("Touching outside the drawer did not close mobile navigation.");
  }
 
+ // Android-style tap-through checks for every link inside the mobile "Choose an animal" accordion.
+ const drawerAnimalTargets = [
+   "dog-information/","cat-information/","chicken-information/","rabbit-information/",
+   "rodent-information/","reptileexotic-information/","horse-information/","wildlife-information/"
+ ];
+ for (const target of drawerAnimalTargets) {
+   await touchPage.goto(BASE,{waitUntil:"domcontentloaded",timeout:30000});
+   const trigger = touchPage.locator(".sais-mobile-menu-button");
+   await trigger.tap({timeout:10000});
+   const chooseAnimal = touchPage.locator(".sais-drawer-group-toggle").first();
+   await chooseAnimal.tap({timeout:10000});
+   if (await chooseAnimal.getAttribute("aria-expanded") !== "true") {
+     errors.push('Touch did not expand "Choose an animal" before opening '+target);
+     continue;
+   }
+   const destination = touchPage.locator("#sais-drawer-group-panel-0 a").filter({has:touchPage.locator('a[href$="'+target+'"]')});
+   const animalLink = touchPage.locator('#sais-drawer-group-panel-0 a[href$="'+target+'"]');
+   if (await animalLink.count() !== 1 || !(await animalLink.isVisible())) {
+     errors.push('Mobile "Choose an animal" does not expose a visible link for '+target);
+     continue;
+   }
+   try {
+     const [response] = await Promise.all([
+       touchPage.waitForNavigation({waitUntil:"domcontentloaded",timeout:15000}),
+       animalLink.tap({timeout:10000})
+     ]);
+     if (new URL(touchPage.url()).pathname !== new URL(BASE+target).pathname) {
+       errors.push('Tapping the mobile drawer link for '+target+' opened the wrong page.');
+     }
+     if (!response || response.status() !== 200) {
+       errors.push('Tapping the mobile drawer link for '+target+' did not return HTTP 200.');
+     }
+     const heading = await touchPage.locator("main h1").first().textContent().catch(()=>"");
+     if (!heading || !heading.trim()) errors.push('The mobile drawer link for '+target+' opened without a page heading.');
+     if (await touchPage.locator("#sais-mobile-drawer").getAttribute("aria-hidden") !== "true") {
+       errors.push('The mobile drawer did not close after selecting '+target+'.');
+     }
+   } catch(error) {
+     errors.push('Android-style tap could not open '+target+' from the mobile "Choose an animal" menu: '+error.message);
+   }
+ }
+
  // Android-style tap-through checks for every homepage animal card.
  const chooserState = await touchPage.evaluate(() => ({
    cards: [...document.querySelectorAll(".animal-card")].map(card => ({label:card.querySelector("h3")?.textContent?.trim()||"",href:card.getAttribute("href")})),
@@ -625,8 +667,8 @@ const workerState = await page.evaluate(async () => ({
   controller: navigator.serviceWorker?.controller?.scriptURL || "",
   caches: await caches.keys()
 }));
-if (!workerState.caches.some(name => name === "sais-animal-hub-v51")) errors.push("Expected v51 offline cache was not created.");
-const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v51")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
+if (!workerState.caches.some(name => name === "sais-animal-hub-v52")) errors.push("Expected v52 offline cache was not created.");
+const cachedNavigationCss = await page.evaluate(async () => (await caches.open("sais-animal-hub-v52")).match("/SAISAnimalInformationHubUK/assets/css/navigation-rebuild-2026.css"));
 if (!cachedNavigationCss) errors.push("Rebuilt navigation stylesheet is missing from the offline cache.");
 if (!workerState.controller) errors.push("No active service worker controller was found.");
 
