@@ -286,7 +286,7 @@ body.sais-a11y-contrast .sais-shell,body.sais-a11y-contrast .sais-footer{backgro
 .sais-footer-inner{width:min(1320px,calc(100% - 56px))!important;margin:0 auto!important;padding:44px 0 28px!important}
 .sais-footer-top{display:grid!important;grid-template-columns:minmax(250px,.85fr) minmax(0,2fr)!important;gap:64px!important;align-items:start!important}
 .sais-footer-brand{max-width:340px!important}
-.sais-footer-mark{display:grid!important;place-items:center!important;width:46px!important;height:46px!important;margin-bottom:17px!important;border-radius:14px!important;background:#e99a4b!important;color:#173746!important;font-size:25px!important;font-weight:900!important;box-shadow:0 6px 18px #081b2540!important}
+.sais-footer-mark{display:block!important;width:76px!important;height:76px!important;margin:0 0 17px!important;object-fit:contain!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
 .sais-footer-brand h2{margin:0 0 13px!important;color:#fff!important;font-size:23px!important;line-height:1.2!important;letter-spacing:-.5px!important}
 .sais-footer-brand p{margin:0 0 17px!important;color:#dce7e8!important;font-size:14px!important;line-height:1.8!important}
 .sais-footer-powered{display:inline-flex!important;align-items:center!important;gap:7px!important;padding:7px 11px!important;border:1px solid #ffffff30!important;border-radius:999px!important;color:#f5c28e!important;font-size:11px!important;font-weight:750!important;line-height:1.4!important}
