@@ -29,7 +29,7 @@ async function waitForPublishedRelease() {
     } catch {}
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  throw new Error("The current navigation rebuild and v52 offline cache did not become available within three minutes.");
+  throw new Error("The current navigation rebuild and v54 offline cache did not become available within three minutes.");
 }
 
 await waitForPublishedRelease();
@@ -56,7 +56,11 @@ page.on("console", message => {
   }
 });
 page.on("requestfailed", request => {
-  if (request.url().startsWith(BASE)) sameOriginFailures.push("Request failed: " + request.url());
+  const failure = request.failure()?.errorText || "";
+  // Navigating between pages cancels outstanding lazy-image requests; that is not a broken asset.
+  if (request.url().startsWith(BASE) && !/ERR_ABORTED|ERR_CANCELED|cancelled/i.test(failure)) {
+    sameOriginFailures.push("Request failed: " + request.url() + " (" + failure + ")");
+  }
 });
 page.on("response", response => {
   if (response.url().startsWith(BASE) && response.status() >= 400 && !response.url().includes("this-page-should-not-exist-404-check")) {
@@ -491,6 +495,9 @@ if (await dropdownSummary.count()) {
  }
 
  // Android-style tap-through checks for every homepage animal card.
+ // The previous menu test ends on the Wildlife page, so return home before reading the cards.
+ await touchPage.goto(BASE,{waitUntil:"domcontentloaded",timeout:30000});
+ await touchPage.waitForSelector(".animal-card",{timeout:15000});
  const chooserState = await touchPage.evaluate(() => ({
    cards: [...document.querySelectorAll(".animal-card")].map(card => ({label:card.querySelector("h3")?.textContent?.trim()||"",href:card.getAttribute("href")})),
    legacyAccessibilityControls:document.querySelectorAll(".accessibility-widget").length,
