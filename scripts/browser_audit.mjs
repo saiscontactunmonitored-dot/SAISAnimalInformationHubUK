@@ -453,7 +453,6 @@ if (await dropdownSummary.count()) {
      errors.push('Touch did not expand "Choose an animal" before opening '+target);
      continue;
    }
-   const destination = touchPage.locator("#sais-drawer-group-panel-0 a").filter({has:touchPage.locator('a[href$="'+target+'"]')});
    const animalLink = touchPage.locator('#sais-drawer-group-panel-0 a[href$="'+target+'"]');
    if (await animalLink.count() !== 1 || !(await animalLink.isVisible())) {
      errors.push('Mobile "Choose an animal" does not expose a visible link for '+target);
